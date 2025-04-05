@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+  <defs>
+    <pattern id="floralPattern" patternUnits="userSpaceOnUse" width="180" height="180">
+      <!-- Flower 1 -->
+      <g transform="translate(45, 45)" opacity="0.15">
+        <!-- Petals -->
+        <path d="M0,-15 Q10,-5 0,5 Q-10,-5 0,-15" fill="#4A7BF7" />
+        <path d="M-15,0 Q-5,10 5,0 Q-5,-10 -15,0" fill="#4A7BF7" />
+        <path d="M0,15 Q10,5 0,-5 Q-10,5 0,15" fill="#4A7BF7" />
+        <path d="M15,0 Q5,10 -5,0 Q5,-10 15,0" fill="#4A7BF7" />
+        <!-- Center -->
+        <circle cx="0" cy="0" r="5" fill="#4A7BF7" />
+        
+        <!-- Vines -->
+        <path d="M20,0 Q30,10 40,0 Q50,-10 60,0" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+        <path d="M0,20 Q10,30 0,40 Q-10,50 0,60" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+      </g>
+      
+      <!-- Flower 2 -->
+      <g transform="translate(135, 45)" opacity="0.15">
+        <!-- Petals -->
+        <path d="M0,-15 Q10,-5 0,5 Q-10,-5 0,-15" fill="#4A7BF7" />
+        <path d="M-15,0 Q-5,10 5,0 Q-5,-10 -15,0" fill="#4A7BF7" />
+        <path d="M0,15 Q10,5 0,-5 Q-10,5 0,15" fill="#4A7BF7" />
+        <path d="M15,0 Q5,10 -5,0 Q5,-10 15,0" fill="#4A7BF7" />
+        <!-- Center -->
+        <circle cx="0" cy="0" r="5" fill="#4A7BF7" />
+        
+        <!-- Vines -->
+        <path d="M-20,0 Q-30,10 -40,0 Q-50,-10 -60,0" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+        <path d="M0,20 Q-10,30 0,40 Q10,50 0,60" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+      </g>
+      
+      <!-- Flower 3 -->
+      <g transform="translate(45, 135)" opacity="0.15">
+        <!-- Petals -->
+        <path d="M0,-15 Q10,-5 0,5 Q-10,-5 0,-15" fill="#4A7BF7" />
+        <path d="M-15,0 Q-5,10 5,0 Q-5,-10 -15,0" fill="#4A7BF7" />
+        <path d="M0,15 Q10,5 0,-5 Q-10,5 0,15" fill="#4A7BF7" />
+        <path d="M15,0 Q5,10 -5,0 Q5,-10 15,0" fill="#4A7BF7" />
+        <!-- Center -->
+        <circle cx="0" cy="0" r="5" fill="#4A7BF7" />
+        
+        <!-- Vines -->
+        <path d="M20,0 Q30,-10 40,0 Q50,10 60,0" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+        <path d="M0,-20 Q10,-30 0,-40 Q-10,-50 0,-60" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+      </g>
+      
+      <!-- Flower 4 -->
+      <g transform="translate(135, 135)" opacity="0.15">
+        <!-- Petals -->
+        <path d="M0,-15 Q10,-5 0,5 Q-10,-5 0,-15" fill="#4A7BF7" />
+        <path d="M-15,0 Q-5,10 5,0 Q-5,-10 -15,0" fill="#4A7BF7" />
+        <path d="M0,15 Q10,5 0,-5 Q-10,5 0,15" fill="#4A7BF7" />
+        <path d="M15,0 Q5,10 -5,0 Q5,-10 15,0" fill="#4A7BF7" />
+        <!-- Center -->
+        <circle cx="0" cy="0" r="5" fill="#4A7BF7" />
+        
+        <!-- Vines -->
+        <path d="M-20,0 Q-30,-10 -40,0 Q-50,10 -60,0" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+        <path d="M0,-20 Q-10,-30 0,-40 Q10,-50 0,-60" fill="none" stroke="#4A7BF7" stroke-width="0.5" />
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#floralPattern)" />
+</svg> 

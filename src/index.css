@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-gray-800;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-2 bg-[#e6c392] text-white rounded-md hover:bg-[#ba1a5d] transition-colors duration-300;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-2 border-2 border-[#e6c392] text-[#e6c392] rounded-md hover:bg-[#e6c392] hover:text-white transition-colors duration-300;
+  }
+  
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .promo-strip {
+    @apply bg-[#ba1a5d] text-white;
+  }
+}
+
+/* Custom animations */
+@keyframes floatPattern {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, -5px) rotate(1deg); }
+  50% { transform: translate(0, -10px) rotate(0deg); }
+  75% { transform: translate(-5px, -5px) rotate(-1deg); }
+}
+
+.float-pattern {
+  animation: floatPattern 15s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Categories hover effect */
+.category-card:hover .category-image {
+  transform: scale(1.1);
+}
+
+.category-card:hover .category-overlay {
+  opacity: 0.7;
+}
+
+.category-card:hover .category-content {
+  transform: translateY(-10px);
+}
+
+.category-image {
+  transition: transform 0.7s ease-in-out;
+}
+
+.category-overlay {
+  transition: opacity 0.5s ease;
+}
+
+.category-content {
+  transition: transform 0.5s ease;
+}
