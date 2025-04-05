@@ -3,9 +3,11 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import logo from '../assets/logo.svg';
 import { Link } from 'react-router-dom';
+import AuthPopup from './AuthPopup';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
 
   const navigation = [
     { name: 'Kurti', href: '/corset-kurti', hasSubmenu: false },
@@ -34,7 +36,10 @@ const Navbar = () => {
           
           {/* Right - User Icons */}
           <div className="w-1/3 flex justify-end gap-6">
-            <UserIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
+            <UserIcon 
+              className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" 
+              onClick={() => setShowAuthPopup(true)}
+            />
             <HeartIcon href='/wishlist' className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
             <ShoppingBagIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
           </div>
@@ -108,6 +113,9 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {/* Auth Popup */}
+      <AuthPopup isOpen={showAuthPopup} onClose={() => setShowAuthPopup(false)} />
     </div>
   );
 };
