@@ -109,8 +109,10 @@ const EnhancedHero = () => {
       setIsTransitioning(true);
       setTimeout(() => {
         setCurrentSlide((prevSlide) => (prevSlide === slideImages.length - 1 ? 0 : prevSlide + 1));
-        setIsTransitioning(false);
-      }, 500); // Match this with transition duration
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 800);
+      }, 100);
     }, 6000);
 
     return () => {
@@ -119,21 +121,29 @@ const EnhancedHero = () => {
   }, [currentSlide]);
 
   const nextSlide = () => {
+    if (isTransitioning) return;
+    
     resetTimeout();
     setIsTransitioning(true);
+    
+    setCurrentSlide((prevSlide) => (prevSlide === slideImages.length - 1 ? 0 : prevSlide + 1));
+    
     setTimeout(() => {
-      setCurrentSlide((prevSlide) => (prevSlide === slideImages.length - 1 ? 0 : prevSlide + 1));
       setIsTransitioning(false);
-    }, 500); // Match this with transition duration
+    }, 1200);
   };
 
   const prevSlide = () => {
+    if (isTransitioning) return;
+    
     resetTimeout();
     setIsTransitioning(true);
+    
+    setCurrentSlide((prevSlide) => (prevSlide === 0 ? slideImages.length - 1 : prevSlide - 1));
+    
     setTimeout(() => {
-      setCurrentSlide((prevSlide) => (prevSlide === 0 ? slideImages.length - 1 : prevSlide - 1));
       setIsTransitioning(false);
-    }, 500); // Match this with transition duration
+    }, 1200);
   };
 
   return (
@@ -146,41 +156,53 @@ const EnhancedHero = () => {
         className="absolute inset-0 bg-black"
         style={{ y: backgroundY }}
       >
-        <AnimatePresence mode="sync">
+        {/* Preload all images to prevent flickering */}
+        <div className="hidden">
           {slideImages.map((image, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0 }}
-              animate={{ 
-                opacity: index === currentSlide ? 1 : 0,
-                scale: index === currentSlide ? 1 : 1.1
-              }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
-              className="absolute inset-0 w-full h-full"
-              style={{ zIndex: index === currentSlide ? 1 : 0 }}
-            >
-              {/* Enhanced gradient overlay with elegant animation */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/40 z-10"
-                animate={{ 
-                  opacity: [0.7, 0.85, 0.7]
-                }}
-                transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
-              />
-              
-              <motion.img
-                src={image}
-                alt={`Slide ${index + 1}`}
-                className="h-full w-full object-cover"
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
-              />
-            </motion.div>
+            <img key={`preload-${index}`} src={image} alt="Preload" />
           ))}
-        </AnimatePresence>
+        </div>
+        
+        {slideImages.map((image, index) => (
+          <motion.div
+            key={index}
+            initial={false}
+            animate={{ 
+              opacity: index === currentSlide ? 1 : 0,
+              scale: index === currentSlide ? 1 : 1.1,
+              zIndex: index === currentSlide ? 1 : 0
+            }}
+            transition={{ 
+              opacity: { duration: 1.2, ease: "easeInOut" },
+              scale: { duration: 1.5, ease: "easeInOut" },
+              zIndex: { delay: index === currentSlide ? 0 : 0.8 }
+            }}
+            className="absolute inset-0 w-full h-full"
+          >
+            {/* Enhanced gradient overlay with elegant animation */}
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/40 z-10"
+              animate={{ 
+                opacity: [0.7, 0.85, 0.7]
+              }}
+              transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
+            />
+            
+            <motion.img
+              src={image}
+              alt={`Slide ${index + 1}`}
+              className="h-full w-full object-cover"
+              style={{ opacity: index === currentSlide ? 1 : 0 }}
+              animate={{ 
+                scale: index === currentSlide ? [1, 1.05, 1] : 1,
+              }}
+              transition={{ 
+                scale: { duration: 20, repeat: Infinity, repeatType: "reverse" },
+                opacity: { duration: 0.8 }
+              }}
+            />
+          </motion.div>
+        ))}
       </motion.div>
 
       {/* Enhanced Decorative Elements */}
@@ -310,13 +332,18 @@ const EnhancedHero = () => {
             onClick={() => {
               if (!isTransitioning) {
                 setIsTransitioning(true);
+                
+                // Immediate slide change for better responsiveness
+                setCurrentSlide(index);
+                
+                // Allow transition to complete before enabling new transitions
                 setTimeout(() => {
-                  setCurrentSlide(index);
                   setIsTransitioning(false);
-                }, 500);
+                }, 1200);
               }
             }}
             className="relative group"
+            disabled={isTransitioning}
           >
             <span className={`block h-0.5 w-8 md:w-10 rounded-full transition-all duration-500 ${
               currentSlide === index ? 'bg-[#ba1a5d] w-12 md:w-16' : 'bg-white/50 group-hover:bg-white/80'
