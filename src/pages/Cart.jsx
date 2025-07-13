@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 
 const LuxuryPattern = () => (
   <svg className="absolute inset-0 w-full h-full opacity-[0.02] pointer-events-none" viewBox="0 0 100 100">
@@ -28,6 +30,9 @@ const GoldenAccent = ({ className }) => (
 const CartPage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [animationCompleted, setAnimationCompleted] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const { cartItems, loading, updateQuantity, removeFromCart, clearCart, cartSummary } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +51,40 @@ const CartPage = () => {
       clearTimeout(timer);
     };
   }, []);
+
+  const formatPrice = (price) => {
+    if (typeof price === 'number') {
+      return `₹${price.toLocaleString('en-IN')}`;
+    }
+    return price || '₹0';
+  };
+
+  const handleQuantityChange = async (itemId, newQuantity) => {
+    if (newQuantity < 1) return;
+    try {
+      await updateQuantity(itemId, newQuantity);
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    }
+  };
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      await removeFromCart(itemId);
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
+  };
+
+  const handleClearCart = async () => {
+    if (window.confirm('Are you sure you want to clear your cart?')) {
+      try {
+        await clearCart();
+      } catch (error) {
+        console.error('Error clearing cart:', error);
+      }
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-hidden">
@@ -133,7 +172,7 @@ const CartPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Left column - Cart items */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Card with flowing animation */}
+              {/* Cart items card */}
               <motion.div 
                 className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
                 initial={{ opacity: 0, y: 40 }}
@@ -145,119 +184,240 @@ const CartPage = () => {
                 <div className="p-8">
                   <div className="flex items-center justify-between mb-8">
                     <h2 className="text-2xl font-serif text-gray-800">Shopping Bag</h2>
-                    <span className="text-sm text-gray-400 font-light">0 Items</span>
-                  </div>
-                  
-                  <div className="grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
-                    <div className="col-span-6">Product</div>
-                    <div className="col-span-2 text-center">Price</div>
-                    <div className="col-span-2 text-center">Quantity</div>
-                    <div className="col-span-2 text-right">Total</div>
-                  </div>
-                  
-                  <div className="py-20 flex flex-col items-center justify-center">
-                    <motion.div 
-                      className="relative mb-6"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.8, delay: 1 }}
-                    >
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-100 to-amber-100 animate-pulse" />
-                      
-                      <motion.div 
-                        className="relative z-10 p-8 flex items-center justify-center"
-                        animate={{ rotate: [0, 10, 0, -10, 0] }}
-                        transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
-                      >
-                        <svg className="w-20 h-20 text-amber-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11M5 9H19L20 21H4L5 9Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </motion.div>
-                      
-                      <motion.div 
-                        className="absolute top-0 left-0 w-full h-full border-4 border-dashed border-amber-200 rounded-full"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                      />
-                    </motion.div>
-                    
-                    <motion.h3 
-                      className="text-3xl font-serif text-gray-800 mb-4"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.8, delay: 1.2 }}
-                    >
-                      Your Collection Awaits
-                    </motion.h3>
-                    
-                    <motion.p 
-                      className="text-gray-500 mb-10 max-w-md text-center font-light"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.8, delay: 1.4 }}
-                    >
-                      Your bag is empty. Transform it into a treasure trove of timeless elegance by exploring our collections.
-                    </motion.p>
-                    
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.98 }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.8, delay: 1.6 }}
-                    >
-                      <Link 
-                        to="/" 
-                        className="inline-flex items-center px-10 py-4 bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
-                      >
-                        <span className="font-medium">Discover Collections</span>
-                        <motion.svg 
-                          className="w-5 h-5 ml-2" 
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
+                    <div className="flex items-center space-x-4">
+                      <span className="text-sm text-gray-400 font-light">
+                        {cartSummary.itemCount} {cartSummary.itemCount === 1 ? 'Item' : 'Items'}
+                      </span>
+                      {cartItems.length > 0 && (
+                        <button
+                          onClick={handleClearCart}
+                          className="text-sm text-red-500 hover:text-red-700 font-medium"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </motion.svg>
-                      </Link>
-                    </motion.div>
+                          Clear All
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-              
-              {/* Recently viewed section with horizontal scroll */}
-              <motion.div 
-                className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 p-8"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.7 }}
-              >
-                <h3 className="text-xl font-serif text-gray-800 mb-6">Recently Viewed</h3>
-                
-                <div className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
-                  {[1, 2, 3, 4].map((item) => (
-                    <motion.div 
-                      key={item}
-                      className="flex-shrink-0 w-48 group"
-                      whileHover={{ y: -5 }}
-                    >
-                      <div className="relative rounded-lg overflow-hidden mb-3 bg-gray-100">
-                        <div className="aspect-w-2 aspect-h-3 bg-gray-200">
-                          <div className="absolute inset-0 bg-gradient-to-br from-amber-100/40 to-pink-100/40" />
-                        </div>
-                        <div className="absolute inset-0 flex items-center justify-center text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  
+                  {!isAuthenticated ? (
+                    // Not logged in state
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <motion.div 
+                        className="relative mb-6"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 1 }}
+                      >
+                        <div className="p-8 flex items-center justify-center">
+                          <svg className="w-20 h-20 text-amber-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         </div>
+                      </motion.div>
+                      
+                      <motion.h3 
+                        className="text-3xl font-serif text-gray-800 mb-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.2 }}
+                      >
+                        Please Sign In
+                      </motion.h3>
+                      
+                      <motion.p 
+                        className="text-gray-500 mb-10 max-w-md text-center font-light"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.4 }}
+                      >
+                        Sign in to your account to view your cart and manage your items.
+                      </motion.p>
+                      
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.6 }}
+                      >
+                        <Link 
+                          to="/auth" 
+                          className="inline-flex items-center px-10 py-4 bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        >
+                          <span className="font-medium">Sign In</span>
+                          <motion.svg 
+                            className="w-5 h-5 ml-2" 
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                          </motion.svg>
+                        </Link>
+                      </motion.div>
+                    </div>
+                  ) : cartItems.length === 0 ? (
+                    // Empty cart state
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <motion.div 
+                        className="relative mb-6"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 1 }}
+                      >
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-100 to-amber-100 animate-pulse" />
+                        
+                        <motion.div 
+                          className="relative z-10 p-8 flex items-center justify-center"
+                          animate={{ rotate: [0, 10, 0, -10, 0] }}
+                          transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+                        >
+                          <svg className="w-20 h-20 text-amber-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11M5 9H19L20 21H4L5 9Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </motion.div>
+                        
+                        <motion.div 
+                          className="absolute top-0 left-0 w-full h-full border-4 border-dashed border-amber-200 rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                        />
+                      </motion.div>
+                      
+                      <motion.h3 
+                        className="text-3xl font-serif text-gray-800 mb-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.2 }}
+                      >
+                        Your Collection Awaits
+                      </motion.h3>
+                      
+                      <motion.p 
+                        className="text-gray-500 mb-10 max-w-md text-center font-light"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.4 }}
+                      >
+                        Your bag is empty. Transform it into a treasure trove of timeless elegance by exploring our collections.
+                      </motion.p>
+                      
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.6 }}
+                      >
+                        <Link 
+                          to="/" 
+                          className="inline-flex items-center px-10 py-4 bg-gradient-to-r from-amber-500 to-pink-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        >
+                          <span className="font-medium">Discover Collections</span>
+                          <motion.svg 
+                            className="w-5 h-5 ml-2" 
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                          </motion.svg>
+                        </Link>
+                      </motion.div>
+                    </div>
+                  ) : (
+                    // Cart items
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
+                        <div className="col-span-6">Product</div>
+                        <div className="col-span-2 text-center">Price</div>
+                        <div className="col-span-2 text-center">Quantity</div>
+                        <div className="col-span-2 text-right">Total</div>
                       </div>
-                      <h4 className="text-gray-800 font-medium">Elegant Piece {item}</h4>
-                      <p className="text-amber-600 font-light">₹ 12,999</p>
-                    </motion.div>
-                  ))}
+                      
+                      <AnimatePresence>
+                        {cartItems.map((item) => (
+                          <motion.div
+                            key={item.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="grid grid-cols-12 items-center py-4 border-b border-gray-100"
+                          >
+                            {/* Product Info */}
+                            <div className="col-span-6 flex items-center space-x-4">
+                              <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                                <img
+                                  src={item.products?.image_urls?.[0] || item.products?.image || '/placeholder-image.jpg'}
+                                  alt={item.products?.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div>
+                                <h3 className="font-medium text-gray-900">{item.products?.name}</h3>
+                                <div className="text-sm text-gray-500 space-y-1">
+                                  {item.size && <p>Size: {item.size}</p>}
+                                  {item.color && <p>Color: {item.color}</p>}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Price */}
+                            <div className="col-span-2 text-center">
+                              <span className="font-medium text-gray-900">
+                                {formatPrice(item.products?.price)}
+                              </span>
+                            </div>
+                            
+                            {/* Quantity */}
+                            <div className="col-span-2 text-center">
+                              <div className="flex items-center justify-center space-x-2">
+                                <button
+                                  onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                                  </svg>
+                                </button>
+                                <span className="w-8 text-center">{item.quantity}</span>
+                                <button
+                                  onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                            
+                            {/* Total */}
+                            <div className="col-span-2 text-right">
+                              <div className="flex items-center justify-end space-x-2">
+                                <span className="font-medium text-gray-900">
+                                  {formatPrice(item.products?.price * item.quantity)}
+                                </span>
+                                <button
+                                  onClick={() => handleRemoveItem(item.id)}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  )}
                 </div>
               </motion.div>
               
@@ -282,7 +442,7 @@ const CartPage = () => {
               </motion.div>
             </div>
             
-            {/* Right column - Order details */}
+            {/* Right column - Order summary */}
             <div className="space-y-8">
               <motion.div 
                 className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 relative"
@@ -297,7 +457,6 @@ const CartPage = () => {
                   <h3 className="text-2xl font-serif text-gray-800 mb-6">Order Summary</h3>
                   
                   <div className="space-y-4 mb-8">
-                    {/* Luxury divider */}
                     <div className="flex items-center space-x-4 mb-8">
                       <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                       <div className="w-2 h-2 rounded-full bg-amber-500" />
@@ -306,7 +465,7 @@ const CartPage = () => {
                     
                     <div className="flex justify-between text-gray-600">
                       <span>Subtotal</span>
-                      <span className="font-medium text-gray-800">₹ 0</span>
+                      <span className="font-medium text-gray-800">{formatPrice(cartSummary.subtotal)}</span>
                     </div>
                     
                     <div className="flex justify-between text-gray-600">
@@ -316,7 +475,7 @@ const CartPage = () => {
                     
                     <div className="flex justify-between text-gray-600">
                       <span>Tax</span>
-                      <span className="font-medium text-gray-800">₹ 0</span>
+                      <span className="font-medium text-gray-800">₹0</span>
                     </div>
                     
                     <div className="pt-4 mt-4 border-t border-dashed border-gray-200">
@@ -327,19 +486,30 @@ const CartPage = () => {
                           initial={{ scale: 1 }}
                           whileHover={{ scale: 1.05 }}
                         >
-                          ₹ 0
+                          {formatPrice(cartSummary.total)}
                         </motion.span>
                       </div>
                     </div>
                   </div>
                   
                   <motion.button
-                    disabled
-                    className="w-full py-4 bg-gradient-to-r from-gray-300 to-gray-400 text-white rounded-full font-medium relative overflow-hidden cursor-not-allowed"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    disabled={!isAuthenticated || cartItems.length === 0}
+                    onClick={() => {
+                      if (isAuthenticated && cartItems.length > 0) {
+                        navigate('/checkout');
+                      }
+                    }}
+                    className={`w-full py-4 rounded-full font-medium relative overflow-hidden ${
+                      !isAuthenticated || cartItems.length === 0
+                        ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-white cursor-not-allowed'
+                        : 'bg-gradient-to-r from-amber-500 to-pink-500 text-white hover:from-amber-600 hover:to-pink-600'
+                    }`}
+                    whileHover={!isAuthenticated || cartItems.length === 0 ? {} : { scale: 1.02 }}
+                    whileTap={!isAuthenticated || cartItems.length === 0 ? {} : { scale: 0.98 }}
                   >
-                    <span className="relative z-10">Complete Purchase</span>
+                    <span className="relative z-10">
+                      {!isAuthenticated ? 'Sign In to Checkout' : 'Complete Purchase'}
+                    </span>
                   </motion.button>
                   
                   <div className="flex justify-center mt-4">
@@ -349,66 +519,6 @@ const CartPage = () => {
                       </svg>
                       Secure Checkout
                     </div>
-                  </div>
-                </div>
-              </motion.div>
-              
-              {/* Promo code input with animation */}
-              <motion.div 
-                className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 p-8"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.7 }}
-              >
-                <h3 className="text-xl font-serif text-gray-800 mb-4">Apply Promo Code</h3>
-                
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="Enter code" 
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-colors"
-                  />
-                  
-                  <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-gray-100 text-gray-600 rounded-md text-sm hover:bg-gray-200 transition-colors">
-                    Apply
-                  </button>
-                </div>
-                
-                <div className="mt-4 text-sm text-gray-500">
-                  Use code <span className="text-amber-600 font-medium">WELCOME15</span> for 15% off your first order
-                </div>
-              </motion.div>
-              
-              {/* Satisfaction guarantee with parallax effect */}
-              <motion.div 
-                className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 p-8"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                style={{
-                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23f3f4f6\' fill-opacity=\'0.6\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E")',
-                  backgroundPosition: `0px ${scrollY * 0.05}px`
-                }}
-              >
-                <div className="flex items-start space-x-4 relative">
-                  <div className="flex-shrink-0 p-2 bg-amber-50 rounded-full">
-                    <svg className="w-10 h-10 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl font-serif text-gray-800 mb-2">Satisfaction Guaranteed</h3>
-                    <p className="text-gray-600 text-sm">
-                      Experience unparalleled luxury with our 7-day satisfaction guarantee. Our artisans perfect each piece to exceed your expectations.
-                    </p>
-                    
-                    <motion.div 
-                      className="mt-4 text-amber-600 font-medium text-sm cursor-pointer"
-                      whileHover={{ x: 3 }}
-                    >
-                      Learn more about our guarantee →
-                    </motion.div>
                   </div>
                 </div>
               </motion.div>

@@ -3,54 +3,79 @@ import { supabase } from '@/integrations/supabase/client';
 // Products Service
 export const productsService = {
   async getAll(filters = {}) {
-    let query = supabase
-      .from('products')
-      .select(`
-        *,
-        categories!products_category_id_fkey (
-          id,
-          name,
-          slug
-        )
-      `)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
+    try {
+      let query = supabase
+        .from('products')
+        .select(`
+          *,
+          categories!products_category_id_fkey (
+            id,
+            name,
+            slug
+          )
+        `)
+        .order('created_at', { ascending: false });
 
-    if (filters.category_id) {
-      query = query.eq('category_id', filters.category_id);
-    }
-    
-    if (filters.featured) {
-      query = query.eq('featured', true);
-    }
+      // Only filter by is_active if not explicitly requested to include inactive items
+      if (!filters.includeInactive) {
+        query = query.eq('is_active', true);
+      }
 
-    const { data, error } = await query;
-    if (error) throw error;
-    return data || [];
+      if (filters.category_id) {
+        query = query.eq('category_id', filters.category_id);
+      }
+      
+      if (filters.featured) {
+        query = query.eq('featured', true);
+      }
+
+      const { data, error } = await query;
+      
+      if (error) {
+        console.warn('Error fetching products:', error);
+        // Return empty array for permission errors
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          return [];
+        }
+        throw error;
+      }
+      return data || [];
+    } catch (error) {
+      console.error('Error in getAll products:', error);
+      return [];
+    }
   },
 
   async getById(id) {
-    const { data, error } = await supabase
-      .from('products')
-      .select(`
-        *,
-        categories!products_category_id_fkey (
-          id,
-          name,
-          slug
-        )
-      `)
-      .eq('id', id)
-      .eq('is_active', true)
-      .single();
-    
-    if (error) {
-      if (error.code === 'PGRST116') { // No rows returned
-        throw new Error('Product not found');
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          categories!products_category_id_fkey (
+            id,
+            name,
+            slug
+          )
+        `)
+        .eq('id', id)
+        .eq('is_active', true)
+        .single();
+      
+      if (error) {
+        if (error.code === 'PGRST116') { // No rows returned
+          throw new Error('Product not found');
+        }
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          throw new Error('Access denied');
+        }
+        throw error;
       }
+      return data;
+    } catch (error) {
+      console.error('Error in getById product:', error);
       throw error;
     }
-    return data;
   },
 
   async create(product) {
@@ -139,15 +164,33 @@ export const productsService = {
 
 // Categories Service
 export const categoriesService = {
-  async getAll() {
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true });
-    
-    if (error) throw error;
-    return data || [];
+  async getAll(includeInactive = false) {
+    try {
+      let query = supabase
+        .from('categories')
+        .select('*')
+        .order('sort_order', { ascending: true });
+      
+      // Only filter by is_active if not explicitly requested to include inactive items
+      if (!includeInactive) {
+        query = query.eq('is_active', true);
+      }
+      
+      const { data, error } = await query;
+      
+      if (error) {
+        console.warn('Error fetching categories:', error);
+        // Return empty array for permission errors
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          return [];
+        }
+        throw error;
+      }
+      return data || [];
+    } catch (error) {
+      console.error('Error in getAll categories:', error);
+      return [];
+    }
   },
 
   async create(category) {
@@ -407,6 +450,48 @@ export const ordersService = {
     
     if (error) throw error;
     return data;
+  },
+
+  async getOrderDetails(orderId) {
+    try {
+      const { data, error } = await supabase
+        .from('order_items')
+        .select(`
+          *,
+          products!order_items_product_id_fkey (
+            id,
+            name,
+            price,
+            image_urls
+          )
+        `)
+        .eq('order_id', orderId);
+      
+      if (error) {
+        console.warn('Error fetching order details:', error);
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          return [];
+        }
+        throw error;
+      }
+      
+      // Transform the data to include product details and flatten structure
+      const transformedData = (data || []).map(item => ({
+        id: item.id,
+        name: item.products?.name || 'Unknown Product',
+        price: item.price,
+        quantity: item.quantity,
+        size: item.size,
+        color: item.color,
+        image_url: item.products?.image_urls?.[0] || 'https://via.placeholder.com/150',
+        product_id: item.product_id
+      }));
+      
+      return transformedData;
+    } catch (error) {
+      console.error('Error in getOrderDetails:', error);
+      return [];
+    }
   }
 };
 
@@ -451,6 +536,110 @@ export const wishlistService = {
       .eq('user_id', userId)
       .eq('product_id', productId);
     
+    if (error) throw error;
+  }
+};
+
+// Custom Requests Service
+export const customRequestsService = {
+  async getAll() {
+    try {
+      const { data, error } = await supabase
+        .from('custom_designs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Error fetching custom requests:', error);
+        // Return empty array for permission errors
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          return [];
+        }
+        throw error;
+      }
+      return data || [];
+    } catch (error) {
+      console.error('Error in getAll custom requests:', error);
+      return [];
+    }
+  },
+
+  async getUserRequests(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('custom_designs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Error fetching user custom requests:', error);
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          return [];
+        }
+        throw error;
+      }
+      return data || [];
+    } catch (error) {
+      console.error('Error in getUserRequests:', error);
+      return [];
+    }
+  },
+
+  async create(requestData) {
+    // Map our custom request data to the existing custom_designs table structure
+    const mappedData = {
+      user_id: requestData.user_id,
+      design_type: 'custom_request', // Use this to identify custom requests
+      description: requestData.description || '',
+      preferred_colors: requestData.colors || '',
+      size_requirements: requestData.sizes || '',
+      budget: null, // Set budget to null since we're storing the range in special_instructions
+      deadline: requestData.delivery_days ? new Date(Date.now() + requestData.delivery_days * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
+      special_instructions: JSON.stringify({
+        occasion: requestData.occasion,
+        full_name: requestData.full_name,
+        email: requestData.email,
+        phone: requestData.phone,
+        delivery_days: requestData.delivery_days,
+        budget_range: requestData.budget_range // Store the budget range string here
+      }),
+      reference_images: requestData.image_url ? [requestData.image_url] : [],
+      contact_phone: requestData.phone || '',
+      status: 'pending'
+    };
+
+    const { data, error } = await supabase
+      .from('custom_designs')
+      .insert([mappedData])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async updateStatus(requestId, status) {
+    const { data, error } = await supabase
+      .from('custom_designs')
+      .update({ 
+        status,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', requestId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async delete(requestId) {
+    const { error } = await supabase
+      .from('custom_designs')
+      .delete()
+      .eq('id', requestId);
+
     if (error) throw error;
   }
 };
@@ -713,10 +902,48 @@ export const siteSettingsService = {
   }
 };
 
+// Image Upload Service
+const imageUploadService = {
+  async uploadImage(file, folder = 'custom-requests') {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${folder}/${fileName}`;
+
+      // Try to upload the image
+      const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (error) {
+        // If bucket doesn't exist, try to create it
+        if (error.message.includes('bucket') || error.message.includes('not found')) {
+          console.log('Images bucket not found, please create it in Supabase dashboard');
+          // For now, return a placeholder URL
+          return `https://via.placeholder.com/400x300?text=Upload+Image`;
+        }
+        throw error;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      // Return a placeholder URL for now
+      return `https://via.placeholder.com/400x300?text=Upload+Failed`;
+    }
+  }
+};
+
 // Default export that combines all services
 const supabaseService = {
   // Product methods
   getProducts: (filters) => productsService.getAll(filters),
+  getProductsForAdmin: () => productsService.getAll({ includeInactive: true }),
   getFeaturedProducts: () => productsService.getAll({ featured: true }),
   getProductById: (id) => productsService.getById(id),
   createProduct: (product) => productsService.create(product),
@@ -724,7 +951,8 @@ const supabaseService = {
   deleteProduct: (id) => productsService.delete(id),
 
   // Category methods
-  getCategories: () => categoriesService.getAll(),
+  getCategories: (includeInactive = false) => categoriesService.getAll(includeInactive),
+  getCategoriesForAdmin: () => categoriesService.getAll(true),
   createCategory: (category) => categoriesService.create(category),
   updateCategory: (id, updates) => categoriesService.update(id, updates),
   deleteCategory: (id) => categoriesService.delete(id),
@@ -741,11 +969,22 @@ const supabaseService = {
   getUserOrders: (userId) => ordersService.getUserOrders(userId),
   createOrder: (order, orderItems) => ordersService.create(order, orderItems),
   updateOrderStatus: (orderId, status) => ordersService.updateStatus(orderId, status),
+  getOrderDetails: (orderId) => ordersService.getOrderDetails(orderId),
 
   // Wishlist methods
   getWishlist: (userId) => wishlistService.getWishlist(userId),
   addToWishlist: (userId, productId) => wishlistService.addItem(userId, productId),
   removeFromWishlist: (userId, productId) => wishlistService.removeItem(userId, productId),
+
+  // Custom Requests methods
+  getCustomRequests: () => customRequestsService.getAll(),
+  getUserCustomRequests: (userId) => customRequestsService.getUserRequests(userId),
+  createCustomRequest: (requestData) => customRequestsService.create(requestData),
+  updateCustomRequestStatus: (requestId, status) => customRequestsService.updateStatus(requestId, status),
+  deleteCustomRequest: (requestId) => customRequestsService.delete(requestId),
+
+  // Image Upload methods
+  uploadImage: (file, folder) => imageUploadService.uploadImage(file, folder),
 
   // Site settings methods
   getSettings: () => siteSettingsService.getSettings(),

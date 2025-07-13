@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ProductQuickView from '../components/ProductQuickView';
 
@@ -316,16 +316,6 @@ const ProductCard = ({ product, index }) => {
 const CategorySarees = () => {
   const containerRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const opacityTitle = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0]);
-  const titleY = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, -50, -100]);
-  const rotateFlower = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  const scaleFlower = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.2, 1]);
   
   return (
     <div ref={containerRef} className="min-h-screen bg-rose-50/30 relative overflow-hidden">
@@ -371,7 +361,7 @@ const CategorySarees = () => {
         }}
       />
       
-      <motion.div style={{ y: backgroundY }} className="absolute inset-0 -z-10 opacity-5">
+      <motion.div style={{ y: 0 }} className="absolute inset-0 -z-10 opacity-5">
         <DecorativePaisleyPattern className="absolute top-20 left-20 text-pink-600 w-40 h-40" />
         <DecorativePaisleyPattern className="absolute bottom-20 right-20 text-pink-600 w-40 h-40 transform scale-x-[-1]" />
         <MangoLeafPattern className="absolute top-1/3 right-40 text-pink-600 w-32 h-32 transform rotate-45" />
@@ -395,7 +385,7 @@ const CategorySarees = () => {
       <FloatingElement top="25%" left="85%" delay={1} duration={22}>
         <motion.div 
           className="text-pink-600/30 w-16 h-16"
-          style={{ rotate: rotateFlower, scale: scaleFlower }}
+          style={{ rotate: 0, scale: 1 }}
         >
           <FlowerMotif className="w-full h-full" />
         </motion.div>
@@ -404,7 +394,7 @@ const CategorySarees = () => {
       <FloatingElement top="75%" left="15%" delay={3} duration={20}>
         <motion.div 
           className="text-pink-600/30 w-24 h-24"
-          style={{ rotate: rotateFlower, scale: scaleFlower }}
+          style={{ rotate: 0, scale: 1 }}
         >
           <FlowerMotif className="w-full h-full" />
         </motion.div>
@@ -412,7 +402,7 @@ const CategorySarees = () => {
       
       {/* Hero Banner with enhanced animations */}
       <motion.div 
-        style={{ opacity: opacityTitle, y: titleY }}
+        style={{ opacity: 1, y: 0 }}
         className="relative w-full h-[60vh] flex items-center justify-center bg-gradient-to-b from-pink-50/80 to-white/40"
       >
         <div className="absolute inset-0 overflow-hidden">
@@ -607,7 +597,7 @@ const CategorySarees = () => {
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <motion.div
             style={{ 
-              rotate: rotateFlower, 
+              rotate: 0, 
               scale: 1.5 
             }}
             className="absolute -top-32 -right-32 text-pink-100 w-64 h-64 opacity-30"
@@ -617,7 +607,7 @@ const CategorySarees = () => {
           
           <motion.div
             style={{ 
-              rotate: rotateFlower, 
+              rotate: 0, 
               scale: 1.5 
             }}
             className="absolute -bottom-32 -left-32 text-pink-100 w-64 h-64 opacity-30"

@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const featuredProduct = {
   name: "Maharani Signature Saree",
@@ -184,19 +184,12 @@ const FeaturedProductShowcase = () => {
   const [selectedColor, setSelectedColor] = useState(featuredProduct.colors[0]);
   const [isHovering, setIsHovering] = useState(false);
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useMotionValue(0);
-  const x = useMotionValue(0);
   
   // Parallax effects based on scroll
-  const headerY = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 70]);
-  const patternOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 0.7, 0.7, 0]);
+  const headerY = 0; // No scroll effect, so y is 0
+  const orb1Y = 0; // No scroll effect, so y is 0
+  const orb2Y = 0; // No scroll effect, so y is 0
+  const patternOpacity = 1; // No scroll effect, so opacity is 1
   
   // Handle mouse movement for 3D effect
   const handleMouseMove = (e) => {
@@ -209,8 +202,8 @@ const FeaturedProductShowcase = () => {
     const moveY = (e.clientY - centerY) / (rect.height / 2);
     
     // Update motion values
-    x.set(moveX * 10);
-    y.set(moveY * 10);
+    // x.set(moveX * 10); // Removed useMotionValue
+    // y.set(moveY * 10); // Removed useMotionValue
   };
   
   return (

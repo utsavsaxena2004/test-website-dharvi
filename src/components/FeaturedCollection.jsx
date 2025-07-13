@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { supabaseService } from '../services/supabaseService';
+import ProductCard from './ProductCard';
+import ProductQuickView from './ProductQuickView';
 
 const FeaturedCollection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
@@ -21,6 +25,17 @@ const FeaturedCollection = () => {
 
     fetchFeaturedProducts();
   }, []);
+
+  const openQuickView = (product) => {
+    setSelectedProduct(product);
+    setIsQuickViewOpen(true);
+  };
+
+  const addToCart = (product, event) => {
+    event.stopPropagation();
+    console.log('Adding to cart:', product);
+    // Add cart logic here
+  };
 
   if (loading) {
     return (
@@ -67,42 +82,12 @@ const FeaturedCollection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group"
             >
-              <motion.div 
-                className="relative overflow-hidden"
-                whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="aspect-[3/4] overflow-hidden">
-                  <img
-                    src={product.image_urls?.[0] || 'https://images.unsplash.com/photo-1610189031358-65df716379eb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80'}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center">
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-6 py-2 bg-white text-black hover:bg-[#ba1a5d] hover:text-white transition-colors duration-300"
-                  >
-                    Quick View
-                  </motion.button>
-                </div>
-              </motion.div>
-              <div className="mt-6 text-center px-2">
-                <h3 className="text-lg font-medium text-gray-900 mb-1">{product.name}</h3>
-                <p className="text-[#ba1a5d] font-medium">₹{product.price?.toLocaleString('en-IN') || 'Price on request'}</p>
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-4 w-full py-2 border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300"
-                >
-                  Add to Cart
-                </motion.button>
-              </div>
+              <ProductCard
+                product={product}
+                onQuickView={openQuickView}
+                onAddToCart={addToCart}
+              />
             </motion.div>
           ))}
         </div>
@@ -122,6 +107,15 @@ const FeaturedCollection = () => {
           </a>
         </motion.div>
       </div>
+
+      {/* Quick View Modal */}
+      {isQuickViewOpen && selectedProduct && (
+        <ProductQuickView
+          product={selectedProduct}
+          isOpen={isQuickViewOpen}
+          onClose={() => setIsQuickViewOpen(false)}
+        />
+      )}
     </section>
   );
 };

@@ -1,5 +1,5 @@
-import { motion, useAnimation, useScroll, useTransform } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLongRightIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
@@ -8,14 +8,6 @@ const CustomDesignShowcase = () => {
   const constraintsRef = useRef(null);
   const sectionRef = useRef(null);
   const controls = useAnimation();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [100, 0, 0, -100]);
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8]);
   
   useEffect(() => {
     const reveal = async () => {
@@ -79,7 +71,7 @@ const CustomDesignShowcase = () => {
   return (
     <motion.section 
       ref={sectionRef}
-      style={{ opacity, scale }}
+      style={{ opacity: 1, scale: 1 }}
       className="py-20 bg-gradient-to-b from-white to-gray-50 overflow-hidden relative"
     >
       {/* Background decorative elements */}

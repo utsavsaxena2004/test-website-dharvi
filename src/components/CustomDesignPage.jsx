@@ -1,6 +1,12 @@
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon, PaperClipIcon, CheckCircleIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../contexts/AuthContext';
+import supabaseService from '../services/supabaseService';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '../hooks/use-toast.jsx';
+import { useFormAutoSave } from '../hooks/useRouteState';
+import statePersistence from '../utils/statePersistence';
 
 // Decorative SVG Elements
 const DecorativePattern = () => (
@@ -34,27 +40,113 @@ const CustomDesignPage = () => {
   const [activeStep, setActiveStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
-  const fileInputRef = useRef(null);
-  const pageRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: pageRef,
-    offset: ["start start", "end start"]
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    occasion: '',
+    budget: '',
+    delivery_days: '',
+    description: '',
+    full_name: '',
+    email: '',
+    phone: ''
   });
   
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const headerY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
+  const fileInputRef = useRef(null);
+  const pageRef = useRef(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Use form auto-save hook
+  const { clearSavedData } = useFormAutoSave('custom_design_form', formData, setFormData, {
+    excludeFields: ['email'], // Don't auto-save email as it comes from user profile
+    autoSaveDelay: 2000 // Save after 2 seconds of inactivity
+  });
   
   const steps = [
     { id: 1, name: 'Upload Design' },
     { id: 2, name: 'Requirements' },
     { id: 3, name: 'Finish' }
   ];
+
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
+  // Load saved step and image data
+  useEffect(() => {
+    const savedStep = statePersistence.loadCustomDesignStep();
+    const savedImage = statePersistence.loadCustomDesignImage();
+    
+    if (savedStep) {
+      setActiveStep(savedStep);
+    }
+    
+    if (savedImage) {
+      setImagePreview(savedImage.preview);
+      // Note: Can't restore actual file object, user would need to re-upload
+    }
+  }, []);
+
+  // Save step whenever it changes
+  useEffect(() => {
+    statePersistence.saveCustomDesignStep(activeStep);
+  }, [activeStep]);
+
+  // Save image data whenever it changes
+  useEffect(() => {
+    if (imagePreview) {
+      statePersistence.saveCustomDesignImage({
+        preview: imagePreview,
+        timestamp: Date.now()
+      });
+    }
+  }, [imagePreview]);
+
+  // Pre-fill user data if available (but don't override saved data)
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        full_name: prev.full_name || user.user_metadata?.full_name || '',
+        email: user.email || '', // Always use current user email
+        phone: prev.phone || user.user_metadata?.phone || ''
+      }));
+    }
+  }, [user]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
   
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError('File size must be less than 10MB');
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file');
+        return;
+      }
+      
+      setSelectedFile(file);
+      setError('');
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -80,6 +172,22 @@ const CustomDesignPage = () => {
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
+      
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError('File size must be less than 10MB');
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file');
+        return;
+      }
+      
+      setSelectedFile(file);
+      setError('');
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -87,21 +195,133 @@ const CustomDesignPage = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const validateForm = () => {
+    const errors = [];
+    
+    if (!formData.occasion) errors.push('Please select an occasion');
+    if (!formData.budget) errors.push('Please select a budget range');
+    if (!formData.delivery_days || formData.delivery_days < 1) errors.push('Please enter valid delivery days (minimum 1 day)');
+    if (!formData.full_name.trim()) errors.push('Please enter your full name');
+    if (!formData.email.trim()) errors.push('Please enter your email');
+    if (!formData.phone.trim()) errors.push('Please enter your phone number');
+    
+    if (errors.length > 0) {
+      setError(errors.join(', '));
+      return false;
+    }
+    
+    return true;
+  };
   
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // In a real application, you would handle the form submission here
-    setFormSubmitted(true);
-    nextStep();
+  const submitCustomRequest = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      // Validation
+      if (!selectedFile && !imagePreview) {
+        setError('Please upload a design image');
+        return;
+      }
+
+      if (!formData.full_name || !formData.email || !formData.phone) {
+        setError('Please fill in all required fields');
+        return;
+      }
+
+      // Upload image if needed
+      let imageUrl = null;
+      if (selectedFile) {
+        try {
+          imageUrl = await supabaseService.uploadImage(selectedFile, 'custom-designs');
+        } catch (uploadError) {
+          console.error('Image upload error:', uploadError);
+          setError('Failed to upload image. Please try again.');
+          return;
+        }
+      }
+
+      // Prepare custom request data
+      const requestData = {
+        description: formData.description || '',
+        preferred_colors: '', // You can add this field to the form
+        size_requirements: '', // You can add this field to the form
+        deadline: null, // You can add this field to the form
+        contact_phone: formData.phone,
+        reference_images: imageUrl ? [imageUrl] : [],
+        status: 'pending',
+        special_instructions: JSON.stringify({
+          occasion: formData.occasion,
+          budget_range: formData.budget,
+          delivery_days: formData.delivery_days,
+          full_name: formData.full_name,
+          email: formData.email,
+          phone: formData.phone
+        })
+      };
+
+      await supabaseService.createCustomRequest(requestData);
+      
+      // Clear all saved data on successful submission
+      clearSavedData();
+      statePersistence.clearCustomDesignForm();
+      
+      setFormSubmitted(true);
+      nextStep();
+      
+      toast({
+        title: 'Custom request submitted!',
+        description: 'Your custom design request has been submitted. We will contact you shortly.',
+      });
+    } catch (error) {
+      console.error('Error submitting custom request:', error);
+      setError('Failed to submit request. Please try again.');
+      toast({
+        title: 'Submission failed',
+        description: 'Failed to submit your custom design request. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   
   const nextStep = () => {
+    if (activeStep === 1 && !selectedFile) {
+      setError('Please upload a design image first');
+      return;
+    }
     setActiveStep(prev => Math.min(prev + 1, 3));
+    setError('');
   };
   
   const prevStep = () => {
     setActiveStep(prev => Math.max(prev - 1, 1));
+    setError('');
   };
+
+  // Show login required message if not authenticated
+  if (!user) {
+    return (
+      <motion.div 
+        className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h2>
+          <p className="text-gray-600 mb-6">Please log in to submit a custom design request.</p>
+          <button
+            onClick={() => navigate('/login')}
+            className="bg-pink text-white px-6 py-3 rounded-lg hover:bg-pink/90 transition-colors"
+          >
+            Go to Login
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
 
   // Animation variants
   const fadeIn = {
@@ -134,10 +354,30 @@ const CustomDesignPage = () => {
       <FloatingOrb delay={2} size="250px" top="80%" left="15%" opacity={0.2} duration={18} />
       
       <div className="max-w-5xl mx-auto relative z-10">
+        {/* Error Display */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4"
+          >
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Enhanced Page Header */}
         <motion.div 
           className="text-center mb-16"
-          style={{ opacity: headerOpacity, y: headerY }}
+          style={{ opacity: 0, y: 0 }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -235,7 +475,7 @@ const CustomDesignPage = () => {
             >
               <span className="text-sm font-medium text-gray-500 bg-white px-4 py-1 rounded-full shadow-sm border border-gray-100">
                 {activeStep === 1 ? "Let's get started" : activeStep === 2 ? "Almost there" : "Complete!"}
-                        </span>
+              </span>
             </motion.div>
             
             {/* Progress track with perfectly aligned steps */}
@@ -380,7 +620,7 @@ const CustomDesignPage = () => {
                             </>
                           )}
                         </motion.div>
-                    </div>
+                      </div>
                       
                       {/* Step name with enhanced styling and animations */}
                       <div className="mt-3 text-center px-1">
@@ -407,7 +647,7 @@ const CustomDesignPage = () => {
                             />
                           )}
                         </motion.div>
-                    </div>
+                      </div>
                       
                       {/* Step details on hover */}
                       <motion.div
@@ -434,8 +674,8 @@ const CustomDesignPage = () => {
                     </motion.div>
                   );
                 })}
-                    </div>
-        </div>
+              </div>
+            </div>
         
             {/* Mini help tooltip */}
             <motion.div 
@@ -487,7 +727,7 @@ const CustomDesignPage = () => {
                     </label>
                     
                     <div 
-                      className={`relative mt-1 flex flex-col justify-center px-6 pt-8 pb-10 border-2 ${dragActive ? 'border-pink bg-pink/5' : 'border-dashed'} rounded-xl h-80 ${imagePreview ? 'border-pink/30 bg-pink/5' : 'border-gray-300 hover:border-pink/30 bg-gray-50/80'} transition-all duration-300`}
+                      className={`relative mt-1 flex flex-col justify-center px-6 pt-8 pb-10 border-2 ${dragActive ? 'border-pink bg-pink/5' : 'border-dashed'} rounded-xl h-80 ${imagePreview ? 'border-pink/30 bg-pink/5' : 'border-gray-300 hover:border-pink/30 bg-gray-50/80'} transition-all duration-300 cursor-pointer`}
                       onClick={() => fileInputRef.current.click()}
                       onDragEnter={handleDrag}
                       onDragLeave={handleDrag}
@@ -533,6 +773,7 @@ const CustomDesignPage = () => {
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setImagePreview(null);
+                                setSelectedFile(null);
                               }}
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
@@ -552,18 +793,18 @@ const CustomDesignPage = () => {
                             >
                               <svg
                                 className="h-12 w-12 text-pink/70"
-                              stroke="currentColor"
-                              fill="none"
-                              viewBox="0 0 48 48"
-                              aria-hidden="true"
-                            >
-                              <path
-                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                                stroke="currentColor"
+                                fill="none"
+                                viewBox="0 0 48 48"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                  strokeWidth={2}
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
                             </motion.div>
                             
                             <div className="flex flex-col items-center text-center">
@@ -662,8 +903,8 @@ const CustomDesignPage = () => {
                           <div className="flex-shrink-0">
                             <div className="flex items-center justify-center h-6 w-6 rounded-full bg-pink/10">
                               <svg className="h-4 w-4 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
                             </div>
                           </div>
                           <p className="ml-3 text-gray-600">{item}</p>
@@ -692,20 +933,20 @@ const CustomDesignPage = () => {
                 <motion.button
                   type="button"
                   onClick={nextStep}
-                  disabled={!imagePreview}
+                  disabled={!selectedFile}
                   className={`flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-xl shadow-md ${
-                    imagePreview 
+                    selectedFile 
                       ? 'bg-gradient-to-r from-pink to-pink/90 text-white hover:shadow-lg' 
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   } transition-all duration-300`}
-                  whileHover={imagePreview ? { scale: 1.03 } : {}}
-                  whileTap={imagePreview ? { scale: 0.98 } : {}}
+                  whileHover={selectedFile ? { scale: 1.03 } : {}}
+                  whileTap={selectedFile ? { scale: 0.98 } : {}}
                 >
                   Next Step
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </motion.button>
               </motion.div>
-              </div>
+            </div>
           )}
           
           {/* Step 2: Requirements */}
@@ -718,57 +959,85 @@ const CustomDesignPage = () => {
             >
               <h2 className="text-xl font-semibold mb-6">Tell Us About Your Requirements</h2>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={(e) => {
+                  e.preventDefault();
+                  submitCustomRequest();
+                }} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="occasion" className="block text-sm font-medium text-gray-700 mb-2">
-                      Occasion
+                      Occasion *
                     </label>
                     <select
                       id="occasion"
                       name="occasion"
+                      value={formData.occasion}
+                      onChange={handleInputChange}
                       className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink focus:border-pink rounded-md"
-                      defaultValue=""
+                      required
                     >
-                      <option value="" disabled>Select occasion</option>
-                      <option>Wedding</option>
-                      <option>Festival</option>
-                      <option>Corporate Event</option>
-                      <option>Casual Wear</option>
-                      <option>Formal Event</option>
-                      <option>Other</option>
+                      <option value="">Select occasion</option>
+                      <option value="Wedding">Wedding</option>
+                      <option value="Festival">Festival</option>
+                      <option value="Corporate Event">Corporate Event</option>
+                      <option value="Casual Wear">Casual Wear</option>
+                      <option value="Formal Event">Formal Event</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
                   
                   <div>
                     <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
-                      Budget Range (₹)
+                      Budget Range (₹) *
                     </label>
                     <select
                       id="budget"
                       name="budget"
+                      value={formData.budget}
+                      onChange={handleInputChange}
                       className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-pink focus:border-pink rounded-md"
-                      defaultValue=""
+                      required
                     >
-                      <option value="" disabled>Select budget range</option>
-                      <option>₹2,000 - ₹5,000</option>
-                      <option>₹5,000 - ₹10,000</option>
-                      <option>₹10,000 - ₹20,000</option>
-                      <option>₹20,000 - ₹50,000</option>
-                      <option>Above ₹50,000</option>
+                      <option value="">Select budget range</option>
+                      <option value="₹2,000 - ₹5,000">₹2,000 - ₹5,000</option>
+                      <option value="₹5,000 - ₹10,000">₹5,000 - ₹10,000</option>
+                      <option value="₹10,000 - ₹20,000">₹10,000 - ₹20,000</option>
+                      <option value="₹20,000 - ₹50,000">₹20,000 - ₹50,000</option>
+                      <option value="Above ₹50,000">Above ₹50,000</option>
                     </select>
                   </div>
                   
-                  <div className="md:col-span-2">
+                  <div>
+                    <label htmlFor="delivery_days" className="block text-sm font-medium text-gray-700 mb-2">
+                      How many days do you need this dress? *
+                    </label>
+                    <input
+                      type="number"
+                      id="delivery_days"
+                      name="delivery_days"
+                      value={formData.delivery_days}
+                      onChange={handleInputChange}
+                      min="1"
+                      max="365"
+                      className="shadow-sm focus:ring-pink focus:border-pink block w-full sm:text-sm border-gray-300 rounded-md"
+                      placeholder="Enter number of days"
+                      required
+                    />
+                    <p className="mt-1 text-xs text-gray-500">Minimum 1 day, typical range is 7-30 days</p>
+                  </div>
+                  
+                  <div>
                     <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                      Additional Details
+                      Special Instructions (Optional)
                     </label>
                     <textarea
                       id="description"
                       name="description"
-                      rows={4}
+                      rows={3}
+                      value={formData.description}
+                      onChange={handleInputChange}
                       className="shadow-sm focus:ring-pink focus:border-pink block w-full sm:text-sm border-gray-300 rounded-md"
-                      placeholder="Please provide any specific details about your design preferences, modifications, or special requirements..."
+                      placeholder="Any specific details about your design preferences, modifications, or special requirements..."
                     />
                   </div>
                 </div>
@@ -778,38 +1047,47 @@ const CustomDesignPage = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
+                      <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name *
                       </label>
                       <input
                         type="text"
-                        id="name"
-                        name="name"
+                        id="full_name"
+                        name="full_name"
+                        value={formData.full_name}
+                        onChange={handleInputChange}
                         className="shadow-sm focus:ring-pink focus:border-pink block w-full sm:text-sm border-gray-300 rounded-md"
+                        required
                       />
                     </div>
                     
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
+                        Email Address *
                       </label>
                       <input
                         type="email"
                         id="email"
                         name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         className="shadow-sm focus:ring-pink focus:border-pink block w-full sm:text-sm border-gray-300 rounded-md"
+                        required
                       />
                     </div>
                     
                     <div>
                       <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                        Phone Number
+                        Phone Number *
                       </label>
                       <input
                         type="tel"
                         id="phone"
                         name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         className="shadow-sm focus:ring-pink focus:border-pink block w-full sm:text-sm border-gray-300 rounded-md"
+                        required
                       />
                     </div>
                   </div>
@@ -826,9 +1104,20 @@ const CustomDesignPage = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm bg-pink text-white hover:bg-pink/90"
+                    disabled={loading}
+                    className="flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm bg-pink text-white hover:bg-pink/90 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Submit Request
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Request'
+                    )}
                   </button>
                 </div>
               </form>
@@ -838,10 +1127,10 @@ const CustomDesignPage = () => {
           {/* Step 3: Enhanced Confirmation */}
           {activeStep === 3 && (
             <div className="p-6 sm:p-10">
-            <motion.div 
+              <motion.div 
                 className="text-center max-w-2xl mx-auto"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
                 <motion.div
@@ -875,7 +1164,7 @@ const CustomDesignPage = () => {
                     >
                       <CheckCircleIcon className="h-12 w-12 text-white" />
                     </motion.div>
-              </div>
+                  </div>
                 </motion.div>
                 
                 <motion.h2 
@@ -895,7 +1184,7 @@ const CustomDesignPage = () => {
                 >
                   Our design team has received your custom outfit request. We'll contact you within 
                   <span className="font-medium"> 24-48 hours </span> 
-                  to discuss your design in detail.
+                  to discuss your design in detail and confirm the delivery timeline of {formData.delivery_days} days.
                 </motion.p>
                 
                 <motion.div 
@@ -1006,18 +1295,18 @@ const CustomDesignPage = () => {
                   transition={{ delay: 1.4, duration: 0.6 }}
                 >
                   <motion.a
-                  href="/"
+                    href="/"
                     className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-xl shadow-md bg-pink text-white hover:bg-pink/90 transition-all duration-300"
                     whileHover={{ scale: 1.03, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" }}
                     whileTap={{ scale: 0.98 }}
-                >
-                  Return to Homepage
+                  >
+                    Return to Homepage
                   </motion.a>
                   
                   <div className="text-gray-500 text-sm">
                     Have questions? Email us at <a href="mailto:support@dharika.com" className="text-pink hover:underline">support@dharika.com</a>
-              </div>
-            </motion.div>
+                  </div>
+                </motion.div>
               </motion.div>
             </div>
           )}

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabaseService } from '../services/supabaseService';
 import ProductQuickView from './ProductQuickView';
+import ProductCard from './ProductCard';
 
 const DynamicProductCollection = ({ 
   categorySlug, 
@@ -163,77 +164,12 @@ const DynamicProductCollection = ({
             <motion.div
               key={product.id}
               variants={itemVariants}
-              className="group cursor-pointer"
-              onClick={() => openQuickView(product)}
             >
-              <div className="relative overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300">
-                {/* Product Image */}
-                <div className="relative h-80 overflow-hidden">
-                  <img
-                    src={product.image_urls?.[0] || '/placeholder-product.jpg'}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {product.featured && (
-                      <span className="bg-[#ba1a5d] text-white px-2 py-1 rounded-full text-xs font-medium">
-                        Featured
-                      </span>
-                    )}
-                    {product.discount && (
-                      <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                        Sale
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                  
-                  {/* Quick actions */}
-                  <div className="absolute bottom-4 left-4 right-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <button
-                      onClick={(e) => addToCart(product, e)}
-                      className="w-full bg-white text-gray-900 py-2 px-4 rounded-md font-medium hover:bg-gray-100 transition-colors duration-200"
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-
-                {/* Product Info */}
-                <div className="p-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2 group-hover:text-[#ba1a5d] transition-colors duration-200">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {product.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-[#ba1a5d]">
-                      ₹{product.price?.toLocaleString('en-IN')}
-                    </span>
-                    {product.colors && product.colors.length > 0 && (
-                      <div className="flex space-x-1">
-                        {product.colors.slice(0, 3).map((color, colorIndex) => (
-                          <div
-                            key={colorIndex}
-                            className="w-4 h-4 rounded-full border border-gray-300"
-                            style={{ backgroundColor: color }}
-                          ></div>
-                        ))}
-                        {product.colors.length > 3 && (
-                          <span className="text-xs text-gray-500 ml-1">
-                            +{product.colors.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <ProductCard
+                product={product}
+                onQuickView={openQuickView}
+                onAddToCart={addToCart}
+              />
             </motion.div>
           ))}
         </motion.div>

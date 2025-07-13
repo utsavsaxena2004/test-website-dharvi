@@ -1,400 +1,601 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { supabaseService } from '../services/supabaseService';
-import { useToast } from '../hooks/use-toast';
-
-// Import our new components
-import { 
-  ColorfulOrbs, 
-  PaislayPattern, 
-  WishlistDecorativeBorder, 
-  TiltCard,
-  ShimmerButton
-} from '../components/WishlistAnimation';
-import WishlistStats from '../components/WishlistStats';
+import { useWishlist } from '../contexts/WishlistContext';
+import { useCart } from '../contexts/CartContext';
 import WishlistShare from '../components/WishlistShare';
-import WishlistConfetti from '../components/WishlistConfetti';
 
-const Wishlist = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [wishlistItems, setWishlistItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [removing, setRemoving] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [showStats, setShowStats] = useState(false);
-  const [showShare, setShowShare] = useState(false);
-  const [isGridView, setIsGridView] = useState(true);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const containerRef = useRef(null);
+const LuxuryPattern = () => (
+  <svg className="absolute inset-0 w-full h-full opacity-[0.02] pointer-events-none" viewBox="0 0 100 100">
+    <pattern id="luxury-pattern" patternUnits="userSpaceOnUse" width="20" height="20">
+      <path d="M10,0 L20,10 L10,20 L0,10 Z" fill="currentColor" />
+    </pattern>
+    <rect width="100%" height="100%" fill="url(#luxury-pattern)" />
+  </svg>
+);
+
+const GoldenAccent = ({ className }) => (
+  <svg className={`${className} text-amber-500`} viewBox="0 0 100 100">
+    <defs>
+      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#f59e0b" />
+        <stop offset="40%" stopColor="#d1b464" />
+        <stop offset="60%" stopColor="#f5d586" />
+        <stop offset="100%" stopColor="#b47d1f" />
+      </linearGradient>
+    </defs>
+    <path d="M0,50 C25,25 75,25 100,50 C75,75 25,75 0,50 Z" fill="url(#goldGradient)" />
+    </svg>
+);
+
+const WishlistPage = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const [animationCompleted, setAnimationCompleted] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const { wishlistItems, loading, removeFromWishlist, wishlistSummary } = useWishlist();
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    if (user) {
-      fetchWishlistItems();
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
 
-  const fetchWishlistItems = async () => {
-    try {
-      setLoading(true);
-      const data = await supabaseService.getWishlist(user.id);
-      setWishlistItems(data);
-    } catch (error) {
-      console.error('Error fetching wishlist:', error);
-      toast({
-        title: "Error loading wishlist",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
+    window.addEventListener('scroll', handleScroll);
+    
+    // Trigger entrance animation completion
+    const timer = setTimeout(() => {
+      setAnimationCompleted(true);
+    }, 2000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const formatPrice = (price) => {
+    if (typeof price === 'number') {
+      return `₹${price.toLocaleString('en-IN')}`;
     }
+    return price || '₹0';
   };
 
-  const removeFromWishlist = async (productId) => {
+  const handleRemoveItem = async (productId) => {
     try {
-      setRemoving(productId);
-      await supabaseService.removeFromWishlist(user.id, productId);
-      setWishlistItems(items => items.filter(item => item.product_id !== productId));
-      toast({
-        title: "Removed from wishlist",
-        description: "Item has been removed from your wishlist."
-      });
-    } catch (error) {
-      console.error('Error removing from wishlist:', error);
-      toast({
-        title: "Error removing item",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setRemoving(null);
-    }
-  };
-
-  const addToCart = async (product) => {
-    if (!user) {
-      navigate('/auth');
-        return;
-      }
+      await removeFromWishlist(productId);
       
+      // Show success notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-gray-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          Removed from wishlist!
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
+  };
+
+  const handleAddToCart = async (product) => {
     try {
-      // In a real implementation, you would add to cart
-      console.log('Adding to cart:', product);
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart.`
-      });
-      navigate('/cart');
+      await addToCart(product, 1);
+      
+      // Show success notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Added to cart successfully!
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast({
-        title: "Error adding to cart",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleBulkRemove = async () => {
-    if (selectedItems.length === 0) return;
-
-    try {
-      await Promise.all(
-        selectedItems.map(productId => 
-          supabaseService.removeFromWishlist(user.id, productId)
-        )
-      );
       
-      setWishlistItems(items => 
-        items.filter(item => !selectedItems.includes(item.product_id))
-      );
-      setSelectedItems([]);
-      
-      toast({
-        title: "Items removed",
-        description: `${selectedItems.length} items removed from wishlist.`
-      });
-    } catch (error) {
-      console.error('Error removing items:', error);
-      toast({
-        title: "Error removing items",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const toggleSelectItem = (productId) => {
-    setSelectedItems(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
-
-  const selectAllItems = () => {
-    setSelectedItems(filteredItems.map(item => item.product_id));
-  };
-
-  const deselectAllItems = () => {
-    setSelectedItems([]);
-  };
-
-  // Filter and search functionality
-  const filteredItems = wishlistItems.filter(item => {
-    const matchesCategory = selectedCategory === 'all' || 
-      item.products?.categories?.slug === selectedCategory;
-    const matchesSearch = item.products?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.products?.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  // Get unique categories for filter
-  const categories = [...new Set(wishlistItems.map(item => item.products?.categories?.slug).filter(Boolean))];
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center p-8 bg-white rounded-2xl shadow-xl border border-rose-100"
-        >
-          <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-serif text-gray-900 mb-4">Sign in to view your wishlist</h2>
-          <p className="text-gray-600 mb-6">Create an account or sign in to save your favorite items.</p>
-          <Link to="/auth">
-            <button className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white px-6 py-3 rounded-md transition-colors duration-300">
-              Sign In
-            </button>
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
-        <div className="container mx-auto px-4 py-16">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-lg p-6">
-                  <div className="h-48 bg-gray-300 rounded mb-4"></div>
-                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                </div>
-              ))}
-            </div>
-          </div>
+      // Show error notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Failed to add to cart. Please try again.
         </div>
-      </div>
-    );
-  }
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  };
+
+  const openShareModal = () => {
+    setIsShareModalOpen(true);
+  };
+
+  const closeShareModal = () => {
+    setIsShareModalOpen(false);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 relative overflow-hidden">
-      {/* Background Elements */}
-      <ColorfulOrbs />
-      <PaislayPattern />
-      
-      {/* Confetti */}
-      {showConfetti && <WishlistConfetti />}
-      
-      {/* Header */}
-      <div className="relative bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] py-16 mb-8">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 bg-[url('/patterns/paisley.svg')] opacity-10"></div>
-        <div className="relative container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center text-white"
-          >
-            <h1 className="text-4xl font-serif font-light mb-2">My Wishlist</h1>
-            <div className="w-24 h-[1px] bg-white/50 mx-auto mb-4"></div>
-            <p className="text-white/90">
-              {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'} saved for later
-            </p>
-        </motion.div>
-        </div>
-      </div>
+    <div className="relative min-h-screen bg-gradient-to-b from-pink-50 to-white overflow-hidden">
+      {/* Luxury background patterns */}
+      <div className="fixed inset-0 pointer-events-none">
+        <LuxuryPattern />
         
-      <div className="container mx-auto px-4 pb-16" ref={containerRef}>
-        {wishlistItems.length === 0 ? (
-            <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-16"
+        <motion.div 
+          className="absolute top-0 -left-40 w-80 h-80 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+          animate={{ 
+            x: [0, 50, 0], 
+            y: [0, 30, 0],
+            scale: [1, 1.1, 1] 
+          }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+        />
+        
+        <motion.div 
+          className="absolute bottom-0 -right-40 w-80 h-80 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+          animate={{ 
+            x: [0, -30, 0], 
+            y: [0, 50, 0],
+            scale: [1, 1.2, 1] 
+          }}
+          transition={{ duration: 25, repeat: Infinity, repeatType: "reverse", delay: 5 }}
+        />
+      </div>
+      
+      {/* Main content */}
+      <div className="relative pt-24 pb-20 px-4 z-10">
+        {/* Elegant gold accents */}
+        <div className="absolute top-0 left-0 right-0 h-32 overflow-hidden pointer-events-none">
+          <GoldenAccent className="absolute -top-24 left-1/2 -translate-x-1/2 w-full max-w-6xl" />
+        </div>
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-white to-transparent pointer-events-none"
+        />
+
+        <div className="container mx-auto max-w-6xl">
+          {/* Luxury header */}
+          <motion.header 
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center mb-16"
           >
-            <div className="w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-12 h-12 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+            <div className="relative inline-block">
+              <motion.h1 
+                className="text-5xl sm:text-6xl md:text-7xl font-serif text-gray-900 tracking-tight"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+            Your Wishlist
+              </motion.h1>
+              
+              <motion.div 
+                className="absolute -bottom-4 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-pink-500 to-transparent"
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 1.2, delay: 0.8 }}
+              />
+              
+            <motion.div 
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-pink-500"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.5 }}
+              />
             </div>
-            <h2 className="text-2xl font-serif text-gray-900 mb-4">Your wishlist is empty</h2>
-            <p className="text-gray-600 mb-8">Start adding items you love to your wishlist!</p>
-            <Link to="/">
-              <button className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white px-8 py-3 rounded-md transition-colors duration-300">
-                Start Shopping
-              </button>
-            </Link>
-          </motion.div>
-        ) : (
-          <>
-            {/* Filters and Controls */}
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
-              <div className="flex flex-wrap items-center gap-4">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
-                >
-                  <option value="all">All Categories</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </option>
-                  ))}
-                </select>
+            
+          <motion.p 
+              className="mt-6 text-gray-600 max-w-2xl mx-auto font-light"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1 }}
+          >
+              Your carefully curated collection of desires. Each piece represents a moment of inspiration, waiting to become part of your story.
+          </motion.p>
+          </motion.header>
 
-                <input
-                  type="text"
-                  placeholder="Search items..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
-                />
-              </div>
-
-              <div className="flex items-center gap-4">
-                {selectedItems.length > 0 && (
-                  <button
-                    onClick={handleBulkRemove}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-300"
-                  >
-                    Remove Selected ({selectedItems.length})
-                  </button>
-                )}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {/* Left column - Wishlist items */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Wishlist items card */}
+        <motion.div 
+                className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
+                initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-400 via-red-400 to-pink-400" />
                 
-                    <button
-                  onClick={selectedItems.length === filteredItems.length ? deselectAllItems : selectAllItems}
-                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-300"
-                >
-                  {selectedItems.length === filteredItems.length ? 'Deselect All' : 'Select All'}
-                    </button>
-              </div>
+                <div className="p-8">
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-serif text-gray-800">Saved Items</h2>
+                    <div className="flex items-center space-x-4">
+                      <span className="text-sm text-gray-400 font-light">
+                        {wishlistSummary.itemCount} {wishlistSummary.itemCount === 1 ? 'Item' : 'Items'}
+                      </span>
+                    </div>
+          </div>
+          
+                  {!isAuthenticated ? (
+                    // Not logged in state
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <motion.div 
+                        className="relative mb-6"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 1 }}
+                      >
+                        <div className="p-8 flex items-center justify-center">
+                          <svg className="w-20 h-20 text-pink-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+          </div>
+        </motion.div>
+        
+                      <motion.h3 
+                        className="text-3xl font-serif text-gray-800 mb-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.2 }}
+                      >
+                        Please Sign In
+                      </motion.h3>
+                      
+                      <motion.p 
+                        className="text-gray-500 mb-10 max-w-md text-center font-light"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.4 }}
+                      >
+                        Sign in to your account to view your wishlist and save your favorite items.
+                      </motion.p>
+                      
+            <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.6 }}
+                      >
+                        <Link 
+                          to="/auth" 
+                          className="inline-flex items-center px-10 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        >
+                          <span className="font-medium">Sign In</span>
+                          <motion.svg 
+                            className="w-5 h-5 ml-2" 
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                          </motion.svg>
+                        </Link>
+                      </motion.div>
+                    </div>
+                  ) : wishlistItems.length === 0 ? (
+                    // Empty wishlist state
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <motion.div 
+                        className="relative mb-6"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 1 }}
+                      >
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-100 to-red-100 animate-pulse" />
+                        
+                        <motion.div 
+                          className="relative z-10 p-8 flex items-center justify-center"
+                          animate={{ rotate: [0, 10, 0, -10, 0] }}
+                          transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+                        >
+                          <svg className="w-20 h-20 text-pink-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </motion.div>
+                        
+                        <motion.div 
+                          className="absolute top-0 left-0 w-full h-full border-4 border-dashed border-pink-200 rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                        />
+                      </motion.div>
+                      
+                      <motion.h3 
+                        className="text-3xl font-serif text-gray-800 mb-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.2 }}
+                      >
+                        Your Wishlist is Empty
+                      </motion.h3>
+                      
+                      <motion.p 
+                        className="text-gray-500 mb-10 max-w-md text-center font-light"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.4 }}
+                      >
+                        Start building your dream collection by adding items you love to your wishlist.
+                      </motion.p>
+                      
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 1.6 }}
+                      >
+                        <Link 
+                          to="/" 
+                          className="inline-flex items-center px-10 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        >
+                          <span className="font-medium">Explore Collections</span>
+                          <motion.svg 
+                            className="w-5 h-5 ml-2" 
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                          </motion.svg>
+                        </Link>
+                      </motion.div>
+                    </div>
+                  ) : (
+                    // Wishlist items
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
+                        <div className="col-span-6">Product</div>
+                        <div className="col-span-2 text-center">Price</div>
+                        <div className="col-span-2 text-center">Actions</div>
+                        <div className="col-span-2 text-right">Remove</div>
                   </div>
                   
-            {/* Items Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredItems.map((item, index) => (
-                <TiltCard key={item.id} index={index}>
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                    <div className="relative">
-                      <img
-                        src={item.products?.image_urls?.[0] || '/placeholder-product.jpg'}
-                        alt={item.products?.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      
-                      {/* Selection checkbox */}
-                      <div className="absolute top-3 left-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedItems.includes(item.product_id)}
-                          onChange={() => toggleSelectItem(item.product_id)}
-                          className="w-4 h-4 text-[#ba1a5d] rounded focus:ring-[#ba1a5d]"
-                        />
+                      <AnimatePresence>
+                        {wishlistItems.map((item) => (
+                          <motion.div
+                            key={item.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="grid grid-cols-12 items-center py-4 border-b border-gray-100"
+                          >
+                            {/* Product Info */}
+                            <div className="col-span-6 flex items-center space-x-4">
+                              <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                                <img
+                                  src={item.products?.image_urls?.[0] || item.products?.image || '/placeholder-image.jpg'}
+                                  alt={item.products?.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div>
+                                <h3 className="font-medium text-gray-900">{item.products?.name}</h3>
+                                <div className="text-sm text-gray-500 space-y-1">
+                                  {item.products?.category_name && <p>Category: {item.products.category_name}</p>}
+                                  {item.products?.description && (
+                                    <p className="line-clamp-2">{item.products.description}</p>
+                                  )}
+                                </div>
+                      </div>
                     </div>
                     
-                      {/* Remove button */}
-                      <button
-                        onClick={() => removeFromWishlist(item.product_id)}
-                        disabled={removing === item.product_id}
-                        className="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center transition-colors duration-200 group"
-                      >
-                        {removing === item.product_id ? (
-                          <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
-                        ) : (
-                          <svg className="w-4 h-4 text-gray-600 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        )}
-                      </button>
+                            {/* Price */}
+                            <div className="col-span-2 text-center">
+                              <span className="font-medium text-gray-900">
+                                {formatPrice(item.products?.price)}
+                              </span>
                     </div>
-
-                    <div className="p-4">
-                      <h3 className="font-medium text-gray-900 mb-2">{item.products?.name}</h3>
-                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">{item.products?.description}</p>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-lg font-bold text-[#ba1a5d]">
-                          ₹{item.products?.price?.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {item.products?.categories?.name}
-                        </span>
-                      </div>
-                      
-                      <div className="flex gap-2">
+                    
+                            {/* Actions */}
+                            <div className="col-span-2 text-center">
                       <button
-                          onClick={() => addToCart(item.products)}
-                          className="flex-1 bg-[#ba1a5d] hover:bg-[#9a1549] text-white py-2 px-4 rounded-md transition-colors duration-300"
-                        >
-                          Add to Cart
+                                onClick={() => handleAddToCart(item.products)}
+                                className="px-4 py-2 bg-[#ba1a5d] text-white rounded-md hover:bg-[#9a1549] transition-colors duration-300 text-sm"
+                              >
+                                Add to Cart
                       </button>
-                        <Link
-                          to={`/product/${item.products?.id}`}
-                          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-300"
+                            </div>
+                      
+                            {/* Remove */}
+                            <div className="col-span-2 text-right">
+                      <button
+                                onClick={() => handleRemoveItem(item.product_id)}
+                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors duration-300"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                      </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                  </div>
+              </motion.div>
+              
+              {/* Back to shopping */}
+              <motion.div
+                className="mt-6 text-center md:text-left"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+              >
+                <Link to="/">
+                  <motion.button
+                    whileHover={{ x: -4 }}
+                    className="inline-flex items-center text-pink-600 font-medium group"
+                  >
+                    <svg className="w-4 h-4 mr-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                    Continue Exploring
+                  </motion.button>
+                </Link>
+              </motion.div>
+            </div>
+            
+            {/* Right column - Wishlist summary */}
+            <div className="space-y-8">
+            <motion.div
+                className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 relative"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 -mr-16 -mt-16 bg-gradient-to-br from-pink-100 to-red-100 rounded-full opacity-60" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 -ml-12 -mb-12 bg-gradient-to-tr from-pink-100 to-red-100 rounded-full opacity-60" />
+                
+                <div className="p-8 relative">
+                  <h3 className="text-2xl font-serif text-gray-800 mb-6">Wishlist Summary</h3>
+                  
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-center space-x-4 mb-8">
+                      <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                      <div className="w-2 h-2 rounded-full bg-pink-500" />
+                      <div className="flex-grow h-px bg-gradient-to-r from-gray-200 via-gray-200 to-transparent" />
+                    </div>
+                    
+                    <div className="flex justify-between text-gray-600">
+                      <span>Total Items</span>
+                      <span className="font-medium text-gray-800">{wishlistSummary.itemCount}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-gray-600">
+                      <span>Total Value</span>
+                      <span className="font-medium text-gray-800">{formatPrice(wishlistSummary.totalValue)}</span>
+                    </div>
+                    
+                    <div className="pt-4 mt-4 border-t border-dashed border-gray-200">
+                      <div className="flex justify-between">
+                        <span className="text-lg text-gray-800">Your Collection</span>
+                        <motion.span 
+                          className="text-xl font-serif text-pink-600"
+                          initial={{ scale: 1 }}
+                          whileHover={{ scale: 1.05 }}
                         >
-                          View
-                        </Link>
+                          {wishlistSummary.itemCount} {wishlistSummary.itemCount === 1 ? 'Item' : 'Items'}
+                        </motion.span>
                       </div>
+                    </div>
+                    </div>
+                    
+                  <motion.button
+                    onClick={!isAuthenticated || wishlistItems.length === 0 ? undefined : openShareModal}
+                    disabled={!isAuthenticated || wishlistItems.length === 0}
+                    className={`w-full py-4 rounded-full font-medium relative overflow-hidden transition-all duration-300 ${
+                      !isAuthenticated || wishlistItems.length === 0
+                        ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-white cursor-not-allowed'
+                        : 'bg-gradient-to-r from-pink-500 to-red-500 text-white hover:from-pink-600 hover:to-red-600'
+                    }`}
+                    whileHover={!isAuthenticated || wishlistItems.length === 0 ? {} : { scale: 1.02 }}
+                    whileTap={!isAuthenticated || wishlistItems.length === 0 ? {} : { scale: 0.98 }}
+                  >
+                    <span className="relative z-10 flex items-center justify-center">
+                      {!isAuthenticated ? 'Sign In to Save Items' : wishlistItems.length === 0 ? 'Add Items to Wishlist' : (
+                        <>
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                          </svg>
+                          Share Wishlist
+                        </>
+                      )}
+                    </span>
+                  </motion.button>
+                  
+                  <div className="flex justify-center mt-4">
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      Save for Later
                     </div>
                   </div>
-                </TiltCard>
-              ))}
-            </div>
-
-            {filteredItems.length === 0 && (
-              <div className="text-center py-16">
-                <h3 className="text-xl font-serif text-gray-900 mb-4">No items found</h3>
-                <p className="text-gray-600">Try adjusting your filters or search term.</p>
                 </div>
-            )}
-          </>
-          )}
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Floating decoration elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <motion.div 
+          className="absolute top-1/3 left-10 w-2 h-2 rounded-full bg-pink-500"
+          animate={{ 
+            scale: [1, 1.5, 1],
+            opacity: [0.5, 1, 0.5]
+          }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        
+        <motion.div 
+          className="absolute top-2/3 right-10 w-3 h-3 rounded-full bg-red-500"
+          animate={{ 
+            scale: [1, 1.8, 1],
+            opacity: [0.3, 0.8, 0.3]
+          }}
+          transition={{ duration: 5, repeat: Infinity, delay: 1 }}
+        />
+        
+        <motion.div 
+          className="absolute bottom-20 left-1/2 w-2 h-2 rounded-full bg-pink-500"
+          animate={{ 
+            scale: [1, 2, 1],
+            opacity: [0.4, 0.9, 0.4]
+          }}
+          transition={{ duration: 6, repeat: Infinity, delay: 2 }}
+        />
       </div>
 
-      {/* Stats Modal */}
-      <WishlistStats 
-        isOpen={showStats} 
-        onClose={() => setShowStats(false)} 
-        items={wishlistItems} 
-      />
-
-      {/* Share Modal */}
-      <WishlistShare 
-        isOpen={showShare} 
-        onClose={() => setShowShare(false)} 
-        items={wishlistItems} 
-      />
+      {/* Wishlist Share Modal */}
+      <AnimatePresence>
+        {isShareModalOpen && (
+          <div onClick={closeShareModal}>
+            <WishlistShare 
+              isOpen={isShareModalOpen}
+              onClose={closeShareModal}
+              position="fixed"
+            />
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-export default Wishlist; 
+export default WishlistPage; 

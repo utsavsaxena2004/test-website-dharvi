@@ -1,5 +1,5 @@
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 
 // Enhanced high-quality images
 const slideImages = [
@@ -88,14 +88,14 @@ const EnhancedHero = () => {
   const heroRef = useRef(null);
   
   // Enhanced parallax scroll effect with framer-motion
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
+  // const { scrollYProgress } = useScroll({
+  //   target: heroRef,
+  //   offset: ["start start", "end start"]
+  // });
   
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, 100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  // const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  // const contentY = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  // const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   
   const resetTimeout = () => {
     if (timeoutRef.current) {
@@ -154,7 +154,7 @@ const EnhancedHero = () => {
       {/* Parallax Background Images with elegant animations */}
       <motion.div 
         className="absolute inset-0 bg-black"
-        style={{ y: backgroundY }}
+        // style={{ y: backgroundY }}
       >
         {/* Preload all images to prevent flickering */}
         <div className="hidden">
@@ -411,7 +411,7 @@ const EnhancedHero = () => {
       {/* Enhanced Content with Layered Animations */}
       <motion.div 
         className="absolute inset-0 z-20 flex items-center justify-center"
-        style={{ opacity, y: contentY }}
+        // style={{ opacity, y: contentY }}
       >
         <div className="max-w-6xl mx-auto px-4 text-center text-white">
           <AnimatePresence mode="sync">

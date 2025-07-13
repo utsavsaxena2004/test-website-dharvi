@@ -20,6 +20,7 @@
     "clsx": "^2.1.1",
     "lovable-tagger": "^1.1.8",
     "lucide-react": "^0.525.0",
+    "razorpay": "^2.9.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-wheel-of-prizes": "^1.1.0",

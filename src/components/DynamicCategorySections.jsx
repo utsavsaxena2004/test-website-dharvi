@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabaseService } from '../services/supabaseService';
 import DynamicCategorySection from './DynamicCategorySection';
 
-const DynamicCategorySections = ({ showCount = 6 }) => {
+const DynamicCategorySections = ({ showCount = 4 }) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,7 @@ const DynamicCategorySections = ({ showCount = 6 }) => {
               <div className="animate-pulse">
                 <div className="h-12 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
                 <div className="h-4 bg-gray-300 rounded w-96 mx-auto mb-16"></div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {Array.from({ length: showCount }).map((_, i) => (
                     <div key={i}>
                       <div className="h-80 bg-gray-300 rounded mb-4"></div>
@@ -64,7 +64,7 @@ const DynamicCategorySections = ({ showCount = 6 }) => {
         <DynamicCategorySection 
           key={category.id} 
           category={category} 
-          showCount={showCount}
+          limit={showCount}
         />
       ))}
     </div>

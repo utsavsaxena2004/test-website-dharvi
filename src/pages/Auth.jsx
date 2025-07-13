@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import statePersistence from '../utils/statePersistence';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +17,30 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+
+  // Load saved form data on mount
+  useEffect(() => {
+    const savedData = statePersistence.loadAuthForm();
+    if (savedData) {
+      setFormData(prev => ({
+        ...prev,
+        ...savedData,
+        password: '' // Never restore password
+      }));
+    }
+  }, []);
+
+  // Save form data when it changes (except password)
+  useEffect(() => {
+    statePersistence.saveAuthForm(formData);
+  }, [formData]);
+
+  // Clear saved data on successful authentication
+  useEffect(() => {
+    if (user) {
+      statePersistence.clearAuthForm();
+    }
+  }, [user]);
 
   // Redirect if already authenticated
   useEffect(() => {

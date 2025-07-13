@@ -1,6 +1,5 @@
-import { useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import ProductQuickView from '../components/ProductQuickView';
 
@@ -171,8 +170,8 @@ const FloatingElement = ({ children, delay = 0, duration = 20, top, left, scale 
 );
 
 const ParallaxDiamond = ({ scrollYProgress, intensity = 100, className }) => {
-  const y = useTransform(scrollYProgress, [0, 1], [0, intensity]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.5, 0.8, 1], [0.2, 0.6, 1, 0.6, 0.2]);
+  const y = scrollYProgress * intensity;
+  const opacity = scrollYProgress;
   
   return (
     <motion.div 
@@ -333,16 +332,25 @@ const CategorySuits = () => {
   const containerRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
+  const [scrollYProgress, setScrollYProgress] = useState(0);
+
+  useEffect(() => {
+    const updateScrollProgress = () => {
+      if (containerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+        setScrollYProgress(scrollTop / (scrollHeight - clientHeight));
+      }
+    };
+
+    containerRef.current.addEventListener('scroll', updateScrollProgress);
+    return () => containerRef.current.removeEventListener('scroll', updateScrollProgress);
+  }, []);
   
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const parallaxFactor = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
-  const opacityTitle = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0]);
-  const titleY = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, -50, -100]);
-  const rotateGeo = useTransform(scrollYProgress, [0, 1], [0, 45]);
+  const backgroundY = scrollYProgress * 200;
+  const parallaxFactor = scrollYProgress * 1.5 + 1;
+  const opacityTitle = scrollYProgress * 0.3;
+  const titleY = scrollYProgress * -100;
+  const rotateGeo = scrollYProgress * 45;
   
   return (
     <div ref={containerRef} className="min-h-screen bg-indigo-50/30 relative overflow-hidden">

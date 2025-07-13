@@ -1,6 +1,5 @@
-import { useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import ProductQuickView from '../components/ProductQuickView';
 
@@ -342,16 +341,25 @@ const ProductCard = ({ product, index }) => {
 const CategoryKurtis = () => {
   const containerRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
+  const [scrollYProgress, setScrollYProgress] = useState(0);
+
+  useEffect(() => {
+    const updateScrollProgress = () => {
+      if (containerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+        setScrollYProgress(scrollTop / (scrollHeight - clientHeight));
+      }
+    };
+
+    containerRef.current.addEventListener('scroll', updateScrollProgress);
+    return () => containerRef.current.removeEventListener('scroll', updateScrollProgress);
+  }, []);
   
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const parallaxFactor = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
-  const opacityTitle = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0]);
-  const titleY = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, -50, -100]);
-  const rotateBlock = useTransform(scrollYProgress, [0, 1], [0, 45]);
+  const backgroundY = scrollYProgress * 200;
+  const parallaxFactor = scrollYProgress * 0.5 + 1;
+  const opacityTitle = scrollYProgress < 0.2 ? 1 : (scrollYProgress < 0.3 ? 1 : 0);
+  const titleY = scrollYProgress < 0.2 ? 0 : (scrollYProgress < 0.3 ? -50 : -100);
+  const rotateBlock = scrollYProgress * 45;
   
   return (
     <div ref={containerRef} className="min-h-screen bg-cyan-50/30 relative overflow-hidden">

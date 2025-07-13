@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { supabaseService } from '../services/supabaseService';
 import ProductQuickView from '../components/ProductQuickView';
+import ProductCard from '../components/ProductCard';
+import statePersistence from '../utils/statePersistence';
 
 const DynamicCategoryPage = () => {
   const { categorySlug } = useParams();
@@ -13,15 +15,27 @@ const DynamicCategoryPage = () => {
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [sortBy, setSortBy] = useState('name');
   const [filterBy, setFilterBy] = useState('all');
-  const heroRef = useRef(null);
   
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  // Load saved sort/filter state for this category
+  useEffect(() => {
+    if (categorySlug) {
+      const savedState = statePersistence.loadSortFilterState(categorySlug);
+      if (savedState) {
+        setSortBy(savedState.sortBy || 'name');
+        setFilterBy(savedState.filterBy || 'all');
+      }
+    }
+  }, [categorySlug]);
+
+  // Save sort/filter state whenever it changes
+  useEffect(() => {
+    if (categorySlug) {
+      statePersistence.saveSortFilterState(categorySlug, {
+        sortBy,
+        filterBy
+      });
+    }
+  }, [categorySlug, sortBy, filterBy]);
 
   useEffect(() => {
     const fetchCategoryAndProducts = async () => {
@@ -132,92 +146,11 @@ const DynamicCategoryPage = () => {
     );
   }
 
-  const ProductCard = ({ product, index }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group cursor-pointer"
-      onClick={() => openQuickView(product)}
-    >
-      <div className="relative overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="relative h-80 overflow-hidden">
-          <img
-            src={product.image_urls?.[0] || '/placeholder-product.jpg'}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {product.featured && (
-              <span className="bg-[#ba1a5d] text-white px-2 py-1 rounded-full text-xs font-medium">
-                Featured
-              </span>
-            )}
-            {product.discount && (
-              <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                Sale
-              </span>
-            )}
-          </div>
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
-          
-          {/* Quick actions */}
-          <div className="absolute bottom-4 left-4 right-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-            <button
-              onClick={(e) => addToCart(product, e)}
-              className="w-full bg-white text-gray-900 py-2 px-4 rounded-md font-medium hover:bg-gray-100 transition-colors duration-200"
-            >
-              Add to Cart
-            </button>
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-2 group-hover:text-[#ba1a5d] transition-colors duration-200">
-            {product.name}
-          </h3>
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-            {product.description}
-          </p>
-          <div className="flex items-center justify-between">
-            <span className="text-xl font-bold text-[#ba1a5d]">
-              ₹{product.price?.toLocaleString('en-IN')}
-            </span>
-            {product.colors && product.colors.length > 0 && (
-              <div className="flex space-x-1">
-                {product.colors.slice(0, 3).map((color, colorIndex) => (
-                  <div
-                    key={colorIndex}
-                    className="w-4 h-4 rounded-full border border-gray-300"
-                    style={{ backgroundColor: color }}
-                  ></div>
-                ))}
-                {product.colors.length > 3 && (
-                  <span className="text-xs text-gray-500 ml-1">
-                    +{product.colors.length - 3}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Hero Section */}
       <motion.div 
-        ref={heroRef}
         className="relative h-96 bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] overflow-hidden"
-        style={{ y, opacity }}
       >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute inset-0 bg-[url('/patterns/paisley.svg')] opacity-10"></div>
@@ -260,14 +193,14 @@ const DynamicCategoryPage = () => {
       </div>
 
       {/* Filters and Sort */}
-      <div className="container mx-auto px-4 mb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-6 bg-white rounded-lg shadow-sm">
+      <div className="container mx-auto px-4 py-6 border-b border-gray-200">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
-            <span className="text-gray-700 font-medium">Filter:</span>
-            <select
+            <label className="text-sm font-medium text-gray-700">Filter by:</label>
+            <select 
               value={filterBy}
               onChange={(e) => setFilterBy(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ba1a5d]"
             >
               <option value="all">All Products</option>
               <option value="featured">Featured</option>
@@ -276,11 +209,11 @@ const DynamicCategoryPage = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="text-gray-700 font-medium">Sort by:</span>
-            <select
+            <label className="text-sm font-medium text-gray-700">Sort by:</label>
+            <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ba1a5d]"
             >
               <option value="name">Name</option>
               <option value="price-low">Price: Low to High</option>
@@ -321,7 +254,19 @@ const DynamicCategoryPage = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredAndSortedProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <ProductCard
+                    product={product}
+                    onQuickView={openQuickView}
+                    onAddToCart={addToCart}
+                  />
+                </motion.div>
               ))}
             </div>
           </>
