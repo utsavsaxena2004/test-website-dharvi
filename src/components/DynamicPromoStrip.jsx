@@ -139,22 +139,6 @@ const DynamicPromoStrip = () => {
             </button>
           )}
         </div>
-        
-        {/* Dots indicator */}
-        {promos.length > 1 && (
-          <div className="flex justify-center mt-1 space-x-1">
-            {promos.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentPromoIndex(index)}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
-                  index === currentPromoIndex ? 'bg-white' : 'bg-white/50'
-                }`}
-                aria-label={`Go to promotion ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

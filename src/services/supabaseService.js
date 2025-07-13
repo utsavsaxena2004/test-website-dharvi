@@ -46,6 +46,87 @@ export const productsService = {
     }
   },
 
+  async search(searchQuery, filters = {}) {
+    try {
+      let query = supabase
+        .from('products')
+        .select(`
+          *,
+          categories!products_category_id_fkey (
+            id,
+            name,
+            slug
+          )
+        `)
+        .eq('is_active', true);
+
+      // Search in name, description, and material fields
+      if (searchQuery) {
+        query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,material.ilike.%${searchQuery}%`);
+      }
+
+      // Apply additional filters
+      if (filters.category_id) {
+        query = query.eq('category_id', filters.category_id);
+      }
+
+      if (filters.minPrice) {
+        query = query.gte('price', filters.minPrice);
+      }
+
+      if (filters.maxPrice) {
+        query = query.lte('price', filters.maxPrice);
+      }
+
+      if (filters.colors && filters.colors.length > 0) {
+        query = query.overlaps('colors', filters.colors);
+      }
+
+      if (filters.sizes && filters.sizes.length > 0) {
+        query = query.overlaps('sizes', filters.sizes);
+      }
+
+      // Sort options
+      if (filters.sortBy) {
+        switch (filters.sortBy) {
+          case 'price_low':
+            query = query.order('price', { ascending: true });
+            break;
+          case 'price_high':
+            query = query.order('price', { ascending: false });
+            break;
+          case 'newest':
+            query = query.order('created_at', { ascending: false });
+            break;
+          case 'oldest':
+            query = query.order('created_at', { ascending: true });
+            break;
+          case 'name':
+            query = query.order('name', { ascending: true });
+            break;
+          default:
+            query = query.order('created_at', { ascending: false });
+        }
+      } else {
+        query = query.order('created_at', { ascending: false });
+      }
+
+      const { data, error } = await query;
+      
+      if (error) {
+        console.warn('Error searching products:', error);
+        if (error.code === '42501' || error.message.includes('permission denied')) {
+          return [];
+        }
+        throw error;
+      }
+      return data || [];
+    } catch (error) {
+      console.error('Error in search products:', error);
+      return [];
+    }
+  },
+
   async getById(id) {
     try {
       const { data, error } = await supabase
@@ -949,6 +1030,7 @@ const supabaseService = {
   createProduct: (product) => productsService.create(product),
   updateProduct: (id, updates) => productsService.update(id, updates),
   deleteProduct: (id) => productsService.delete(id),
+  searchProducts: (searchQuery, filters) => productsService.search(searchQuery, filters),
 
   // Category methods
   getCategories: (includeInactive = false) => categoriesService.getAll(includeInactive),

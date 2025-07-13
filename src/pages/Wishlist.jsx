@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCart } from '../contexts/CartContext';
 import WishlistShare from '../components/WishlistShare';
+import FloatingShareButton from '../components/FloatingShareButton';
 
 const LuxuryPattern = () => (
   <svg className="absolute inset-0 w-full h-full opacity-[0.02] pointer-events-none" viewBox="0 0 100 100">
@@ -581,6 +582,9 @@ const WishlistPage = () => {
           transition={{ duration: 6, repeat: Infinity, delay: 2 }}
         />
       </div>
+
+      {/* Floating Share Button */}
+      <FloatingShareButton position="bottom-right" />
 
       {/* Wishlist Share Modal */}
       <AnimatePresence>

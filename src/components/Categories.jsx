@@ -3,11 +3,21 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { supabaseService } from '../services/supabaseService';
 
+// Updated color map to match design template colors
 const colorMap = {
-  'Sarees': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' },
-  'Lehengas': { color: '#B45309', lightColor: 'bg-amber-50/80' },
-  'Suits': { color: '#1a56ba', lightColor: 'bg-blue-50/80' },
-  'Kurtis': { color: '#0F766E', lightColor: 'bg-emerald-50/80' },
+  'Sarees': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }, // Traditional Paisley template
+  'Lehengas': { color: '#B45309', lightColor: 'bg-amber-50/80' }, // Royal Mandala template (amber)
+  'Suits': { color: '#1a56ba', lightColor: 'bg-blue-50/80' }, // Contemporary Floral template
+  'Kurtis': { color: '#0F766E', lightColor: 'bg-emerald-50/80' }, // Elegant Geometric template
+  'default': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }
+};
+
+// Design template color schemes (matching DynamicCategorySection)
+const designTemplateColors = {
+  'traditional': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }, // Rose theme
+  'royal': { color: '#B45309', lightColor: 'bg-amber-50/80' }, // Amber theme (matches Lehengas)
+  'contemporary': { color: '#1a56ba', lightColor: 'bg-blue-50/80' }, // Blue theme
+  'elegant': { color: '#0F766E', lightColor: 'bg-emerald-50/80' }, // Emerald theme
   'default': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }
 };
 
@@ -235,7 +245,11 @@ const Categories = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
           {categories.map((category, index) => {
-            const categoryColors = colorMap[category.name] || colorMap.default;
+            // Use design template colors if available, otherwise fall back to name-based colors
+            const categoryColors = category.design_template 
+              ? (designTemplateColors[category.design_template] || designTemplateColors.default)
+              : (colorMap[category.name] || colorMap.default);
+            
             return (
             <motion.div
               key={category.id}

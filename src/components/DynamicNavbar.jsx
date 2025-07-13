@@ -1,8 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, ArrowRightOnRectangleIcon, CogIcon } from '@heroicons/react/24/outline';
-import logo from '../assets/logo.svg';
-import { Link } from 'react-router-dom';
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ShoppingBagIcon,
+  HeartIcon,
+  UserIcon,
+  MagnifyingGlassIcon,
+  ArrowRightOnRectangleIcon,
+  CogIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/outline';
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
+import mainLogo from '../assets/mainLogo.png';
+import logoBg from '../assets/logoBG.png';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -12,9 +23,13 @@ const DynamicNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState(null); // Track open dropdown
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { user, profile, logout } = useAuth();
   const { cartSummary } = useCart();
   const { wishlistSummary } = useWishlist();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -33,150 +48,178 @@ const DynamicNavbar = () => {
     fetchCategories();
   }, []);
 
-  // Static navigation items (non-category items)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSearchOpen && !event.target.closest('.search-container')) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
   const staticNavigation = [
-    { name: 'About Us', href: '/about', hasSubmenu: false },
-    { name: 'Contact Us', href: '/contact', hasSubmenu: false },
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact Us', href: '/contact' },
   ];
 
+  const toggleMobileMenu = () => setIsOpen((prev) => !prev);
+
+  const handleDropdownToggle = (index) => {
+    setOpenDropdown((prev) => (prev === index ? null : index));
+  };
+
+  const handleSearchToggle = () => {
+    setIsSearchOpen((prev) => !prev);
+    if (!isSearchOpen) {
+      // Focus on search input when opened
+      setTimeout(() => {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) searchInput.focus();
+      }, 100);
+    }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to search results page
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+      setIsOpen(false); // Close mobile menu if open
+    }
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
-    <div className="bg-white text-black">
-      {/* Top bar with logo and icons */}
-      <div className="container mx-auto px-4 py-2">
-        <div className="flex justify-between items-center">
-          {/* Left - Search Icon */}
-          <div className="w-1/3 flex justify-start">
-            <MagnifyingGlassIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
-          </div>
-          
-          {/* Center - Logo */}
-          <div className="w-1/3 flex justify-center">
-            <Link to="/" className="flex items-center">
-              <img src={logo} alt="Dharika Logo" className="h-24 w-auto object-contain max-h-full scale-150" />
-            </Link>
-          </div>
-          
-          {/* Right - User Icons */}
-          <div className="w-1/3 flex justify-end gap-6 items-center">
-            {user ? (
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600 hidden md:block">
-                  {profile?.full_name || user.email}
-                </span>
-                <ArrowRightOnRectangleIcon 
-                  className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" 
-                  onClick={logout}
-                  title="Logout"
+    <header className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-gray-800 shadow-lg top-0 z-50">
+      {/* Top Bar */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        {/* Left - Search */}
+        <div className="w-1/3 md:flex items-center hidden">
+          <div className="relative search-container">
+            {!isSearchOpen ? (
+              <div className="relative group">
+                <MagnifyingGlassIcon
+                  className="h-6 w-6 cursor-pointer text-gray-600 group-hover:text-amber-600 transition duration-300 ease-in-out"
+                  title="Search"
+                  aria-label="Search"
+                  onClick={handleSearchToggle}
                 />
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 group-hover:w-full transition-all duration-300"></span>
               </div>
             ) : (
-              <Link to="/auth">
-                <UserIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
-              </Link>
-            )}
-            <Link to="/wishlist" className="relative">
-              <HeartIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
-              {wishlistSummary.itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                  {wishlistSummary.itemCount > 99 ? '99+' : wishlistSummary.itemCount}
-                </span>
-              )}
-            </Link>
-            <Link to="/cart" className="relative">
-              <ShoppingBagIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
-              {cartSummary.itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#ba1a5d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                  {cartSummary.itemCount > 99 ? '99+' : cartSummary.itemCount}
-                </span>
-              )}
-            </Link>
-            {user && user.email === 'saiyamkumar2007@gmail.com' && (
-              <Link to="/admin">
-                <CogIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" title="Admin Panel" />
-              </Link>
+              <form onSubmit={handleSearchSubmit} className="flex items-center">
+                <div className="relative">
+                  <input
+                    id="search-input"
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    placeholder="Search products..."
+                    className="w-64 px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+                  />
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSearchToggle}
+                  className="ml-2 p-1 text-gray-400 hover:text-gray-600 transition duration-300"
+                  title="Close search"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+              </form>
             )}
           </div>
+        </div>
+
+        {/* Center - Logo */}
+        <div className=" flex justify-center relative">
+          <Link to="/" aria-label="Home" className="relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src={logoBg}
+                alt="Logo Background"
+                className="h-96 w-96 object-contain "
+                style={{ animation: 'spin 15s linear infinite' }}
+              />
+            </div>
+            <img
+              src={mainLogo}
+              alt="Dharika Logo"
+              className="md:h-28 h-16 scale-95 transition-transform duration-300 hover:scale-90 relative z-10"
+            />
+          </Link>
+        </div>
+        {/* Right - Icons */}
+        <div className="w-1/3 flex justify-end items-center gap-6">
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] hover:text-amber-600 transition duration-300">
+                {profile?.full_name || user.email}
+              </span>
+              <button
+                className="relative group"
+                onClick={logout}
+                title="Logout"
+                aria-label="Logout"
+              >
+                <ArrowRightOnRectangleIcon
+                  className="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition duration-300"
+                />
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 group-hover:w-full transition-all duration-300"></span>
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth" title="Login / Register" aria-label="Login" className="relative group">
+              <UserIcon className="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+          )}
+
+          {/* Wishlist Icon */}
+          <Link to="/wishlist" className="relative group" title="Wishlist" aria-label="Wishlist">
+            <HeartIcon className="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition duration-300" />
+            {wishlistSummary.itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold shadow-sm">
+                {wishlistSummary.itemCount > 99 ? '99+' : wishlistSummary.itemCount}
+              </span>
+            )}
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 group-hover:w-full transition-all duration-300"></span>
+          </Link>
+
+          {/* Cart Icon */}
+          <Link to="/cart" className="relative group" title="Cart" aria-label="Cart">
+            <ShoppingBagIcon className="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition duration-300" />
+            {cartSummary.itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold shadow-sm">
+                {cartSummary.itemCount > 99 ? '99+' : cartSummary.itemCount}
+              </span>
+            )}
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 group-hover:w-full transition-all duration-300"></span>
+          </Link>
+
+          {/* Admin Icon */}
+          {user?.email === 'saiyamkumar2007@gmail.com' && (
+            <Link to="/admin" title="Admin Panel" aria-label="Admin" className="relative group">
+              <CogIcon className="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-600 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+          )}
         </div>
       </div>
 
-      {/* Navigation bar */}
-      <nav className="bg-white shadow-sm border-t border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
-              {/* Dynamic category navigation */}
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/category/${category.slug}`}
-                  className="text-gray-700 hover:text-pink transition-colors duration-300 font-medium"
-                >
-                  {category.name}
-                </Link>
-              ))}
-              
-              {/* Static navigation items */}
-              {staticNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="text-gray-700 hover:text-pink transition-colors duration-300 font-medium"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-gray-700 hover:text-pink transition-colors duration-300"
-              >
-                {isOpen ? (
-                  <XMarkIcon className="h-6 w-6" />
-                ) : (
-                  <Bars3Icon className="h-6 w-6" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Menu */}
-          {isOpen && (
-            <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                {/* Dynamic category navigation */}
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    to={`/category/${category.slug}`}
-                    className="block px-3 py-2 text-gray-700 hover:text-pink transition-colors duration-300 font-medium"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-                
-                {/* Static navigation items */}
-                {staticNavigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className="block px-3 py-2 text-gray-700 hover:text-pink transition-colors duration-300 font-medium"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
-    </div>
+      
+    </header>
   );
 };
 
-export default DynamicNavbar; 
+export default DynamicNavbar;

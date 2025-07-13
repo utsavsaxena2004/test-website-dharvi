@@ -30,6 +30,7 @@ import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import WishlistPage from './pages/Wishlist';
 import SharedWishlist from './pages/SharedWishlist';
+import SearchResults from './pages/SearchResults';
 import BackendIntegrationExample from './components/BackendIntegrationExample';
 import StatePersistenceDemo from './components/StatePersistenceDemo';
 
@@ -97,6 +98,13 @@ const AppContent = () => {
               </PageTransition>
             } />
             
+            {/* Search Results page */}
+            <Route path="/search" element={
+              <PageTransition transitionType="fade">
+                <SearchResults />
+              </PageTransition>
+            } />
+            
             {/* Dynamic Category pages - this will handle any category slug */}
             <Route path="/category/:categorySlug" element={
               <PageTransition transitionType="slide">
@@ -156,7 +164,6 @@ const AppContent = () => {
           </Routes>
         </main>
         <Footer />
-        <FloatingShareButton position="bottom-right" />
       </div>
       <Toaster />
     </>

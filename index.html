@@ -2,12 +2,298 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    
+    <!-- Basic Meta Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <meta name="description" content="Discover exquisite traditional Indian fashion - sarees, lehengas, suits, and kurtis. Handcrafted with love, designed for elegance. Shop authentic Indian ethnic wear with modern aesthetics." />
+    <meta name="keywords" content="Indian fashion, sarees, lehengas, suits, kurtis, ethnic wear, traditional clothing, Indian dresses, handcrafted, designer wear, wedding collection" />
+    <meta name="author" content="Dharika" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ba1a5d" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Dharika - Exquisite Traditional Indian Fashion" />
+    <meta property="og:description" content="Discover exquisite traditional Indian fashion - sarees, lehengas, suits, and kurtis. Handcrafted with love, designed for elegance." />
+    <meta property="og:url" content="https://dharika.co.in" />
+    <meta property="og:site_name" content="Dharika" />
+    <meta property="og:image" content="https://dharika.co.in/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Dharika - Traditional Indian Fashion Collection" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dharika - Exquisite Traditional Indian Fashion" />
+    <meta name="twitter:description" content="Discover exquisite traditional Indian fashion - sarees, lehengas, suits, and kurtis. Handcrafted with love, designed for elegance." />
+    <meta name="twitter:image" content="https://dharika.co.in/twitter-image.jpg" />
+    <meta name="twitter:image:alt" content="Dharika - Traditional Indian Fashion Collection" />
+    <meta name="twitter:site" content="@dharika" />
+    <meta name="twitter:creator" content="@dharika" />
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://dharika.co.in" />
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//images.unsplash.com" />
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Dharika",
+      "description": "Exquisite traditional Indian fashion - sarees, lehengas, suits, and kurtis. Handcrafted with love, designed for elegance.",
+      "url": "https://dharika.co.in",
+      "logo": "https://dharika.co.in/logo.png",
+      "image": "https://dharika.co.in/og-image.jpg",
+      "sameAs": [
+        "https://www.facebook.com/dharika",
+        "https://www.instagram.com/dharika",
+        "https://www.pinterest.com/dharika",
+        "https://twitter.com/dharika"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-XXXXXXXXXX",
+        "contactType": "Customer Service",
+        "availableLanguage": ["English", "Hindi"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN",
+        "addressLocality": "Mumbai",
+        "addressRegion": "Maharashtra"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Dharika",
+      "url": "https://dharika.co.in",
+      "description": "Discover exquisite traditional Indian fashion - sarees, lehengas, suits, and kurtis. Handcrafted with love, designed for elegance.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Dharika"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://dharika.co.in/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Dharika",
+      "description": "Premium traditional Indian fashion store offering sarees, lehengas, suits, and kurtis",
+      "url": "https://dharika.co.in",
+      "image": "https://dharika.co.in/store-image.jpg",
+      "priceRange": "₹₹₹",
+      "paymentAccepted": "Credit Card, Debit Card, UPI, Net Banking, Cash on Delivery",
+      "currenciesAccepted": "INR",
+      "openingHours": "Mo-Su 09:00-21:00",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Traditional Indian Fashion",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Product",
+              "name": "Sarees",
+              "description": "Traditional Indian sarees with contemporary designs"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Product",
+              "name": "Lehengas",
+              "description": "Elegant lehengas for weddings and special occasions"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Product",
+              "name": "Suits",
+              "description": "Contemporary suits with traditional aesthetics"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Product",
+              "name": "Kurtis",
+              "description": "Stylish kurtis for everyday elegance"
+            }
+          }
+        ]
+      }
+    }
+    </script>
+    
+    <!-- Page Title -->
+    <title>Dharika - Exquisite Traditional Indian Fashion | Sarees, Lehengas, Suits & Kurtis</title>
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/fonts/poppins-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/playfair-display-regular.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- Critical CSS Inline (for above-the-fold content) -->
+    <style>
+      /* Critical CSS for initial page load */
+      body {
+        margin: 0;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #fafafa;
+      }
+      
+      /* Loading state */
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Prevent flash of unstyled content */
+      .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+      
+      @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      
+      /* Brand colors */
+      :root {
+        --primary-color: #ba1a5d;
+        --secondary-color: #e6c392;
+        --accent-color: #f3e8ff;
+      }
+    </style>
+    
+    <!-- Google Analytics (replace with your tracking ID) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <!-- Google Tag Manager (replace with your GTM ID) -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-blue-600 text-white p-2 z-50">
+      Skip to main content
+    </a>
+    
+    <!-- Main App Container -->
+    <div id="root">
+      <!-- Loading fallback -->
+      <div id="loading-fallback" style="display: none;">
+        <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);">
+          <div style="text-align: center;">
+            <div style="width: 60px; height: 60px; border: 4px solid #ba1a5d; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <h2 style="color: #ba1a5d; font-family: 'Playfair Display', serif; font-size: 24px; margin: 0;">Loading...</h2>
+            <p style="color: #6b7280; margin: 8px 0 0;">Preparing your fashion journey</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    
+    <!-- Loading animation styles -->
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      
+      .focus\:not-sr-only:focus {
+        position: static;
+        width: auto;
+        height: auto;
+        padding: 0.5rem;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+      }
+    </style>
+    
+    <!-- Main React App Script -->
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Fallback for users with JavaScript disabled -->
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1 style="color: #ba1a5d;">Dharika</h1>
+        <p>Please enable JavaScript to experience our beautiful collection of traditional Indian fashion.</p>
+        <p>For assistance, please contact us at <a href="mailto:support@dharika.co.in">support@dharika.co.in</a></p>
+      </div>
+    </noscript>
   </body>
 </html>

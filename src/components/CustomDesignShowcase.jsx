@@ -314,7 +314,7 @@ const CustomDesignShowcase = () => {
                   }}
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1623198761547-4076f8353eb0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" 
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq9KecbwW2M6DQssVwUmx-ohl0MDPRfliQ2g&s" 
                     alt="Design inspiration" 
                     className="w-full h-full object-cover"
                   />
@@ -349,7 +349,7 @@ const CustomDesignShowcase = () => {
                   }}
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1519684136120-a62c8e3c3a52?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" 
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMbaZIX878wOsODMKTTfmbUpsQwU8RH0wkYw&s" 
                     alt="Fabric detail" 
                     className="w-full h-full object-cover"
                   />
@@ -384,7 +384,7 @@ const CustomDesignShowcase = () => {
                   }}
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1618901172555-d706e445b912?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" 
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV0s5-SDhilyVRdDn-p6v0C5_K039Q_grnKw&s" 
                     alt="Custom attire" 
                     className="w-full h-full object-cover"
                   />
@@ -419,7 +419,7 @@ const CustomDesignShowcase = () => {
                   }}
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1618917518314-601451187763?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" 
+                    src="https://curiositysavestheplanet.com/wp-content/uploads/2021/05/Traditional-Clothing-and-Textile-Practices-from-India.png" 
                     alt="Tailoring process" 
                     className="w-full h-full object-cover"
                   />

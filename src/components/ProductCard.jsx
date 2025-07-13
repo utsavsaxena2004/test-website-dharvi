@@ -171,8 +171,10 @@ const ProductCard = ({
   };
 
   const handleCardClick = () => {
-    // Navigate to product detail page
-    navigate(`/product/${product.id}`);
+    // Open quick view modal instead of navigating
+    if (onQuickView) {
+      onQuickView(product);
+    }
   };
 
   const isProductInWishlist = isInWishlist(product.id);
@@ -190,6 +192,7 @@ const ProductCard = ({
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.6 }}
             className="h-full"
+            onClick={handleCardClick}
           >
             <img
               src={product.image_urls?.[0] || product.image || '/placeholder-image.jpg'}
@@ -295,6 +298,22 @@ const ProductCard = ({
             </motion.button>
           </div>
           
+          {/* Price */}
+          <div className="flex items-center space-x-2 mb-2">
+            <span className="text-xl font-bold text-[#ba1a5d]">
+              ₹{product.price ? product.price.toLocaleString('en-IN') : '0'}
+            </span>
+            {product.original_price && product.original_price > product.price && (
+              <>
+                <span className="text-sm text-gray-500 line-through">
+                  ₹{product.original_price.toLocaleString('en-IN')}
+                </span>
+                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                  {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% OFF
+                </span>
+              </>
+            )}
+          </div>
 
           {/* Colors */}
           {product.colors && product.colors.length > 0 && (
