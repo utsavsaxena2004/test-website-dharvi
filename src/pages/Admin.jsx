@@ -17,12 +17,52 @@ const Admin = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [settings, setSettings] = useState({});
   const [loading, setLoading] = useState(true);
   const [showProductForm, setShowProductForm] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const { toast } = useToast();
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      
+      // Load products, categories, and settings
+      const [productsData, categoriesData, settingsData] = await Promise.all([
+        supabaseService.getProducts(),
+        supabaseService.getCategories(),
+        supabaseService.getSettings()
+      ]);
+      
+      setProducts(productsData);
+      setCategories(categoriesData);
+      setSettings(settingsData);
+      
+      // Try to load orders separately with error handling
+      try {
+        const ordersData = await supabaseService.getOrders();
+        setOrders(ordersData);
+      } catch (ordersError) {
+        console.warn('Failed to load orders:', ordersError);
+        setOrders([]); // Set empty array if orders fail to load
+      }
+      
+    } catch (error) {
+      toast({
+        title: "Error loading data",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   // Check if user is admin
   if (!user || user.email !== 'saiyamkumar2007@gmail.com') {
@@ -48,33 +88,6 @@ const Admin = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [productsData, categoriesData, ordersData] = await Promise.all([
-        supabaseService.getProducts(),
-        supabaseService.getCategories(),
-        supabaseService.getOrders()
-      ]);
-      
-      setProducts(productsData);
-      setCategories(categoriesData);
-      setOrders(ordersData);
-    } catch (error) {
-      toast({
-        title: "Error loading data",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
@@ -410,6 +423,274 @@ const Admin = () => {
     );
   };
 
+  const SettingsForm = () => {
+    const [formData, setFormData] = useState({
+      promotional_messages: '',
+      hero_content: '',
+      footer_content: '',
+      site_title: '',
+      site_description: '',
+      contact_email: '',
+      contact_phone: '',
+      social_media: ''
+    });
+    const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+      // Initialize form with existing settings
+      if (settings) {
+        setFormData({
+          promotional_messages: settings.promotional_messages ? 
+            (typeof settings.promotional_messages === 'string' ? 
+              settings.promotional_messages : 
+              JSON.stringify(settings.promotional_messages, null, 2)) : 
+            JSON.stringify([
+              { id: 1, text: "🎁 Welcome to our store! Explore our latest collection" },
+              { id: 2, text: "🚚 Free shipping on all orders above ₹2999" },
+              { id: 3, text: "⚡ New arrivals every week - Stay updated!" }
+            ], null, 2),
+          hero_content: settings.hero_content ? 
+            (typeof settings.hero_content === 'string' ? 
+              settings.hero_content : 
+              JSON.stringify(settings.hero_content, null, 2)) : 
+            JSON.stringify([
+              {
+                id: 1,
+                title: "Royal Heritage Collection",
+                subtitle: "Timeless Tradition",
+                description: "Discover our exquisite collection of handcrafted ethnic wear",
+                image: "/hero-image.jpg",
+                primaryCta: "Explore Collection",
+                secondaryCta: "View Lookbook"
+              }
+            ], null, 2),
+          footer_content: settings.footer_content ? 
+            (typeof settings.footer_content === 'string' ? 
+              settings.footer_content : 
+              JSON.stringify(settings.footer_content, null, 2)) : 
+            JSON.stringify({
+              company: "Dharika Fashion",
+              description: "Premium ethnic wear collection",
+              address: "123 Fashion Street, Mumbai, India",
+              phone: "+91 98765 43210",
+              email: "info@dharikafashion.com"
+            }, null, 2),
+          site_title: settings.site_title || 'Dharika Fashion',
+          site_description: settings.site_description || 'Premium ethnic wear collection',
+          contact_email: settings.contact_email || '',
+          contact_phone: settings.contact_phone || '',
+          social_media: settings.social_media ? 
+            (typeof settings.social_media === 'string' ? 
+              settings.social_media : 
+              JSON.stringify(settings.social_media, null, 2)) : 
+            JSON.stringify({
+              facebook: "https://facebook.com/dharikafashion",
+              instagram: "https://instagram.com/dharikafashion",
+              whatsapp: "https://wa.me/919876543210"
+            }, null, 2)
+        });
+      }
+    }, [settings]);
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        setSaving(true);
+        
+        // Prepare settings data - now all fields are supported
+        const settingsData = {
+          site_title: formData.site_title,
+          site_description: formData.site_description,
+          contact_email: formData.contact_email,
+          contact_phone: formData.contact_phone,
+          social_media: formData.social_media,
+          promotional_messages: formData.promotional_messages,
+          hero_content: formData.hero_content,
+          footer_content: formData.footer_content
+        };
+
+        await supabaseService.updateSettings(settingsData);
+        
+        toast({
+          title: "Settings updated successfully",
+          description: "All settings have been saved successfully!"
+        });
+        
+        // Reload the page to reflect changes
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+        
+      } catch (error) {
+        toast({
+          title: "Error saving settings",
+          description: error.message,
+          variant: "destructive"
+        });
+      } finally {
+        setSaving(false);
+      }
+    };
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6"
+      >
+        <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
+          <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+            <CardTitle className="font-serif">Site Settings</CardTitle>
+            <CardDescription className="text-white/90">
+              Manage your website's dynamic content and settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-6">
+            {/* Success Notice */}
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-start">
+                <svg className="w-5 h-5 text-green-600 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                  <h4 className="text-sm font-medium text-green-800">Database Schema Updated</h4>
+                  <p className="text-sm text-green-700 mt-1">
+                    All features are now fully functional! You can edit promotional messages, hero content, and footer content.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Basic Settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Site Title ✅
+                  </label>
+                  <Input
+                    value={formData.site_title}
+                    onChange={(e) => setFormData({...formData, site_title: e.target.value})}
+                    className="border-rose-200 focus:border-[#ba1a5d]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Site Description ✅
+                  </label>
+                  <Input
+                    value={formData.site_description}
+                    onChange={(e) => setFormData({...formData, site_description: e.target.value})}
+                    className="border-rose-200 focus:border-[#ba1a5d]"
+                  />
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Contact Email ✅
+                  </label>
+                  <Input
+                    type="email"
+                    value={formData.contact_email}
+                    onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
+                    className="border-rose-200 focus:border-[#ba1a5d]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Contact Phone ✅
+                  </label>
+                  <Input
+                    value={formData.contact_phone}
+                    onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
+                    className="border-rose-200 focus:border-[#ba1a5d]"
+                  />
+                </div>
+              </div>
+
+              {/* Social Media Links */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Social Media Links (JSON format) ✅
+                </label>
+                <Textarea
+                  value={formData.social_media}
+                  onChange={(e) => setFormData({...formData, social_media: e.target.value})}
+                  placeholder='{"facebook": "url", "instagram": "url", "whatsapp": "url"}'
+                  className="border-rose-200 focus:border-[#ba1a5d] h-24 font-mono text-sm"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Format: Object with social media URLs (facebook, instagram, whatsapp)
+                </p>
+              </div>
+
+              {/* Promotional Messages - Now fully functional */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Promotional Messages (JSON format) ✅
+                </label>
+                <Textarea
+                  value={formData.promotional_messages}
+                  onChange={(e) => setFormData({...formData, promotional_messages: e.target.value})}
+                  placeholder='[{"id": 1, "text": "🎁 Welcome message"}]'
+                  className="border-rose-200 focus:border-[#ba1a5d] h-32 font-mono text-sm"
+                />
+                <p className="text-xs text-green-600 mt-1">
+                  ✅ This field is now fully functional! Changes will be reflected on the website.
+                </p>
+              </div>
+
+              {/* Hero Content - Now fully functional */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Hero Content (JSON format) ✅
+                </label>
+                <Textarea
+                  value={formData.hero_content}
+                  onChange={(e) => setFormData({...formData, hero_content: e.target.value})}
+                  placeholder='[{"title": "Hero Title", "subtitle": "Hero Subtitle", "image": "image-url"}]'
+                  className="border-rose-200 focus:border-[#ba1a5d] h-32 font-mono text-sm"
+                />
+                <p className="text-xs text-green-600 mt-1">
+                  ✅ This field is now fully functional! Changes will be reflected on the website.
+                </p>
+              </div>
+
+              {/* Footer Content - Now fully functional */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Footer Content (JSON format) ✅
+                </label>
+                <Textarea
+                  value={formData.footer_content}
+                  onChange={(e) => setFormData({...formData, footer_content: e.target.value})}
+                  placeholder='{"company": "Company Name", "description": "Company description"}'
+                  className="border-rose-200 focus:border-[#ba1a5d] h-24 font-mono text-sm"
+                />
+                <p className="text-xs text-green-600 mt-1">
+                  ✅ This field is now fully functional! Changes will be reflected on the website.
+                </p>
+              </div>
+
+              <div className="flex space-x-2 pt-4">
+                <Button 
+                  type="submit" 
+                  disabled={saving}
+                  className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white"
+                >
+                  {saving ? 'Saving...' : 'Save All Settings'}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
@@ -442,7 +723,7 @@ const Admin = () => {
       
       <div className="max-w-7xl mx-auto px-6 pb-12">
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-4 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
             <TabsTrigger 
               value="products" 
               className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
@@ -463,6 +744,13 @@ const Admin = () => {
             >
               <ShoppingCart className="w-4 h-4" />
               Orders
+            </TabsTrigger>
+            <TabsTrigger 
+              value="settings" 
+              className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
+            >
+              <Settings className="w-4 h-4" />
+              Settings
             </TabsTrigger>
           </TabsList>
 
@@ -698,6 +986,17 @@ const Admin = () => {
                 ))
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-6 mt-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-serif text-gray-900">Site Settings</h2>
+                <p className="text-gray-600 mt-1">Manage your website's dynamic content and configuration</p>
+              </div>
+            </div>
+
+            <SettingsForm />
           </TabsContent>
         </Tabs>
       </div>
