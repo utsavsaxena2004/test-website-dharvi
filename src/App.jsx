@@ -25,6 +25,7 @@ import CategoryKurtis from './pages/CategoryKurtis';
 import WishlistPage from './pages/Wishlist';
 import CartPage from './pages/Cart';
 import SimpleCartPage from './pages/SimpleCart';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -93,6 +94,11 @@ function App() {
               <Route path="/cart" element={
                 <PageTransition transitionType="slide">
                   <CartPage />
+                </PageTransition>
+              } />
+              <Route path="/admin" element={
+                <PageTransition transitionType="fade">
+                  <Admin />
                 </PageTransition>
               } />
               

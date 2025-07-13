@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, ArrowRightOnRectangleIcon, CogIcon } from '@heroicons/react/24/outline';
 import logo from '../assets/logo.svg';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -58,6 +58,11 @@ const Navbar = () => {
             <Link to="/cart">
               <ShoppingBagIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
             </Link>
+            {user && (
+              <Link to="/admin">
+                <CogIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" title="Admin Panel" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
