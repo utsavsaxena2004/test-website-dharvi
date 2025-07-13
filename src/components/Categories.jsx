@@ -1,44 +1,15 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { supabaseService } from '../services/supabaseService';
 
-const categories = [
-  {
-    id: 1,
-    name: 'Sarees',
-    description: 'Timeless elegance in every drape',
-    image: 'https://images.unsplash.com/photo-1659293554631-d7a38642c5e3?q=80&w=2972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    color: '#ba1a5d',
-    lightColor: 'bg-rose-50/80',
-    pattern: '/patterns/paisley.svg',
-  },
-  {
-    id: 2,
-    name: 'Lehengas',
-    description: 'Royal heritage in every stitch',
-    image: 'https://images.unsplash.com/photo-1601571115502-83ca3095735b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TGVoZW5nYXxlbnwwfDB8MHx8fDA%3D',
-    color: '#B45309',
-    lightColor: 'bg-amber-50/80',
-    pattern: '/patterns/mandala.svg',
-  },
-  {
-    id: 3,
-    name: 'Suits',
-    description: 'Contemporary tradition redefined',
-    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-    color: '#1a56ba',
-    lightColor: 'bg-blue-50/80',
-    pattern: '/patterns/floral.svg',
-  },
-  {
-    id: 4,
-    name: 'Kurtis',
-    description: 'Everyday elegance reimagined',
-    image: 'https://images.unsplash.com/photo-1597983073540-684a10b15ab1?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a3VydGl8ZW58MHwwfDB8fHww',
-    color: '#0F766E',
-    lightColor: 'bg-emerald-50/80',
-    pattern: '/patterns/geometric.svg',
-  },
-];
+const colorMap = {
+  'Sarees': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' },
+  'Lehengas': { color: '#B45309', lightColor: 'bg-amber-50/80' },
+  'Suits': { color: '#1a56ba', lightColor: 'bg-blue-50/80' },
+  'Kurtis': { color: '#0F766E', lightColor: 'bg-emerald-50/80' },
+  'default': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }
+};
 
 // Create SVG patterns for background elements
 const patterns = {
@@ -122,6 +93,25 @@ const decorativeElements = {
 };
 
 const Categories = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const data = await supabaseService.getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -145,6 +135,24 @@ const Categories = () => {
       }
     }
   };
+
+  if (loading) {
+    return (
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-300 rounded w-96 mx-auto mb-8"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-80 bg-gray-300 rounded-lg"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 overflow-hidden relative">
@@ -226,7 +234,9 @@ const Categories = () => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
-          {categories.map((category, index) => (
+          {categories.map((category, index) => {
+            const categoryColors = colorMap[category.name] || colorMap.default;
+            return (
             <motion.div
               key={category.id}
               variants={itemVariants}
@@ -237,7 +247,7 @@ const Categories = () => {
               className="group relative overflow-hidden rounded-lg shadow-md"
             >
               {/* Card Background with soft gradient overlay */}
-              <div className={`absolute inset-0 ${category.lightColor} transition-all duration-500`}></div>
+              <div className={`absolute inset-0 ${categoryColors.lightColor} transition-all duration-500`}></div>
               
               {/* Decorative Border */}
               <div className="absolute inset-0 border border-white/30 rounded-lg z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -262,7 +272,7 @@ const Categories = () => {
                 {/* Image */}
                 <div className="absolute inset-0 rounded-lg overflow-hidden">
                   <img
-                    src={category.image}
+                    src={category.image_url || 'https://images.unsplash.com/photo-1659293554631-d7a38642c5e3?q=80&w=2972&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
                     alt={category.name}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
@@ -270,7 +280,7 @@ const Categories = () => {
                   <div 
                     className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"
                     style={{ 
-                      background: `linear-gradient(to top, ${category.color}CC, ${category.color}44, transparent)` 
+                      background: `linear-gradient(to top, ${categoryColors.color}CC, ${categoryColors.color}44, transparent)` 
                     }}
                   ></div>
                 </div>
@@ -294,14 +304,14 @@ const Categories = () => {
                       <div className="absolute bottom-[-6px] left-0 w-0 h-[1px] bg-white group-hover:w-1/3 transition-all duration-300 delay-100"></div>
                     </h3>
                     
-                    <p className="text-white/80 text-sm mb-6">{category.description}</p>
+                    <p className="text-white/80 text-sm mb-6">{category.description || `Explore our ${category.name} collection`}</p>
                     
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       <Link 
-                        to={`/category/${category.name.toLowerCase()}`} 
+                        to={`/category/${category.slug || category.name.toLowerCase()}`} 
                         className="inline-flex items-center space-x-2 text-white border-b border-white/40 pb-1 group-hover:border-white transition-colors duration-300 text-sm"
                       >
                         <span>Explore Collection</span>
@@ -314,7 +324,8 @@ const Categories = () => {
                 </div>
               </div>
             </motion.div>
-          ))}
+          )})}
+          
         </motion.div>
       </div>
 

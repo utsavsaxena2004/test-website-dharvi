@@ -58,7 +58,7 @@ const Navbar = () => {
             <Link to="/cart">
               <ShoppingBagIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
             </Link>
-            {user && (
+            {user && user.email === 'saiyamkumar2007@gmail.com' && (
               <Link to="/admin">
                 <CogIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" title="Admin Panel" />
               </Link>
