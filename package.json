@@ -12,9 +12,12 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.50.5",
     "axios": "^1.10.0",
+    "clsx": "^2.1.1",
+    "lovable-tagger": "^1.1.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-wheel-of-prizes": "^1.1.0"
+    "react-wheel-of-prizes": "^1.1.0",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
