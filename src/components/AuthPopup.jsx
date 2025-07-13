@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../contexts/AuthContext';
 
 const floatingElements = [
   { size: 24, delay: 0, rotate: 5, duration: 15 },
@@ -17,10 +18,18 @@ const AuthPopup = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [animationComplete, setAnimationComplete] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const { login, register } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Reset form state when opening
+      setError('');
+      setSuccess('');
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -29,14 +38,50 @@ const AuthPopup = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle authentication logic here
-    console.log(isLogin ? 'Login' : 'Signup', { email, password, name });
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      if (isLogin) {
+        await login({ email, password });
+        setSuccess('Login successful! Welcome back!');
+        setTimeout(() => {
+          onClose();
+          // Reset form
+          setEmail('');
+          setPassword('');
+          setName('');
+          setSuccess('');
+        }, 1500);
+      } else {
+        await register({ 
+          name, 
+          email, 
+          password 
+        });
+        setSuccess('Account created successfully! Please check your email for verification.');
+        setTimeout(() => {
+          setIsLogin(true); // Switch to login mode
+          setName('');
+          setPassword('');
+          setSuccess('');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Authentication error:', err);
+      setError(err.message || err.error || 'An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleAuthMode = () => {
     setAnimationComplete(false);
+    setError('');
+    setSuccess('');
     setTimeout(() => {
       setIsLogin(!isLogin);
     }, 300);

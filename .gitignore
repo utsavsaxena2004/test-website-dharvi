@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Exclude specific folders
+<404 ERROR FOUND>/
+Dharika_backend_repo/
