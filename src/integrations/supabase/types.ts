@@ -423,8 +423,11 @@ export type Database = {
           contact_phone: string | null
           created_at: string
           currency: string | null
+          footer_content: Json | null
           free_shipping_threshold: number | null
+          hero_content: Json | null
           id: string
+          promotional_messages: Json | null
           shipping_cost: number | null
           site_description: string | null
           site_logo: string | null
@@ -441,8 +444,11 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           currency?: string | null
+          footer_content?: Json | null
           free_shipping_threshold?: number | null
+          hero_content?: Json | null
           id?: string
+          promotional_messages?: Json | null
           shipping_cost?: number | null
           site_description?: string | null
           site_logo?: string | null
@@ -459,8 +465,11 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           currency?: string | null
+          footer_content?: Json | null
           free_shipping_threshold?: number | null
+          hero_content?: Json | null
           id?: string
+          promotional_messages?: Json | null
           shipping_cost?: number | null
           site_description?: string | null
           site_logo?: string | null

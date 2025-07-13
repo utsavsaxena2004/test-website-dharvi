@@ -7,7 +7,7 @@ export const productsService = {
       .from('products')
       .select(`
         *,
-        categories!left (
+        categories!products_category_id_fkey (
           id,
           name,
           slug
@@ -34,7 +34,7 @@ export const productsService = {
       .from('products')
       .select(`
         *,
-        categories!left (
+        categories!products_category_id_fkey (
           id,
           name,
           slug
@@ -241,7 +241,7 @@ export const cartService = {
       .from('cart_items')
       .select(`
         *,
-        products!left (
+        products!cart_items_product_id_fkey (
           id,
           name,
           price,
@@ -417,7 +417,7 @@ export const wishlistService = {
       .from('wishlist_items')
       .select(`
         *,
-        products!left (
+        products!wishlist_items_product_id_fkey (
           id,
           name,
           price,
