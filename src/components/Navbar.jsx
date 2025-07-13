@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { ShoppingBagIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import logo from '../assets/logo.svg';
 import { Link } from 'react-router-dom';
-import AuthPopup from './AuthPopup';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const { user, profile, logout } = useAuth();
 
   const navigation = [
     { name: 'Kurti', href: '/corset-kurti', hasSubmenu: false },
@@ -35,13 +35,29 @@ const Navbar = () => {
           </div>
           
           {/* Right - User Icons */}
-          <div className="w-1/3 flex justify-end gap-6">
-            <UserIcon 
-              className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" 
-              onClick={() => setShowAuthPopup(true)}
-            />
-            <HeartIcon href='/wishlist' className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
-            <ShoppingBagIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
+          <div className="w-1/3 flex justify-end gap-6 items-center">
+            {user ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600 hidden md:block">
+                  {profile?.full_name || user.email}
+                </span>
+                <ArrowRightOnRectangleIcon 
+                  className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" 
+                  onClick={logout}
+                  title="Logout"
+                />
+              </div>
+            ) : (
+              <Link to="/auth">
+                <UserIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
+              </Link>
+            )}
+            <Link to="/wishlist">
+              <HeartIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
+            </Link>
+            <Link to="/cart">
+              <ShoppingBagIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
+            </Link>
           </div>
         </div>
       </div>
@@ -114,8 +130,6 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Auth Popup */}
-      <AuthPopup isOpen={showAuthPopup} onClose={() => setShowAuthPopup(false)} />
     </div>
   );
 };

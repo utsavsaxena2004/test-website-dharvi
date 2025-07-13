@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../services';
+import { supabase } from '@/integrations/supabase/client';
 
 const AuthContext = createContext();
 
@@ -13,115 +13,67 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    // Check if user is authenticated on app load
-    const initializeAuth = () => {
-      try {
-        const storedUser = authService.getCurrentUser();
-        const token = localStorage.getItem('authToken');
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
         
-        if (storedUser && token) {
-          setUser(storedUser);
-          setIsAuthenticated(true);
+        // Fetch user profile if authenticated
+        if (session?.user) {
+          setTimeout(async () => {
+            try {
+              const { data: profileData } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .single();
+              setProfile(profileData);
+            } catch (error) {
+              console.error('Error fetching profile:', error);
+            }
+          }, 0);
+        } else {
+          setProfile(null);
         }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-        // Clear any corrupted data
-        authService.logout();
-      } finally {
+        
         setLoading(false);
       }
-    };
+    );
 
-    initializeAuth();
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (credentials) => {
-    try {
-      setLoading(true);
-      const response = await authService.login(credentials);
-      setUser(response.user);
-      setIsAuthenticated(true);
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const register = async (userData) => {
-    try {
-      setLoading(true);
-      const response = await authService.register(userData);
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const googleLogin = async (googleToken) => {
-    try {
-      setLoading(true);
-      const response = await authService.googleLogin(googleToken);
-      setUser(response.user);
-      setIsAuthenticated(true);
-      return response;
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = () => {
-    authService.logout();
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    await supabase.auth.signOut();
   };
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await authService.updateProfile(profileData);
-      setUser(response.user);
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const requestPasswordReset = async (email) => {
-    try {
-      return await authService.requestPasswordReset(email);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const resetPassword = async (token, newPassword) => {
-    try {
-      return await authService.resetPassword(token, newPassword);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const verifyEmail = async (token) => {
-    try {
-      return await authService.verifyEmail(token);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const resendVerification = async (email) => {
-    try {
-      return await authService.resendVerification(email);
+      if (!user) throw new Error('No user authenticated');
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(profileData)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      setProfile(data);
+      return data;
     } catch (error) {
       throw error;
     }
@@ -129,17 +81,12 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    isAuthenticated,
+    session,
+    profile,
     loading,
-    login,
-    register,
-    googleLogin,
+    isAuthenticated: !!user,
     logout,
     updateProfile,
-    requestPasswordReset,
-    resetPassword,
-    verifyEmail,
-    resendVerification,
   };
 
   return (

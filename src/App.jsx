@@ -16,7 +16,8 @@ import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
 import BackendIntegrationExample from './components/BackendIntegrationExample';
 
-// Import category pages
+// Import pages
+import Auth from './pages/Auth';
 import CategorySarees from './pages/CategorySarees';
 import CategoryLehengas from './pages/CategoryLehengas';
 import CategorySuits from './pages/CategorySuits';
@@ -47,6 +48,11 @@ function App() {
                     <SuitCollection />
                     <KurtiCollection />
                   </>
+                </PageTransition>
+              } />
+              <Route path="/auth" element={
+                <PageTransition transitionType="fade">
+                  <Auth />
                 </PageTransition>
               } />
               <Route path="/custom-design" element={
