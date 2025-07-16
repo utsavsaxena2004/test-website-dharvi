@@ -414,7 +414,8 @@ const Footer = () => {
               >
                 <HeartIcon className="w-4 h-4 text-[#ba1a5d] fill-current" />
               </motion.div>
-              <a href="https://devitup.in" target="_blank" rel="noopener noreferrer" className="hover:text-[#ba1a5d] transition-colors duration-300">DevItUp</a>
+              <span>by</span>
+              <a href="https://devitup.in" target="_blank" rel="noopener noreferrer" className="hover:text-[#ba1a5d] font-bold transition-colors duration-300">DevItUp</a>
             </motion.div>
           </motion.div>
         </div>
