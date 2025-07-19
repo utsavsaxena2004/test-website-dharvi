@@ -648,6 +648,7 @@ const Admin = () => {
             return value && (typeof value === 'string' ? value.trim() : value);
           });
           if (hasData) {
+            console.log('Saving form data to persistence:', formData);
             statePersistence.saveAdminProductForm(formData);
           }
         }, 1000); // Save after 1 second of no changes
@@ -778,10 +779,20 @@ const Admin = () => {
                     console.log('Product form - onChange called with:', urls);
                     console.log('Current formData.image_urls before update:', formData.image_urls);
                     
+                    // Ensure urls is an array
+                    const imageUrls = Array.isArray(urls) ? urls : (urls ? [urls] : []);
+                    
                     // Force update the form data
                     setFormData(prevData => {
-                      const newData = {...prevData, image_urls: urls};
+                      const newData = {...prevData, image_urls: imageUrls};
                       console.log('Product form - new formData after update:', newData);
+                      
+                      // Immediately save to persistence to prevent loss
+                      if (!product && imageUrls.length > 0) {
+                        console.log('Immediately saving form data with images:', newData);
+                        statePersistence.saveAdminProductForm(newData);
+                      }
+                      
                       return newData;
                     });
                   }}

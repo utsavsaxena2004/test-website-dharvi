@@ -69,22 +69,34 @@ const ImageUpload = ({
       const uploadedUrls = await Promise.all(uploadPromises);
       console.log('ImageUpload - uploadedUrls from storage:', uploadedUrls);
       
+      // Filter out any empty/null URLs
+      const validUrls = uploadedUrls.filter(url => url && url.trim());
+      
       if (multiple) {
         // For multiple uploads, add to existing array
-        const newImages = [...images, ...uploadedUrls];
+        const newImages = [...images, ...validUrls];
         console.log('ImageUpload - current images:', images);
         console.log('ImageUpload - new images array:', newImages);
         console.log('ImageUpload - calling onChange with newImages:', newImages);
-        onChange(newImages);
+        
+        // Use setTimeout to ensure the onChange happens after current render cycle
+        setTimeout(() => {
+          onChange(newImages);
+        }, 0);
       } else {
         // For single upload, replace the value
-        console.log('ImageUpload - calling onChange with single URL:', uploadedUrls[0]);
-        onChange(uploadedUrls[0]);
+        const newUrl = validUrls[0] || '';
+        console.log('ImageUpload - calling onChange with single URL:', newUrl);
+        
+        // Use setTimeout to ensure the onChange happens after current render cycle
+        setTimeout(() => {
+          onChange(newUrl);
+        }, 0);
       }
 
       toast({
         title: "Upload successful",
-        description: `${uploadedUrls.length} image(s) uploaded successfully`
+        description: `${validUrls.length} image(s) uploaded successfully`
       });
 
     } catch (error) {
