@@ -21,9 +21,10 @@ const ImageUpload = ({
   const images = Array.isArray(value) ? value : (value ? [value] : []);
   
   // Debug logging
-  console.log('ImageUpload - value:', value);
-  console.log('ImageUpload - images:', images);
-  console.log('ImageUpload - images.length:', images.length);
+  console.log('ImageUpload - Render - value:', value);
+  console.log('ImageUpload - Render - images:', images);
+  console.log('ImageUpload - Render - images.length:', images.length);
+  console.log('ImageUpload - Render - images content:', images.map((img, i) => `${i}: ${img}`));
 
   const handleFileUpload = async (files) => {
     if (!files || files.length === 0) return;
@@ -182,31 +183,46 @@ const ImageUpload = ({
         </div>
       </div>
 
+      {/* Debug section */}
+      <div className="text-xs text-red-500 bg-red-50 p-2 rounded">
+        Debug ImageUpload: 
+        <br />Images length: {images.length}
+        <br />Images: {JSON.stringify(images)}
+        <br />Value: {JSON.stringify(value)}
+      </div>
+
       {/* Image Previews */}
       {images.length > 0 && (
         <div className={`grid gap-4 ${multiple ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-1'}`}>
-          {images.map((imageUrl, index) => (
-            <div key={multiple ? index : 'single'} className="relative group">
-              <div className="aspect-square rounded-lg overflow-hidden border border-gray-200">
-                <img
-                  src={imageUrl}
-                  alt={`Upload ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+          {images.filter(img => img && img.trim()).map((imageUrl, index) => {
+            console.log('ImageUpload - Rendering image:', index, imageUrl);
+            return (
+              <div key={multiple ? index : 'single'} className="relative group">
+                <div className="aspect-square rounded-lg overflow-hidden border border-gray-200">
+                  <img
+                    src={imageUrl}
+                    alt={`Upload ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onLoad={() => console.log('ImageUpload - Image loaded successfully:', imageUrl)}
+                    onError={(e) => {
+                      console.error('ImageUpload - Image failed to load:', imageUrl, e);
+                    }}
+                  />
+                </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeImage(multiple ? index : imageUrl);
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </div>
-              <Button
-                size="sm"
-                variant="destructive"
-                className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeImage(multiple ? index : imageUrl);
-                }}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
