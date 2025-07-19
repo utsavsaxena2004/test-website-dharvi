@@ -78,7 +78,7 @@ class SupabaseService {
       .from('products')
       .select(`
         *,
-        categories (
+        categories!products_category_id_fkey (
           id,
           name,
           slug
@@ -116,7 +116,7 @@ class SupabaseService {
       .from('products')
       .select(`
         *,
-        categories (
+        categories!products_category_id_fkey (
           id,
           name,
           slug
@@ -150,7 +150,7 @@ class SupabaseService {
       .insert([formattedData])
       .select(`
         *,
-        categories (
+        categories!products_category_id_fkey (
           id,
           name,
           slug
@@ -184,7 +184,7 @@ class SupabaseService {
       .eq('id', id)
       .select(`
         *,
-        categories (
+        categories!products_category_id_fkey (
           id,
           name,
           slug
@@ -239,6 +239,11 @@ class SupabaseService {
     
     console.log('Cart items fetched:', data);
     return data || [];
+  }
+
+  // Add alias for compatibility
+  async getCart(userId) {
+    return this.getCartItems(userId);
   }
 
   async addToCart(cartItem) {
