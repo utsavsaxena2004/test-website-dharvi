@@ -989,7 +989,11 @@ const Admin = () => {
                   <label className="text-sm font-medium text-gray-700">Category Image</label>
                   <ImageUpload
                     value={formData.image_url}
-                    onChange={(url) => setFormData({...formData, image_url: url})}
+                    onChange={(url) => {
+                      console.log('Admin - Category image onChange called with:', url);
+                      setFormData({...formData, image_url: url});
+                      console.log('Admin - Updated formData.image_url to:', url);
+                    }}
                     multiple={false}
                     label="Upload Category Image"
                   />
