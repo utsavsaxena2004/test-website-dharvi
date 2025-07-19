@@ -605,25 +605,54 @@ const Admin = () => {
       care_instructions: ''
     });
 
-    // Load saved form data on mount if not editing existing product
+    // Load saved form data on mount
     useEffect(() => {
       if (!product) {
+        // Only load saved data if we're not editing an existing product
         const savedData = statePersistence.loadAdminProductForm();
         if (savedData) {
-          setFormData(prev => ({ ...prev, ...savedData }));
+          setFormData(prev => ({ 
+            ...prev, 
+            ...savedData,
+            // Ensure arrays are properly handled
+            colors: Array.isArray(savedData.colors) ? savedData.colors : (savedData.colors || ''),
+            sizes: Array.isArray(savedData.sizes) ? savedData.sizes : (savedData.sizes || ''),
+            image_urls: Array.isArray(savedData.image_urls) ? savedData.image_urls : []
+          }));
         }
+      } else {
+        // If editing existing product, populate form with product data
+        setFormData({
+          name: product.name || '',
+          price: product.price || '',
+          description: product.description || '',
+          category_id: product.category_id || '',
+          colors: Array.isArray(product.colors) ? product.colors : (product.colors || ''),
+          sizes: Array.isArray(product.sizes) ? product.sizes : (product.sizes || ''),
+          image_urls: Array.isArray(product.image_urls) ? product.image_urls : [],
+          featured: product.featured || false,
+          stock_quantity: product.stock_quantity || 0,
+          material: product.material || '',
+          care_instructions: product.care_instructions || ''
+        });
       }
     }, [product]);
 
     // Save form data as user types (but not when editing existing product)
     useEffect(() => {
       if (!product) {
-        const hasData = Object.values(formData).some(value => 
-          value && (typeof value === 'string' ? value.trim() : value)
-        );
-        if (hasData) {
-          statePersistence.saveAdminProductForm(formData);
-        }
+        // Debounce saving to prevent too frequent saves
+        const timeoutId = setTimeout(() => {
+          const hasData = Object.values(formData).some(value => {
+            if (Array.isArray(value)) return value.length > 0;
+            return value && (typeof value === 'string' ? value.trim() : value);
+          });
+          if (hasData) {
+            statePersistence.saveAdminProductForm(formData);
+          }
+        }, 1000); // Save after 1 second of no changes
+
+        return () => clearTimeout(timeoutId);
       }
     }, [formData, product]);
 
@@ -807,25 +836,46 @@ const Admin = () => {
       design_template: 'elegant'
     });
 
-    // Load saved form data on mount if not editing existing category
+    // Load saved form data on mount
     useEffect(() => {
       if (!category) {
+        // Only load saved data if we're not editing an existing category
         const savedData = statePersistence.loadAdminCategoryForm();
         if (savedData) {
-          setFormData(prev => ({ ...prev, ...savedData }));
+          setFormData(prev => ({ 
+            ...prev, 
+            ...savedData,
+            // Ensure image_url is properly handled
+            image_url: savedData.image_url || ''
+          }));
         }
+      } else {
+        // If editing existing category, populate form with category data
+        setFormData({
+          name: category.name || '',
+          slug: category.slug || '',
+          description: category.description || '',
+          image_url: category.image_url || '',
+          sort_order: category.sort_order || 0,
+          design_template: category.design_template || 'elegant'
+        });
       }
     }, [category]);
 
     // Save form data as user types (but not when editing existing category)
     useEffect(() => {
       if (!category) {
-        const hasData = Object.values(formData).some(value => 
-          value && (typeof value === 'string' ? value.trim() : value)
-        );
-        if (hasData) {
-          statePersistence.saveAdminCategoryForm(formData);
-        }
+        // Debounce saving to prevent too frequent saves
+        const timeoutId = setTimeout(() => {
+          const hasData = Object.values(formData).some(value => 
+            value && (typeof value === 'string' ? value.trim() : value)
+          );
+          if (hasData) {
+            statePersistence.saveAdminCategoryForm(formData);
+          }
+        }, 1000); // Save after 1 second of no changes
+
+        return () => clearTimeout(timeoutId);
       }
     }, [formData, category]);
 
@@ -857,7 +907,6 @@ const Admin = () => {
         
         onSave();
         onClose();
-        loadData();
       } catch (error) {
         toast({
           title: "Error saving category",
