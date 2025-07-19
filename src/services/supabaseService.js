@@ -78,11 +78,7 @@ class SupabaseService {
       .from('products')
       .select(`
         *,
-        categories!products_category_id_fkey (
-          id,
-          name,
-          slug
-        )
+        category:categories(id, name, slug)
       `)
       .eq('is_active', true);
 
@@ -116,11 +112,7 @@ class SupabaseService {
       .from('products')
       .select(`
         *,
-        categories!products_category_id_fkey (
-          id,
-          name,
-          slug
-        )
+        category:categories(id, name, slug)
       `)
       .eq('id', id)
       .single();
@@ -150,11 +142,7 @@ class SupabaseService {
       .insert([formattedData])
       .select(`
         *,
-        categories!products_category_id_fkey (
-          id,
-          name,
-          slug
-        )
+        category:categories(id, name, slug)
       `)
       .single();
     
@@ -184,11 +172,7 @@ class SupabaseService {
       .eq('id', id)
       .select(`
         *,
-        categories!products_category_id_fkey (
-          id,
-          name,
-          slug
-        )
+        category:categories(id, name, slug)
       `)
       .single();
     
@@ -375,6 +359,33 @@ class SupabaseService {
     }
     
     console.log('Removed from wishlist');
+  }
+
+  // Add alias for compatibility
+  async getWishlist(userId) {
+    return this.getWishlistItems(userId);
+  }
+
+  // Featured products
+  async getFeaturedProducts() {
+    console.log('Fetching featured products...');
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        category:categories(id, name, slug)
+      `)
+      .eq('is_active', true)
+      .eq('featured', true)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching featured products:', error);
+      throw error;
+    }
+    
+    console.log('Featured products fetched:', data);
+    return data || [];
   }
 
   // Orders
