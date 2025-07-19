@@ -70,9 +70,11 @@ const ImageUpload = ({
       if (multiple) {
         // For multiple uploads, add to existing array
         const newImages = [...images, ...uploadedUrls];
+        console.log('ImageUpload - calling onChange with newImages:', newImages);
         onChange(newImages);
       } else {
         // For single upload, replace the value
+        console.log('ImageUpload - calling onChange with single URL:', uploadedUrls[0]);
         onChange(uploadedUrls[0]);
       }
 
