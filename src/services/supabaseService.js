@@ -316,8 +316,15 @@ class SupabaseService {
     return data || [];
   }
 
-  async addToWishlist(wishlistItem) {
-    console.log('Adding to wishlist:', wishlistItem);
+  async addToWishlist(userId, productId) {
+    console.log('Adding to wishlist:', { userId, productId });
+    
+    // Create wishlist item object
+    const wishlistItem = {
+      user_id: userId,
+      product_id: productId
+    };
+    
     const { data, error } = await supabase
       .from('wishlist_items')
       .insert([wishlistItem])
@@ -341,12 +348,13 @@ class SupabaseService {
     return data;
   }
 
-  async removeFromWishlist(id) {
-    console.log('Removing from wishlist:', id);
+  async removeFromWishlist(userId, productId) {
+    console.log('Removing from wishlist:', { userId, productId });
     const { error } = await supabase
       .from('wishlist_items')
       .delete()
-      .eq('id', id);
+      .eq('user_id', userId)
+      .eq('product_id', productId);
     
     if (error) {
       console.error('Error removing from wishlist:', error);
