@@ -1710,7 +1710,7 @@ const Admin = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                         </div>
                       )}
-                      <p className="text-sm text-gray-600">{category.description}</p>
+                      <p className="text-sm text-gray-600 break-words overflow-wrap-anywhere">{category.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
