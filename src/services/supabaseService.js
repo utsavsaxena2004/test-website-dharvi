@@ -3,13 +3,17 @@ import { supabase } from '../integrations/supabase/client';
 
 class SupabaseService {
   // Categories
-  async getCategories() {
+  async getCategories(includeInactive = false) {
     console.log('Fetching categories...');
-    const { data, error } = await supabase
+    let query = supabase
       .from('categories')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true });
+      .select('*');
+    
+    if (!includeInactive) {
+      query = query.eq('is_active', true);
+    }
+    
+    const { data, error } = await query.order('sort_order', { ascending: true });
     
     if (error) {
       console.error('Error fetching categories:', error);
@@ -76,13 +80,13 @@ class SupabaseService {
     
     let query = supabase
       .from('products')
-      .select(`
-        *,
-        category:categories(id, name, slug)
-      `)
-      .eq('is_active', true);
+      .select('*, category:categories(id, name, slug)');
 
     // Apply filters
+    if (!filters.includeInactive) {
+      query = query.eq('is_active', true);
+    }
+    
     if (filters.category_id) {
       query = query.eq('category_id', filters.category_id);
     }
@@ -110,10 +114,7 @@ class SupabaseService {
     console.log('Fetching product by ID:', id);
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        category:categories(id, name, slug)
-      `)
+      .select('*, category:categories(id, name, slug)')
       .eq('id', id)
       .single();
     
@@ -140,10 +141,7 @@ class SupabaseService {
     const { data, error } = await supabase
       .from('products')
       .insert([formattedData])
-      .select(`
-        *,
-        category:categories(id, name, slug)
-      `)
+      .select('*, category:categories(id, name, slug)')
       .single();
     
     if (error) {
@@ -170,10 +168,7 @@ class SupabaseService {
       .from('products')
       .update(formattedData)
       .eq('id', id)
-      .select(`
-        *,
-        category:categories(id, name, slug)
-      `)
+      .select('*, category:categories(id, name, slug)')
       .single();
     
     if (error) {
@@ -371,10 +366,7 @@ class SupabaseService {
     console.log('Fetching featured products...');
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        category:categories(id, name, slug)
-      `)
+      .select('*, category:categories(id, name, slug)')
       .eq('is_active', true)
       .eq('featured', true)
       .order('created_at', { ascending: false });
