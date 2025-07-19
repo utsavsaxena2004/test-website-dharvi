@@ -768,9 +768,16 @@ const Admin = () => {
               {/* Product Images Upload */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Product Images</label>
+                {/* Debug info */}
+                <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+                  Debug: formData.image_urls = {JSON.stringify(formData.image_urls)}
+                </div>
                 <ImageUpload
                   value={formData.image_urls}
-                  onChange={(urls) => setFormData({...formData, image_urls: urls})}
+                  onChange={(urls) => {
+                    console.log('Product form - onChange called with:', urls);
+                    setFormData({...formData, image_urls: urls});
+                  }}
                   multiple={true}
                   maxFiles={8}
                   label="Upload Product Images"

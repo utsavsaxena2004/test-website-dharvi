@@ -19,6 +19,11 @@ const ImageUpload = ({
 
   // Normalize value to always be an array
   const images = Array.isArray(value) ? value : (value ? [value] : []);
+  
+  // Debug logging
+  console.log('ImageUpload - value:', value);
+  console.log('ImageUpload - images:', images);
+  console.log('ImageUpload - images.length:', images.length);
 
   const handleFileUpload = async (files) => {
     if (!files || files.length === 0) return;
