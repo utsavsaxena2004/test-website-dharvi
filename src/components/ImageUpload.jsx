@@ -66,10 +66,13 @@ const ImageUpload = ({
       });
 
       const uploadedUrls = await Promise.all(uploadPromises);
+      console.log('ImageUpload - uploadedUrls from storage:', uploadedUrls);
       
       if (multiple) {
         // For multiple uploads, add to existing array
         const newImages = [...images, ...uploadedUrls];
+        console.log('ImageUpload - current images:', images);
+        console.log('ImageUpload - new images array:', newImages);
         console.log('ImageUpload - calling onChange with newImages:', newImages);
         onChange(newImages);
       } else {

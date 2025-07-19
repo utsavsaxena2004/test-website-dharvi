@@ -776,7 +776,14 @@ const Admin = () => {
                   value={formData.image_urls}
                   onChange={(urls) => {
                     console.log('Product form - onChange called with:', urls);
-                    setFormData({...formData, image_urls: urls});
+                    console.log('Current formData.image_urls before update:', formData.image_urls);
+                    
+                    // Force update the form data
+                    setFormData(prevData => {
+                      const newData = {...prevData, image_urls: urls};
+                      console.log('Product form - new formData after update:', newData);
+                      return newData;
+                    });
                   }}
                   multiple={true}
                   maxFiles={8}
