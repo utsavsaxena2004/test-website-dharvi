@@ -153,6 +153,7 @@ const ImageUpload = ({
   };
 
   const openFileDialog = () => {
+    console.log('ImageUpload - openFileDialog called');
     fileInputRef.current?.click();
   };
 
@@ -175,7 +176,11 @@ const ImageUpload = ({
           type="file"
           multiple={multiple}
           accept="image/*"
-          onChange={(e) => handleFileUpload(e.target.files)}
+          onChange={(e) => {
+            console.log('ImageUpload - file input onChange triggered');
+            console.log('ImageUpload - e.target.files:', e.target.files);
+            handleFileUpload(e.target.files);
+          }}
           className="hidden"
         />
         
