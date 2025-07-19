@@ -20,6 +20,7 @@ import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingShareButton from './components/FloatingShareButton';
 
+
 // Pages
 import Auth from './pages/Auth';
 import Admin from './pages/Admin';
@@ -33,6 +34,7 @@ import SharedWishlist from './pages/SharedWishlist';
 import SearchResults from './pages/SearchResults';
 import BackendIntegrationExample from './components/BackendIntegrationExample';
 import StatePersistenceDemo from './components/StatePersistenceDemo';
+import FeaturedProductShowcase from './components/FeaturedProductShowcase';
 
 // Component to handle route state within Router context
 const AppContent = () => {
@@ -56,7 +58,11 @@ const AppContent = () => {
                   <Categories />
                   
                   {/* Dynamic Category Sections - automatically displays all categories */}
-                  <DynamicCategorySections showCount={6} />
+                  <div className="hidden lg:block">
+                    <DynamicCategorySections showCount={6} />
+                  </div>
+
+                  <FeaturedProductShowcase />
                   
                   <CustomDesignShowcase />
                   
