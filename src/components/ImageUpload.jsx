@@ -20,14 +20,21 @@ const ImageUpload = ({
   // Normalize value to always be an array
   const images = Array.isArray(value) ? value : (value ? [value] : []);
   
-  // Debug logging
+  // Debug logging - include props info
   console.log('ImageUpload - Render - value:', value);
   console.log('ImageUpload - Render - images:', images);
+  console.log('ImageUpload - Render - multiple:', multiple);
+  console.log('ImageUpload - Render - maxFiles:', maxFiles);
   console.log('ImageUpload - Render - images.length:', images.length);
   console.log('ImageUpload - Render - images content:', images.map((img, i) => `${i}: ${img}`));
 
   const handleFileUpload = async (files) => {
-    if (!files || files.length === 0) return;
+    console.log('ImageUpload - handleFileUpload called with files:', files);
+    console.log('ImageUpload - files length:', files?.length);
+    if (!files || files.length === 0) {
+      console.log('ImageUpload - No files provided, returning early');
+      return;
+    }
 
     // Check file limits
     const totalFiles = images.length + files.length;
