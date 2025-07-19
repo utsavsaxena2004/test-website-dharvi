@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import statePersistence from '../utils/statePersistence';
 import { sendOrderStatusUpdateEmail } from '../services/emailService';
+import ImageUpload from '../components/ImageUpload';
 
 const Admin = () => {
   const { user } = useAuth();
@@ -736,12 +737,17 @@ const Admin = () => {
                 />
               </div>
               
-              <Input
-                placeholder="Image URLs (comma separated)"
-                value={Array.isArray(formData.image_urls) ? formData.image_urls.join(', ') : formData.image_urls}
-                onChange={(e) => setFormData({...formData, image_urls: e.target.value})}
-                className="border-rose-200 focus:border-[#ba1a5d]"
-              />
+              {/* Product Images Upload */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Product Images</label>
+                <ImageUpload
+                  value={formData.image_urls}
+                  onChange={(urls) => setFormData({...formData, image_urls: urls})}
+                  multiple={true}
+                  maxFiles={8}
+                  label="Upload Product Images"
+                />
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
@@ -899,20 +905,26 @@ const Admin = () => {
               />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Image URL"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
-                />
-                
-                <Input
-                  type="number"
-                  placeholder="Sort Order"
-                  value={formData.sort_order}
-                  onChange={(e) => setFormData({...formData, sort_order: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
-                />
+                {/* Category Image Upload */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Category Image</label>
+                  <ImageUpload
+                    value={formData.image_url}
+                    onChange={(url) => setFormData({...formData, image_url: url})}
+                    multiple={false}
+                    label="Upload Category Image"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Sort Order</label>
+                  <Input
+                    type="number"
+                    placeholder="Sort Order"
+                    value={formData.sort_order}
+                    onChange={(e) => setFormData({...formData, sort_order: e.target.value})}
+                    className="border-rose-200 focus:border-[#ba1a5d]"
+                  />
+                </div>
               </div>
 
               {/* Design Template Selection */}
