@@ -468,6 +468,11 @@ class SupabaseService {
     return data || [];
   }
 
+  // Add alias for compatibility
+  async getCustomRequests(userId = null) {
+    return this.getCustomDesigns(userId);
+  }
+
   async createCustomDesign(designData) {
     console.log('Creating custom design:', designData);
     const { data, error } = await supabase
@@ -552,6 +557,11 @@ class SupabaseService {
     
     console.log('Site settings fetched:', data);
     return data;
+  }
+
+  // Add alias for compatibility
+  async getSettings() {
+    return this.getSiteSettings();
   }
 
   async updateSiteSettings(settingsData) {
