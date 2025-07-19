@@ -989,10 +989,24 @@ const Admin = () => {
                   <label className="text-sm font-medium text-gray-700">Category Image</label>
                   <ImageUpload
                     value={formData.image_url}
-                    onChange={(url) => {
-                      console.log('Admin - Category image onChange called with:', url);
-                      setFormData({...formData, image_url: url});
-                      console.log('Admin - Updated formData.image_url to:', url);
+                    onChange={(urls) => {
+                      console.log('Admin - Category image onChange called with:', urls);
+                      // Handle both single URL and array of URLs
+                      const imageUrl = Array.isArray(urls) ? urls[0] : urls;
+                      console.log('Admin - Normalized imageUrl:', imageUrl);
+                      
+                      setFormData(prevData => {
+                        const newData = {...prevData, image_url: imageUrl || ''};
+                        console.log('Admin - Updated formData after change:', newData);
+                        
+                        // Save to persistence for new categories
+                        if (!category && imageUrl) {
+                          console.log('Saving category form to persistence');
+                          statePersistence.saveAdminCategoryForm(newData);
+                        }
+                        
+                        return newData;
+                      });
                     }}
                     multiple={false}
                     label="Upload Category Image"
