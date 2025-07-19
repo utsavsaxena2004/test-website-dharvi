@@ -620,7 +620,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <p className="text-gray-600 text-sm">{description}</p>
+                        <p className="text-gray-600 text-sm break-words overflow-wrap-anywhere">{description}</p>
                       </motion.div>
                     ) : (
                       <motion.div
@@ -634,7 +634,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                         {specifications.map((spec, index) => (
                           <div key={index} className="flex border-b border-gray-100 pb-2 text-sm">
                             <span className="font-medium text-gray-700 w-1/3">{spec.name}:</span>
-                            <span className="text-gray-600 w-2/3">{spec.value}</span>
+                            <span className="text-gray-600 w-2/3 break-words overflow-wrap-anywhere">{spec.value}</span>
                           </div>
                         ))}
                       </motion.div>
