@@ -651,7 +651,6 @@ const Admin = () => {
         
         onSave();
         onClose();
-        loadData();
       } catch (error) {
         toast({
           title: "Error saving product",
