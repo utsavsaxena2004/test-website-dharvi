@@ -1,371 +1,229 @@
-import { supabase } from '@/integrations/supabase/client';
 
-// Products Service
-export const productsService = {
-  async getAll(filters = {}) {
-    try {
-      let query = supabase
-        .from('products')
-        .select(`
-          *,
-          categories!products_category_id_fkey (
-            id,
-            name,
-            slug
-          )
-        `)
-        .order('created_at', { ascending: false });
+import { supabase } from '../integrations/supabase/client';
 
-      // Only filter by is_active if not explicitly requested to include inactive items
-      if (!filters.includeInactive) {
-        query = query.eq('is_active', true);
-      }
-
-      if (filters.category_id) {
-        query = query.eq('category_id', filters.category_id);
-      }
-      
-      if (filters.featured) {
-        query = query.eq('featured', true);
-      }
-
-      const { data, error } = await query;
-      
-      if (error) {
-        console.warn('Error fetching products:', error);
-        // Return empty array for permission errors
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Error in getAll products:', error);
-      return [];
-    }
-  },
-
-  async search(searchQuery, filters = {}) {
-    try {
-      let query = supabase
-        .from('products')
-        .select(`
-          *,
-          categories!products_category_id_fkey (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq('is_active', true);
-
-      // Search in name, description, and material fields
-      if (searchQuery) {
-        query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,material.ilike.%${searchQuery}%`);
-      }
-
-      // Apply additional filters
-      if (filters.category_id) {
-        query = query.eq('category_id', filters.category_id);
-      }
-
-      if (filters.minPrice) {
-        query = query.gte('price', filters.minPrice);
-      }
-
-      if (filters.maxPrice) {
-        query = query.lte('price', filters.maxPrice);
-      }
-
-      if (filters.colors && filters.colors.length > 0) {
-        query = query.overlaps('colors', filters.colors);
-      }
-
-      if (filters.sizes && filters.sizes.length > 0) {
-        query = query.overlaps('sizes', filters.sizes);
-      }
-
-      // Sort options
-      if (filters.sortBy) {
-        switch (filters.sortBy) {
-          case 'price_low':
-            query = query.order('price', { ascending: true });
-            break;
-          case 'price_high':
-            query = query.order('price', { ascending: false });
-            break;
-          case 'newest':
-            query = query.order('created_at', { ascending: false });
-            break;
-          case 'oldest':
-            query = query.order('created_at', { ascending: true });
-            break;
-          case 'name':
-            query = query.order('name', { ascending: true });
-            break;
-          default:
-            query = query.order('created_at', { ascending: false });
-        }
-      } else {
-        query = query.order('created_at', { ascending: false });
-      }
-
-      const { data, error } = await query;
-      
-      if (error) {
-        console.warn('Error searching products:', error);
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Error in search products:', error);
-      return [];
-    }
-  },
-
-  async getById(id) {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          *,
-          categories!products_category_id_fkey (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq('id', id)
-        .eq('is_active', true)
-        .single();
-      
-      if (error) {
-        if (error.code === 'PGRST116') { // No rows returned
-          throw new Error('Product not found');
-        }
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          throw new Error('Access denied');
-        }
-        throw error;
-      }
-      return data;
-    } catch (error) {
-      console.error('Error in getById product:', error);
+class SupabaseService {
+  // Categories
+  async getCategories() {
+    console.log('Fetching categories...');
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true });
+    
+    if (error) {
+      console.error('Error fetching categories:', error);
       throw error;
     }
-  },
-
-  async create(product) {
-    // Generate slug from name if not provided
-    if (!product.slug && product.name) {
-      let baseSlug = product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      product.slug = baseSlug;
-      
-      // Check if slug already exists and make it unique
-      let counter = 1;
-      while (true) {
-        const { data: existing } = await supabase
-          .from('products')
-          .select('id')
-          .eq('slug', product.slug)
-          .maybeSingle();
-        
-        if (!existing) break;
-        product.slug = `${baseSlug}-${counter}`;
-        counter++;
-      }
-    }
     
+    console.log('Categories fetched:', data);
+    return data || [];
+  }
+
+  async createCategory(categoryData) {
+    console.log('Creating category:', categoryData);
     const { data, error } = await supabase
-      .from('products')
-      .insert(product)
+      .from('categories')
+      .insert([categoryData])
       .select()
       .single();
     
     if (error) {
-      if (error.code === '23505') { // Unique constraint violation
-        throw new Error('A product with this name or slug already exists');
-      }
+      console.error('Error creating category:', error);
       throw error;
     }
-    return data;
-  },
-
-  async update(id, updates) {
-    // Generate slug from name if name is being updated and slug is not provided
-    if (updates.name && !updates.slug) {
-      let baseSlug = updates.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      updates.slug = baseSlug;
-      
-      // Check if slug already exists (excluding current record) and make it unique
-      let counter = 1;
-      while (true) {
-        const { data: existing } = await supabase
-          .from('products')
-          .select('id')
-          .eq('slug', updates.slug)
-          .neq('id', id)
-          .maybeSingle();
-        
-        if (!existing) break;
-        updates.slug = `${baseSlug}-${counter}`;
-        counter++;
-      }
-    }
     
+    console.log('Category created:', data);
+    return data;
+  }
+
+  async updateCategory(id, categoryData) {
+    console.log('Updating category:', id, categoryData);
     const { data, error } = await supabase
-      .from('products')
-      .update(updates)
+      .from('categories')
+      .update(categoryData)
       .eq('id', id)
       .select()
       .single();
     
     if (error) {
-      if (error.code === '23505') { // Unique constraint violation
-        throw new Error('A product with this name or slug already exists');
-      }
+      console.error('Error updating category:', error);
       throw error;
     }
+    
+    console.log('Category updated:', data);
     return data;
-  },
+  }
 
-  async delete(id) {
+  async deleteCategory(id) {
+    console.log('Deleting category:', id);
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    }
+    
+    console.log('Category deleted');
+  }
+
+  // Products
+  async getProducts(filters = {}) {
+    console.log('Fetching products with filters:', filters);
+    
+    let query = supabase
+      .from('products')
+      .select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .eq('is_active', true);
+
+    // Apply filters
+    if (filters.category_id) {
+      query = query.eq('category_id', filters.category_id);
+    }
+    
+    if (filters.featured) {
+      query = query.eq('featured', true);
+    }
+    
+    if (filters.search) {
+      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    }
+    
+    const { data, error } = await query.order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching products:', error);
+      throw error;
+    }
+    
+    console.log('Products fetched:', data);
+    return data || [];
+  }
+
+  async getProductById(id) {
+    console.log('Fetching product by ID:', id);
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching product:', error);
+      throw error;
+    }
+    
+    console.log('Product fetched:', data);
+    return data;
+  }
+
+  async createProduct(productData) {
+    console.log('Creating product:', productData);
+    
+    // Ensure arrays are properly formatted
+    const formattedData = {
+      ...productData,
+      image_urls: Array.isArray(productData.image_urls) ? productData.image_urls : [],
+      colors: Array.isArray(productData.colors) ? productData.colors : [],
+      sizes: Array.isArray(productData.sizes) ? productData.sizes : []
+    };
+    
+    const { data, error } = await supabase
+      .from('products')
+      .insert([formattedData])
+      .select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .single();
+    
+    if (error) {
+      console.error('Error creating product:', error);
+      throw error;
+    }
+    
+    console.log('Product created:', data);
+    return data;
+  }
+
+  async updateProduct(id, productData) {
+    console.log('Updating product:', id, productData);
+    
+    // Ensure arrays are properly formatted
+    const formattedData = {
+      ...productData,
+      image_urls: Array.isArray(productData.image_urls) ? productData.image_urls : [],
+      colors: Array.isArray(productData.colors) ? productData.colors : [],
+      sizes: Array.isArray(productData.sizes) ? productData.sizes : []
+    };
+    
+    const { data, error } = await supabase
+      .from('products')
+      .update(formattedData)
+      .eq('id', id)
+      .select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .single();
+    
+    if (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
+    
+    console.log('Product updated:', data);
+    return data;
+  }
+
+  async deleteProduct(id) {
+    console.log('Deleting product:', id);
     const { error } = await supabase
       .from('products')
       .delete()
       .eq('id', id);
     
-    if (error) throw error;
-  }
-};
-
-// Categories Service
-export const categoriesService = {
-  async getAll(includeInactive = false) {
-    try {
-      let query = supabase
-        .from('categories')
-        .select('*')
-        .order('sort_order', { ascending: true });
-      
-      // Only filter by is_active if not explicitly requested to include inactive items
-      if (!includeInactive) {
-        query = query.eq('is_active', true);
-      }
-      
-      const { data, error } = await query;
-      
-      if (error) {
-        console.warn('Error fetching categories:', error);
-        // Return empty array for permission errors
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Error in getAll categories:', error);
-      return [];
-    }
-  },
-
-  async create(category) {
-    // Generate slug from name if not provided
-    if (!category.slug && category.name) {
-      let baseSlug = category.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      category.slug = baseSlug;
-      
-      // Check if slug already exists and make it unique
-      let counter = 1;
-      while (true) {
-        const { data: existing } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('slug', category.slug)
-          .maybeSingle();
-        
-        if (!existing) break;
-        category.slug = `${baseSlug}-${counter}`;
-        counter++;
-      }
-    }
-    
-    const { data, error } = await supabase
-      .from('categories')
-      .insert(category)
-      .select()
-      .single();
-    
     if (error) {
-      if (error.code === '23505') { // Unique constraint violation
-        throw new Error('A category with this name or slug already exists');
-      }
+      console.error('Error deleting product:', error);
       throw error;
     }
-    return data;
-  },
-
-  async update(id, updates) {
-    // Generate slug from name if name is being updated and slug is not provided
-    if (updates.name && !updates.slug) {
-      let baseSlug = updates.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      updates.slug = baseSlug;
-      
-      // Check if slug already exists (excluding current record) and make it unique
-      let counter = 1;
-      while (true) {
-        const { data: existing } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('slug', updates.slug)
-          .neq('id', id)
-          .maybeSingle();
-        
-        if (!existing) break;
-        updates.slug = `${baseSlug}-${counter}`;
-        counter++;
-      }
-    }
     
-    const { data, error } = await supabase
-      .from('categories')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
-    
-    if (error) {
-      if (error.code === '23505') { // Unique constraint violation
-        throw new Error('A category with this name or slug already exists');
-      }
-      throw error;
-    }
-    return data;
-  },
-
-  async delete(id) {
-    const { error } = await supabase
-      .from('categories')
-      .delete()
-      .eq('id', id);
-    
-    if (error) throw error;
+    console.log('Product deleted');
   }
-};
 
-// Cart Service
-export const cartService = {
-  async getCart(userId) {
+  // Cart items
+  async getCartItems(userId) {
+    console.log('Fetching cart items for user:', userId);
     const { data, error } = await supabase
       .from('cart_items')
       .select(`
         *,
-        products!cart_items_product_id_fkey (
+        products (
           id,
           name,
           price,
@@ -374,154 +232,198 @@ export const cartService = {
       `)
       .eq('user_id', userId);
     
-    if (error) throw error;
-    return data || [];
-  },
-
-  async addItem(userId, productId, quantity = 1, size = null, color = null) {
-    // Check if item already exists
-    const { data: existing } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('product_id', productId)
-      .eq('size', size)
-      .eq('color', color)
-      .maybeSingle();
-
-    if (existing) {
-      // Update quantity
-      const { data, error } = await supabase
-        .from('cart_items')
-        .update({ quantity: existing.quantity + quantity })
-        .eq('id', existing.id)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
-    } else {
-      // Create new item
-      const { data, error } = await supabase
-        .from('cart_items')
-        .insert({
-          user_id: userId,
-          product_id: productId,
-          quantity,
-          size,
-          color
-        })
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
+    if (error) {
+      console.error('Error fetching cart items:', error);
+      throw error;
     }
-  },
+    
+    console.log('Cart items fetched:', data);
+    return data || [];
+  }
 
-  async updateQuantity(itemId, quantity) {
+  async addToCart(cartItem) {
+    console.log('Adding to cart:', cartItem);
     const { data, error } = await supabase
       .from('cart_items')
-      .update({ quantity })
-      .eq('id', itemId)
-      .select()
+      .insert([cartItem])
+      .select(`
+        *,
+        products (
+          id,
+          name,
+          price,
+          image_urls
+        )
+      `)
       .single();
     
-    if (error) throw error;
-    return data;
-  },
-
-  async removeItem(itemId) {
-    const { error } = await supabase
-      .from('cart_items')
-      .delete()
-      .eq('id', itemId);
+    if (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
+    }
     
-    if (error) throw error;
-  },
+    console.log('Added to cart:', data);
+    return data;
+  }
 
-  async clearCart(userId) {
+  async updateCartItem(id, updates) {
+    console.log('Updating cart item:', id, updates);
+    const { data, error } = await supabase
+      .from('cart_items')
+      .update(updates)
+      .eq('id', id)
+      .select(`
+        *,
+        products (
+          id,
+          name,
+          price,
+          image_urls
+        )
+      `)
+      .single();
+    
+    if (error) {
+      console.error('Error updating cart item:', error);
+      throw error;
+    }
+    
+    console.log('Cart item updated:', data);
+    return data;
+  }
+
+  async removeFromCart(id) {
+    console.log('Removing from cart:', id);
     const { error } = await supabase
       .from('cart_items')
       .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error removing from cart:', error);
+      throw error;
+    }
+    
+    console.log('Removed from cart');
+  }
+
+  // Wishlist items
+  async getWishlistItems(userId) {
+    console.log('Fetching wishlist items for user:', userId);
+    const { data, error } = await supabase
+      .from('wishlist_items')
+      .select(`
+        *,
+        products (
+          id,
+          name,
+          price,
+          image_urls
+        )
+      `)
       .eq('user_id', userId);
     
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching wishlist items:', error);
+      throw error;
+    }
+    
+    console.log('Wishlist items fetched:', data);
+    return data || [];
   }
-};
 
-// Orders Service
-export const ordersService = {
-  async getAll() {
-    try {
+  async addToWishlist(wishlistItem) {
+    console.log('Adding to wishlist:', wishlistItem);
     const { data, error } = await supabase
-      .from('orders')
-        .select('*')
-      .order('created_at', { ascending: false });
+      .from('wishlist_items')
+      .insert([wishlistItem])
+      .select(`
+        *,
+        products (
+          id,
+          name,
+          price,
+          image_urls
+        )
+      `)
+      .single();
     
-      if (error) {
-        // Handle common RLS permission errors
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          console.warn('Permission denied for orders access');
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
+    if (error) {
+      console.error('Error adding to wishlist:', error);
+      throw error;
+    }
+    
+    console.log('Added to wishlist:', data);
+    return data;
+  }
+
+  async removeFromWishlist(id) {
+    console.log('Removing from wishlist:', id);
+    const { error } = await supabase
+      .from('wishlist_items')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error removing from wishlist:', error);
+      throw error;
+    }
+    
+    console.log('Removed from wishlist');
+  }
+
+  // Orders
+  async getOrders(userId = null) {
+    console.log('Fetching orders for user:', userId);
+    
+    let query = supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          products (
+            id,
+            name,
+            image_urls
+          )
+        )
+      `);
+    
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
+    
+    const { data, error } = await query.order('created_at', { ascending: false });
+    
+    if (error) {
       console.error('Error fetching orders:', error);
-      return [];
+      throw error;
     }
-  },
+    
+    console.log('Orders fetched:', data);
+    return data || [];
+  }
 
-  async getUserOrders(userId) {
-    try {
+  async createOrder(orderData) {
+    console.log('Creating order:', orderData);
     const { data, error } = await supabase
       .from('orders')
-        .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
-    
-      if (error) {
-        // Handle common RLS permission errors
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          console.warn('Permission denied for user orders access');
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Error fetching user orders:', error);
-      return [];
-    }
-  },
-
-  async create(order, orderItems) {
-    const { data: orderData, error: orderError } = await supabase
-      .from('orders')
-      .insert(order)
+      .insert([orderData])
       .select()
       .single();
     
-    if (orderError) throw orderError;
-
-    const itemsWithOrderId = orderItems.map(item => ({
-      ...item,
-      order_id: orderData.id
-    }));
-
-    const { data: itemsData, error: itemsError } = await supabase
-      .from('order_items')
-      .insert(itemsWithOrderId)
-      .select();
+    if (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
     
-    if (itemsError) throw itemsError;
+    console.log('Order created:', data);
+    return data;
+  }
 
-    return { order: orderData, items: itemsData };
-  },
-
-  async updateStatus(orderId, status) {
+  async updateOrderStatus(orderId, status) {
+    console.log('Updating order status:', orderId, status);
     const { data, error } = await supabase
       .from('orders')
       .update({ status })
@@ -529,555 +431,209 @@ export const ordersService = {
       .select()
       .single();
     
-    if (error) throw error;
-    return data;
-  },
-
-  async getOrderDetails(orderId) {
-    try {
-      const { data, error } = await supabase
-        .from('order_items')
-        .select(`
-          *,
-          products!order_items_product_id_fkey (
-            id,
-            name,
-            price,
-            image_urls
-          )
-        `)
-        .eq('order_id', orderId);
-      
-      if (error) {
-        console.warn('Error fetching order details:', error);
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          return [];
-        }
-        throw error;
-      }
-      
-      // Transform the data to include product details and flatten structure
-      const transformedData = (data || []).map(item => ({
-        id: item.id,
-        name: item.products?.name || 'Unknown Product',
-        price: item.price,
-        quantity: item.quantity,
-        size: item.size,
-        color: item.color,
-        image_url: item.products?.image_urls?.[0] || 'https://via.placeholder.com/150',
-        product_id: item.product_id
-      }));
-      
-      return transformedData;
-    } catch (error) {
-      console.error('Error in getOrderDetails:', error);
-      return [];
+    if (error) {
+      console.error('Error updating order status:', error);
+      throw error;
     }
-  }
-};
-
-// Wishlist Service
-export const wishlistService = {
-  async getWishlist(userId) {
-    const { data, error } = await supabase
-      .from('wishlist_items')
-      .select(`
-        *,
-        products!wishlist_items_product_id_fkey (
-          id,
-          name,
-          price,
-          image_urls
-        )
-      `)
-      .eq('user_id', userId);
     
-    if (error) throw error;
+    console.log('Order status updated:', data);
+    return data;
+  }
+
+  // Custom designs
+  async getCustomDesigns(userId = null) {
+    console.log('Fetching custom designs for user:', userId);
+    
+    let query = supabase
+      .from('custom_designs')
+      .select('*');
+    
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
+    
+    const { data, error } = await query.order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching custom designs:', error);
+      throw error;
+    }
+    
+    console.log('Custom designs fetched:', data);
     return data || [];
-  },
+  }
 
-  async addItem(userId, productId) {
+  async createCustomDesign(designData) {
+    console.log('Creating custom design:', designData);
     const { data, error } = await supabase
-      .from('wishlist_items')
-      .insert({
-        user_id: userId,
-        product_id: productId
-      })
+      .from('custom_designs')
+      .insert([designData])
       .select()
       .single();
     
-    if (error) throw error;
-    return data;
-  },
-
-  async removeItem(userId, productId) {
-    const { error } = await supabase
-      .from('wishlist_items')
-      .delete()
-      .eq('user_id', userId)
-      .eq('product_id', productId);
+    if (error) {
+      console.error('Error creating custom design:', error);
+      throw error;
+    }
     
-    if (error) throw error;
+    console.log('Custom design created:', data);
+    return data;
   }
-};
 
-// Custom Requests Service
-export const customRequestsService = {
-  async getAll() {
-    try {
-      const { data, error } = await supabase
-        .from('custom_designs')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.warn('Error fetching custom requests:', error);
-        // Return empty array for permission errors
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Error in getAll custom requests:', error);
-      return [];
-    }
-  },
-
-  async getUserRequests(userId) {
-    try {
-      const { data, error } = await supabase
-        .from('custom_designs')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.warn('Error fetching user custom requests:', error);
-        if (error.code === '42501' || error.message.includes('permission denied')) {
-          return [];
-        }
-        throw error;
-      }
-      return data || [];
-    } catch (error) {
-      console.error('Error in getUserRequests:', error);
-      return [];
-    }
-  },
-
-  async create(requestData) {
-    // Map our custom request data to the existing custom_designs table structure
-    const mappedData = {
-      user_id: requestData.user_id,
-      design_type: 'custom_request', // Use this to identify custom requests
-      description: requestData.description || '',
-      preferred_colors: requestData.colors || '',
-      size_requirements: requestData.sizes || '',
-      budget: null, // Set budget to null since we're storing the range in special_instructions
-      deadline: requestData.delivery_days ? new Date(Date.now() + requestData.delivery_days * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : null,
-      special_instructions: JSON.stringify({
-        occasion: requestData.occasion,
-        full_name: requestData.full_name,
-        email: requestData.email,
-        phone: requestData.phone,
-        delivery_days: requestData.delivery_days,
-        budget_range: requestData.budget_range // Store the budget range string here
-      }),
-      reference_images: requestData.image_url ? [requestData.image_url] : [],
-      contact_phone: requestData.phone || '',
-      status: 'pending'
-    };
-
+  async updateCustomDesignStatus(id, status) {
+    console.log('Updating custom design status:', id, status);
     const { data, error } = await supabase
       .from('custom_designs')
-      .insert([mappedData])
+      .update({ status })
+      .eq('id', id)
       .select()
       .single();
-
-    if (error) throw error;
+    
+    if (error) {
+      console.error('Error updating custom design status:', error);
+      throw error;
+    }
+    
+    console.log('Custom design status updated:', data);
     return data;
-  },
-
-  async updateStatus(requestId, status) {
-    const { data, error } = await supabase
-      .from('custom_designs')
-      .update({ 
-        status,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', requestId)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  },
-
-  async delete(requestId) {
-    const { error } = await supabase
-      .from('custom_designs')
-      .delete()
-      .eq('id', requestId);
-
-    if (error) throw error;
   }
-};
 
-// Site Settings Service
-export const siteSettingsService = {
-  async getSettings() {
+  // Site settings
+  async getSiteSettings() {
+    console.log('Fetching site settings...');
     const { data, error } = await supabase
       .from('site_settings')
       .select('*')
       .limit(1)
-      .maybeSingle();
-    
-    if (error) throw error;
-    
-    // Map database columns to expected format
-    if (data) {
-      return {
-        site_title: data.site_name || 'Dharika Fashion',
-        site_description: data.site_description || 'Premium ethnic wear collection',
-        contact_email: data.contact_email || '',
-        contact_phone: data.contact_phone || '',
-        // Check if JSONB columns exist, otherwise use defaults
-        promotional_messages: data.promotional_messages || [
-          { id: 1, text: "🎁 Welcome to our store! Explore our latest collection" },
-          { id: 2, text: "🚚 Free shipping on all orders above ₹2999" },
-          { id: 3, text: "⚡ New arrivals every week - Stay updated!" }
-        ],
-        hero_content: data.hero_content || [
-          {
-            id: 1,
-            title: "Royal Heritage Collection",
-            subtitle: "Timeless Tradition",
-            description: "Discover our exquisite collection of handcrafted ethnic wear",
-            image: "/hero-image.jpg",
-            primaryCta: "Explore Collection",
-            secondaryCta: "View Lookbook"
-          }
-        ],
-        footer_content: data.footer_content || {
-          company: "Dharika Fashion",
-          description: "Premium ethnic wear collection",
-          address: data.address || "123 Fashion Street, Mumbai, India",
-          phone: data.contact_phone || "+91 98765 43210",
-          email: data.contact_email || "info@dharikafashion.com"
-        },
-        social_media: {
-          facebook: data.social_facebook || "",
-          instagram: data.social_instagram || "",
-          whatsapp: data.social_whatsapp || ""
-        }
-      };
-    }
-    
-    // Return defaults if no data
-    return {
-      site_title: 'Dharika Fashion',
-      site_description: 'Premium ethnic wear collection',
-      contact_email: '',
-      contact_phone: '',
-      promotional_messages: [
-        { id: 1, text: "🎁 Welcome to our store! Explore our latest collection" },
-        { id: 2, text: "🚚 Free shipping on all orders above ₹2999" },
-        { id: 3, text: "⚡ New arrivals every week - Stay updated!" }
-      ],
-      hero_content: [
-        {
-          id: 1,
-          title: "Royal Heritage Collection",
-          subtitle: "Timeless Tradition",
-          description: "Discover our exquisite collection of handcrafted ethnic wear",
-          image: "/hero-image.jpg",
-          primaryCta: "Explore Collection",
-          secondaryCta: "View Lookbook"
-        }
-      ],
-      footer_content: {
-        company: "Dharika Fashion",
-        description: "Premium ethnic wear collection",
-        address: "123 Fashion Street, Mumbai, India",
-        phone: "+91 98765 43210",
-        email: "info@dharikafashion.com"
-      },
-      social_media: {
-        facebook: "",
-        instagram: "",
-        whatsapp: ""
-      }
-    };
-  },
-
-  async updateSettings(settings) {
-    try {
-      // First, check if we have any existing settings
-      const { data: existingData } = await supabase
-        .from('site_settings')
-        .select('id')
-        .limit(1)
-        .maybeSingle();
-
-      // Parse social media from JSON string if provided
-      let socialMedia = {};
-      if (settings.social_media) {
-        try {
-          socialMedia = typeof settings.social_media === 'string' 
-            ? JSON.parse(settings.social_media)
-            : settings.social_media;
-        } catch (e) {
-          console.warn('Failed to parse social media JSON:', e);
-          socialMedia = {};
-        }
-      }
-
-      // Base settings that always work
-      const baseSettings = {
-        site_name: settings.site_title || 'Dharika Fashion',
-        site_description: settings.site_description || 'Premium ethnic wear collection',
-        contact_email: settings.contact_email || '',
-        contact_phone: settings.contact_phone || '',
-        social_facebook: socialMedia.facebook || '',
-        social_instagram: socialMedia.instagram || '',
-        social_whatsapp: socialMedia.whatsapp || ''
-      };
-
-      // Try to add JSONB fields if they exist in the schema
-      const processedSettings = { ...baseSettings };
-      
-      // Only add JSONB fields if they are provided and we can parse them
-      if (settings.promotional_messages) {
-        try {
-          processedSettings.promotional_messages = typeof settings.promotional_messages === 'string' 
-            ? JSON.parse(settings.promotional_messages)
-            : settings.promotional_messages;
-        } catch (e) {
-          console.warn('Failed to parse promotional messages:', e);
-        }
-      }
-
-      if (settings.hero_content) {
-        try {
-          processedSettings.hero_content = typeof settings.hero_content === 'string'
-            ? JSON.parse(settings.hero_content)
-            : settings.hero_content;
-        } catch (e) {
-          console.warn('Failed to parse hero content:', e);
-        }
-      }
-
-      if (settings.footer_content) {
-        try {
-          processedSettings.footer_content = typeof settings.footer_content === 'string'
-            ? JSON.parse(settings.footer_content)
-            : settings.footer_content;
-        } catch (e) {
-          console.warn('Failed to parse footer content:', e);
-        }
-      }
-
-      let result;
-      if (existingData) {
-        // Update existing record
-        const { data, error } = await supabase
-          .from('site_settings')
-          .update(processedSettings)
-          .eq('id', existingData.id)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        result = data;
-      } else {
-        // Insert new record
-    const { data, error } = await supabase
-      .from('site_settings')
-          .insert(processedSettings)
-      .select()
       .single();
     
-    if (error) throw error;
-        result = data;
-      }
-
-      return result;
-    } catch (error) {
-      console.error('Error updating settings:', error);
-      throw error;
-    }
-  },
-
-  async getPromotionalMessages() {
-    try {
-      const settings = await this.getSettings();
-      return settings.promotional_messages || [];
-    } catch (error) {
-      console.error('Error fetching promotional messages:', error);
-      return [];
-    }
-  },
-
-  async updatePromotionalMessages(messages) {
-    try {
-      const settings = await this.getSettings();
-      const updatedSettings = {
-        ...settings,
-        promotional_messages: messages
-      };
-      return await this.updateSettings(updatedSettings);
-    } catch (error) {
-      console.error('Error updating promotional messages:', error);
-      throw error;
-    }
-  },
-
-  async getHeroContent() {
-    try {
-      const settings = await this.getSettings();
-      return settings.hero_content || [];
-    } catch (error) {
-      console.error('Error fetching hero content:', error);
-      return [];
-    }
-  },
-
-  async updateHeroContent(content) {
-    try {
-      const settings = await this.getSettings();
-      const updatedSettings = {
-        ...settings,
-        hero_content: content
-      };
-      return await this.updateSettings(updatedSettings);
-    } catch (error) {
-      console.error('Error updating hero content:', error);
-      throw error;
-    }
-  },
-
-  async getFooterContent() {
-    try {
-      const settings = await this.getSettings();
-      return settings.footer_content || {};
-    } catch (error) {
-      console.error('Error fetching footer content:', error);
-      return {};
-    }
-  },
-
-  async updateFooterContent(content) {
-    try {
-      const settings = await this.getSettings();
-      const updatedSettings = {
-        ...settings,
-        footer_content: content
-      };
-      return await this.updateSettings(updatedSettings);
-    } catch (error) {
-      console.error('Error updating footer content:', error);
-      throw error;
-    }
-  }
-};
-
-// Image Upload Service
-const imageUploadService = {
-  async uploadImage(file, folder = 'custom-requests') {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${folder}/${fileName}`;
-
-      // Try to upload the image
-      const { data, error } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
-
-      if (error) {
-        // If bucket doesn't exist, try to create it
-        if (error.message.includes('bucket') || error.message.includes('not found')) {
-          console.log('Images bucket not found, please create it in Supabase dashboard');
-          // For now, return a placeholder URL
-          return `https://via.placeholder.com/400x300?text=Upload+Image`;
+    if (error) {
+      console.error('Error fetching site settings:', error);
+      // Return default settings if none exist
+      return {
+        site_title: 'Dharika',
+        site_description: 'Premium Indian Traditional Wear',
+        contact_email: 'info@dharika.com',
+        contact_phone: '+91 9876543210',
+        promotional_messages: [
+          { id: 1, text: '🎁 Welcome to our store! Explore our latest collections' },
+          { id: 2, text: '🚚 Free shipping on all orders above ₹1999' },
+          { id: 3, text: '⚡ Ethnic Fits For Your 9AM to 9PM!' }
+        ],
+        hero_content: [
+          {
+            id: 1,
+            title: 'Royal Heritage Collection',
+            subtitle: 'Timeless Tradition',
+            description: 'Discover our exquisite collection of handcrafted ethnic wear',
+            primaryCta: 'Explore Collection',
+            secondaryCta: 'View Lookbook',
+            image: '/hero-image.jpg'
+          }
+        ],
+        footer_content: {
+          company: 'Dharika',
+          description: 'Blending ethnic wear into daily lives',
+          email: 'info@dharikafashion.com',
+          address: 'Near Ops Vidya Mandir, Ambala, Haryana, India'
+        },
+        social_media: {
+          facebook: 'https://facebook.com/dharikafashion',
+          instagram: 'https://instagram.com/dharikafashion',
+          whatsapp: 'https://wa.me/919876543210'
         }
+      };
+    }
+    
+    console.log('Site settings fetched:', data);
+    return data;
+  }
+
+  async updateSiteSettings(settingsData) {
+    console.log('Updating site settings:', settingsData);
+    
+    // First check if settings exist
+    const { data: existing } = await supabase
+      .from('site_settings')
+      .select('*')
+      .limit(1)
+      .single();
+    
+    if (existing) {
+      // Update existing settings
+      const { data, error } = await supabase
+        .from('site_settings')
+        .update(settingsData)
+        .eq('id', existing.id)
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Error updating site settings:', error);
         throw error;
       }
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath);
-
-      return publicUrl;
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      // Return a placeholder URL for now
-      return `https://via.placeholder.com/400x300?text=Upload+Failed`;
+      
+      console.log('Site settings updated:', data);
+      return data;
+    } else {
+      // Create new settings
+      const { data, error } = await supabase
+        .from('site_settings')
+        .insert([settingsData])
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Error creating site settings:', error);
+        throw error;
+      }
+      
+      console.log('Site settings created:', data);
+      return data;
     }
   }
-};
 
-// Default export that combines all services
-const supabaseService = {
-  // Product methods
-  getProducts: (filters) => productsService.getAll(filters),
-  getProductsForAdmin: () => productsService.getAll({ includeInactive: true }),
-  getFeaturedProducts: () => productsService.getAll({ featured: true }),
-  getProductById: (id) => productsService.getById(id),
-  createProduct: (product) => productsService.create(product),
-  updateProduct: (id, updates) => productsService.update(id, updates),
-  deleteProduct: (id) => productsService.delete(id),
-  searchProducts: (searchQuery, filters) => productsService.search(searchQuery, filters),
+  // File upload
+  async uploadFile(file, bucket = 'images', folder = '') {
+    console.log('Uploading file:', file.name, 'to bucket:', bucket);
+    
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = folder ? `${folder}/${fileName}` : fileName;
+    
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .upload(filePath, file);
+    
+    if (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(filePath);
+    
+    console.log('File uploaded successfully:', publicUrl);
+    return publicUrl;
+  }
 
-  // Category methods
-  getCategories: (includeInactive = false) => categoriesService.getAll(includeInactive),
-  getCategoriesForAdmin: () => categoriesService.getAll(true),
-  createCategory: (category) => categoriesService.create(category),
-  updateCategory: (id, updates) => categoriesService.update(id, updates),
-  deleteCategory: (id) => categoriesService.delete(id),
+  async deleteFile(filePath, bucket = 'images') {
+    console.log('Deleting file:', filePath, 'from bucket:', bucket);
+    
+    const { error } = await supabase.storage
+      .from(bucket)
+      .remove([filePath]);
+    
+    if (error) {
+      console.error('Error deleting file:', error);
+      throw error;
+    }
+    
+    console.log('File deleted successfully');
+  }
+}
 
-  // Cart methods
-  getCart: (userId) => cartService.getCart(userId),
-  addToCart: (userId, productId, quantity, size, color) => cartService.addItem(userId, productId, quantity, size, color),
-  updateCartQuantity: (itemId, quantity) => cartService.updateQuantity(itemId, quantity),
-  removeFromCart: (itemId) => cartService.removeItem(itemId),
-  clearCart: (userId) => cartService.clearCart(userId),
-
-  // Order methods
-  getOrders: () => ordersService.getAll(),
-  getUserOrders: (userId) => ordersService.getUserOrders(userId),
-  createOrder: (order, orderItems) => ordersService.create(order, orderItems),
-  updateOrderStatus: (orderId, status) => ordersService.updateStatus(orderId, status),
-  getOrderDetails: (orderId) => ordersService.getOrderDetails(orderId),
-
-  // Wishlist methods
-  getWishlist: (userId) => wishlistService.getWishlist(userId),
-  addToWishlist: (userId, productId) => wishlistService.addItem(userId, productId),
-  removeFromWishlist: (userId, productId) => wishlistService.removeItem(userId, productId),
-
-  // Custom Requests methods
-  getCustomRequests: () => customRequestsService.getAll(),
-  getUserCustomRequests: (userId) => customRequestsService.getUserRequests(userId),
-  createCustomRequest: (requestData) => customRequestsService.create(requestData),
-  updateCustomRequestStatus: (requestId, status) => customRequestsService.updateStatus(requestId, status),
-  deleteCustomRequest: (requestId) => customRequestsService.delete(requestId),
-
-  // Image Upload methods
-  uploadImage: (file, folder) => imageUploadService.uploadImage(file, folder),
-
-  // Site settings methods
-  getSettings: () => siteSettingsService.getSettings(),
-  updateSettings: (settings) => siteSettingsService.updateSettings(settings),
-  getPromotionalMessages: () => siteSettingsService.getPromotionalMessages(),
-  updatePromotionalMessages: (messages) => siteSettingsService.updatePromotionalMessages(messages),
-  getHeroContent: () => siteSettingsService.getHeroContent(),
-  updateHeroContent: (content) => siteSettingsService.updateHeroContent(content),
-  getFooterContent: () => siteSettingsService.getFooterContent(),
-  updateFooterContent: (content) => siteSettingsService.updateFooterContent(content),
-};
-
+export const supabaseService = new SupabaseService();
 export default supabaseService;
-export { supabaseService };
