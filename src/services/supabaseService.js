@@ -80,7 +80,7 @@ class SupabaseService {
     
     let query = supabase
       .from('products')
-      .select('*, category:categories(id, name, slug)');
+      .select('*, categories!products_category_id_fkey(id, name, slug)');
 
     // Apply filters
     if (!filters.includeInactive) {
@@ -114,7 +114,7 @@ class SupabaseService {
     console.log('Fetching product by ID:', id);
     const { data, error } = await supabase
       .from('products')
-      .select('*, category:categories(id, name, slug)')
+      .select('*, categories!products_category_id_fkey(id, name, slug)')
       .eq('id', id)
       .single();
     
@@ -141,7 +141,7 @@ class SupabaseService {
     const { data, error } = await supabase
       .from('products')
       .insert([formattedData])
-      .select('*, category:categories(id, name, slug)')
+      .select('*, categories!products_category_id_fkey(id, name, slug)')
       .single();
     
     if (error) {
@@ -168,7 +168,7 @@ class SupabaseService {
       .from('products')
       .update(formattedData)
       .eq('id', id)
-      .select('*, category:categories(id, name, slug)')
+      .select('*, categories!products_category_id_fkey(id, name, slug)')
       .single();
     
     if (error) {
@@ -366,7 +366,7 @@ class SupabaseService {
     console.log('Fetching featured products...');
     const { data, error } = await supabase
       .from('products')
-      .select('*, category:categories(id, name, slug)')
+      .select('*, categories!products_category_id_fkey(id, name, slug)')
       .eq('is_active', true)
       .eq('featured', true)
       .order('created_at', { ascending: false });

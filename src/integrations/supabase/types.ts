@@ -59,6 +59,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          design_template: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -70,6 +71,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          design_template?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -81,6 +83,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          design_template?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -97,9 +100,13 @@ export type Database = {
           contact_phone: string | null
           created_at: string
           deadline: string | null
+          delivery_days: number | null
           description: string | null
           design_type: string | null
+          email: string | null
+          full_name: string | null
           id: string
+          occasion: string | null
           preferred_colors: string | null
           reference_images: string[] | null
           size_requirements: string | null
@@ -113,9 +120,13 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           deadline?: string | null
+          delivery_days?: number | null
           description?: string | null
           design_type?: string | null
+          email?: string | null
+          full_name?: string | null
           id?: string
+          occasion?: string | null
           preferred_colors?: string | null
           reference_images?: string[] | null
           size_requirements?: string | null
@@ -129,9 +140,13 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           deadline?: string | null
+          delivery_days?: number | null
           description?: string | null
           design_type?: string | null
+          email?: string | null
+          full_name?: string | null
           id?: string
+          occasion?: string | null
           preferred_colors?: string | null
           reference_images?: string[] | null
           size_requirements?: string | null
