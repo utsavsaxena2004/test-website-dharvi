@@ -19,6 +19,7 @@ import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingShareButton from './components/FloatingShareButton';
 import Gallery from './components/Gallery';
+import AboutDharika from './components/AboutDharika';
 
 
 // Pages
@@ -71,6 +72,9 @@ const AppContent = () => {
                   
                   {/* Gallery Section */}
                   <Gallery />
+                  
+                  {/* About Dharika Section */}
+                  <AboutDharika />
                   
                   <CustomDesignShowcase />
                   
