@@ -80,6 +80,26 @@ class RazorpayService {
             ondismiss: () => {
               reject(new Error('Payment cancelled by user'));
             }
+          },
+          // Add config for better development experience
+          config: {
+            display: {
+              blocks: {
+                banks: {
+                  name: 'Pay using netbanking',
+                  instruments: [
+                    {
+                      method: 'netbanking',
+                      banks: ['HDFC', 'ICICI', 'SBI', 'AXIS']
+                    }
+                  ]
+                }
+              },
+              sequence: ['block.banks'],
+              preferences: {
+                show_default_blocks: true
+              }
+            }
           }
         };
 
