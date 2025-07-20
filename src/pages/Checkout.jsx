@@ -160,7 +160,7 @@ const Checkout = () => {
       const orderItems = cartItems.map(item => ({
         product_id: item.product_id,
         quantity: item.quantity,
-        price: item.products?.price || 0,
+        price: item.products?.price || item.master_products?.price || 0,
         size: item.size,
         color: item.color
       }));
@@ -183,15 +183,6 @@ const Checkout = () => {
         shipping_phone: shippingData.phone,
         notes: `Customer: ${shippingData.full_name}, Email: ${shippingData.email}`
       };
-
-      // Prepare order items from cart items
-      const orderItems = cartItems.map(item => ({
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price: item.products?.price || item.master_products?.price || 0,
-        size: item.size,
-        color: item.color
-      }));
 
       const order = await supabaseService.createOrder(orderData, orderItems);
       return order;
