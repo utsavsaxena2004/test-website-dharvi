@@ -1,11 +1,9 @@
 // Razorpay Payment Service
 import { supabaseService } from './supabaseService';
+import { supabase } from '../integrations/supabase/client';
 
 class RazorpayService {
   constructor() {
-    // Using test keys for now - replace with live keys for production
-    this.keyId = 'rzp_live_wgFZDVL2uCQlLu';
-    this.keySecret = 'WLhFiat4BQ6M5Qk0BlZ6Mg8Q';
     this.isLoaded = false;
     this.loadPromise = null;
   }
@@ -25,13 +23,13 @@ class RazorpayService {
 
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.crossOrigin = 'anonymous'; // Add crossOrigin attribute
+      script.crossOrigin = 'anonymous';
       script.onload = () => {
         this.isLoaded = true;
         resolve(window.Razorpay);
       };
       script.onerror = () => {
-        console.warn('Razorpay script failed to load - this is normal in development');
+        console.warn('Razorpay script failed to load');
         reject(new Error('Failed to load Razorpay script'));
       };
       document.head.appendChild(script);
@@ -40,19 +38,54 @@ class RazorpayService {
     return this.loadPromise;
   }
 
+  // Create Razorpay order using edge function
+  async createOrder(amount, currency = 'INR', notes = {}) {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-razorpay-order', {
+        body: {
+          amount,
+          currency,
+          notes
+        }
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to create order');
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to create order');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error creating Razorpay order:', error);
+      throw error;
+    }
+  }
+
   // Process payment using Razorpay checkout
   async processPayment(paymentData) {
     try {
       await this.loadRazorpay();
 
+      // Create order first
+      const orderData = await this.createOrder(
+        paymentData.amount,
+        'INR',
+        paymentData.notes || {}
+      );
+
       return new Promise((resolve, reject) => {
         const options = {
-          key: this.keyId,
-          amount: Math.round(paymentData.amount * 100), // Convert to paisa
-          currency: 'INR',
+          key: orderData.key_id,
+          amount: orderData.amount,
+          currency: orderData.currency,
+          order_id: orderData.order_id,
           name: 'Dharika Fashion',
           description: paymentData.description || 'Purchase from Dharika Fashion',
-          image: '/logo.png', // Your logo URL
+          image: '/logo.png',
           
           handler: async (response) => {
             try {
@@ -61,7 +94,7 @@ class RazorpayService {
                 success: true,
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
-                orderId: response.razorpay_order_id || this.generateOrderId()
+                orderId: response.razorpay_order_id
               });
             } catch (error) {
               reject(error);
@@ -81,21 +114,32 @@ class RazorpayService {
               reject(new Error('Payment cancelled by user'));
             }
           },
-          // Add config for better development experience
+          // Enhanced payment methods
           config: {
             display: {
               blocks: {
                 banks: {
-                  name: 'Pay using netbanking',
+                  name: 'Pay via Bank Account',
                   instruments: [
                     {
+                      method: 'upi'
+                    },
+                    {
                       method: 'netbanking',
-                      banks: ['HDFC', 'ICICI', 'SBI', 'AXIS']
+                      banks: ['HDFC', 'ICICI', 'SBI', 'AXIS', 'KOTAK']
+                    }
+                  ]
+                },
+                cards: {
+                  name: 'Pay with Cards',
+                  instruments: [
+                    {
+                      method: 'card'
                     }
                   ]
                 }
               },
-              sequence: ['block.banks'],
+              sequence: ['block.banks', 'block.cards'],
               preferences: {
                 show_default_blocks: true
               }
@@ -122,7 +166,7 @@ class RazorpayService {
       const updatedOrder = await supabaseService.updateOrderStatus(
         orderData.id, 
         'completed', 
-        'completed'  // Set payment_status to completed
+        'completed'
       );
 
       console.log('Order status updated to completed:', updatedOrder);
@@ -133,15 +177,15 @@ class RazorpayService {
         updated_at: new Date().toISOString()
       };
 
-      // Add payment details to notes (preserve existing notes if any)
+      // Add payment details to notes
       const existingOrder = await supabaseService.getOrderDetails(orderData.id);
       const paymentInfo = {
         razorpay_payment_id: paymentResponse.paymentId,
         razorpay_signature: paymentResponse.signature,
+        razorpay_order_id: paymentResponse.orderId,
         payment_completed_at: new Date().toISOString()
       };
 
-      // If there are existing notes, append payment info
       if (existingOrder && existingOrder.notes) {
         updateData.notes = `${existingOrder.notes} | Payment: ${JSON.stringify(paymentInfo)}`;
       } else {
@@ -180,22 +224,16 @@ class RazorpayService {
     return `receipt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Generate order ID (for frontend use)
-  generateOrderId() {
-    return `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  // Verify payment (basic verification - in production, do this on backend)
+  // Verify payment (basic verification)
   async verifyPayment(paymentResponse) {
     try {
-      // In a real application, this verification should be done on the backend
-      // For now, we'll assume the payment is valid if we receive the response
       console.log('Payment verification:', paymentResponse);
       
       return {
         verified: true,
         paymentId: paymentResponse.razorpay_payment_id,
-        signature: paymentResponse.razorpay_signature
+        signature: paymentResponse.razorpay_signature,
+        orderId: paymentResponse.razorpay_order_id
       };
     } catch (error) {
       console.error('Error verifying payment:', error);
@@ -204,4 +242,4 @@ class RazorpayService {
   }
 }
 
-export default new RazorpayService(); 
+export default new RazorpayService();
