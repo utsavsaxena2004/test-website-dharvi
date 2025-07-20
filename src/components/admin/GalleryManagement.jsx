@@ -31,6 +31,9 @@ const GalleryManagement = () => {
   const [editingImage, setEditingImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState({});
+  const [dragActive, setDragActive] = useState(false);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -69,7 +72,162 @@ const GalleryManagement = () => {
     }));
   };
 
-  const handleImageUpload = async (e) => {
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+      setSelectedFiles(files);
+      setShowForm(true);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
+    setSelectedFiles(files);
+    if (files.length > 0) {
+      setShowForm(true);
+    }
+  };
+
+  const uploadSingleImage = async (file, index) => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}-${Date.now()}.${fileExt}`;
+      const filePath = `gallery/${fileName}`;
+
+      // Update progress
+      setUploadProgress(prev => ({
+        ...prev,
+        [index]: { status: 'uploading', progress: 0 }
+      }));
+
+      const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+
+      // Update progress
+      setUploadProgress(prev => ({
+        ...prev,
+        [index]: { status: 'processing', progress: 50 }
+      }));
+
+      return publicUrl;
+    } catch (error) {
+      setUploadProgress(prev => ({
+        ...prev,
+        [index]: { status: 'error', progress: 0 }
+      }));
+      throw error;
+    }
+  };
+
+  const handleBulkUpload = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.title.trim()) {
+      toast({
+        title: "Error",
+        description: "Title is required for bulk upload",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (selectedFiles.length === 0) {
+      toast({
+        title: "Error", 
+        description: "Please select at least one image",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const uploadPromises = selectedFiles.map((file, index) => uploadSingleImage(file, index));
+      
+      const imageUrls = await Promise.all(uploadPromises);
+      
+      // Create gallery entries for all images
+      const imageData = {
+        title: formData.title,
+        description: formData.description,
+        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(Boolean) : [],
+        is_active: formData.is_active
+      };
+
+      const createPromises = imageUrls.map((imageUrl, index) => {
+        setUploadProgress(prev => ({
+          ...prev,
+          [index]: { status: 'saving', progress: 75 }
+        }));
+        
+        return supabaseService.createGalleryImage({
+          ...imageData,
+          image_url: imageUrl,
+          title: selectedFiles.length > 1 ? `${formData.title} ${index + 1}` : formData.title
+        });
+      });
+
+      await Promise.all(createPromises);
+
+      // Mark all as complete
+      selectedFiles.forEach((_, index) => {
+        setUploadProgress(prev => ({
+          ...prev,
+          [index]: { status: 'complete', progress: 100 }
+        }));
+      });
+
+      toast({
+        title: "Success",
+        description: `${selectedFiles.length} image(s) uploaded successfully`
+      });
+
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        image_url: '',
+        tags: '',
+        is_active: true
+      });
+      setSelectedFiles([]);
+      setUploadProgress({});
+      setShowForm(false);
+      fetchGalleryImages();
+    } catch (error) {
+      console.error('Error in bulk upload:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload some images",
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSingleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -112,6 +270,11 @@ const GalleryManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Handle bulk upload if multiple files selected
+    if (selectedFiles.length > 0) {
+      return handleBulkUpload(e);
+    }
     
     if (!formData.title.trim() || !formData.image_url.trim()) {
       toast({
@@ -224,26 +387,96 @@ const GalleryManagement = () => {
       tags: '',
       is_active: true
     });
+    setSelectedFiles([]);
+    setUploadProgress({});
     setShowForm(false);
     setEditingImage(null);
   };
 
   return (
-    <div className="space-y-6">
+    <div 
+      className="space-y-6"
+      onDragEnter={handleDrag}
+      onDragLeave={handleDrag}
+      onDragOver={handleDrag}
+      onDrop={handleDrop}
+    >
+      {/* Drag and Drop Overlay */}
+      {dragActive && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-8 text-center border-2 border-dashed border-[#6f0e06] max-w-md mx-4">
+            <Upload className="w-16 h-16 text-[#6f0e06] mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Drop Images Here</h3>
+            <p className="text-gray-600">Release to upload multiple images at once</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-3">
           <Camera className="w-6 h-6 text-[#6f0e06]" />
           <h2 className="text-2xl font-bold text-gray-900">Gallery Management</h2>
         </div>
-        <Button
-          onClick={() => setShowForm(true)}
-          className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Image
-        </Button>
+        <div className="flex space-x-3">
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+            id="bulk-upload"
+          />
+          <label
+            htmlFor="bulk-upload"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Bulk Upload
+          </label>
+          <Button
+            onClick={() => setShowForm(true)}
+            className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Single Image
+          </Button>
+        </div>
       </div>
+
+      {/* Drag and Drop Zone */}
+      {!showForm && (
+        <div 
+          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+            dragActive 
+              ? 'border-[#6f0e06] bg-rose-50' 
+              : 'border-gray-300 hover:border-[#6f0e06] hover:bg-rose-50'
+          }`}
+        >
+          <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Drag and drop images here, or click to select
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Support for multiple images upload with shared title and tags
+          </p>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+            id="drag-drop-upload"
+          />
+          <label
+            htmlFor="drag-drop-upload"
+            className="inline-flex items-center px-6 py-3 bg-[#6f0e06] hover:bg-[#9a1549] text-white rounded-lg cursor-pointer transition-colors"
+          >
+            <ImageIcon className="w-5 h-5 mr-2" />
+            Choose Images
+          </label>
+        </div>
+      )}
 
       {/* Add/Edit Form */}
       {showForm && (
@@ -251,18 +484,77 @@ const GalleryManagement = () => {
           <CardHeader>
             <CardTitle className="flex items-center">
               <ImageIcon className="w-5 h-5 mr-2" />
-              {editingImage ? 'Edit Image' : 'Add New Image'}
+              {editingImage ? 'Edit Image' : selectedFiles.length > 0 ? `Upload ${selectedFiles.length} Images` : 'Add New Image'}
             </CardTitle>
             <CardDescription>
-              {editingImage ? 'Update the gallery image details' : 'Add a new image to the gallery'}
+              {editingImage 
+                ? 'Update the gallery image details' 
+                : selectedFiles.length > 0 
+                  ? `Upload ${selectedFiles.length} images with shared title and tags`
+                  : 'Add a new image to the gallery'
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Selected Files Preview */}
+            {selectedFiles.length > 0 && (
+              <div className="mb-6">
+                <h4 className="font-medium text-gray-900 mb-3">Selected Images ({selectedFiles.length})</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-h-48 overflow-y-auto">
+                  {selectedFiles.map((file, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-20 object-cover rounded-lg border border-gray-200"
+                      />
+                      <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center text-white text-xs">
+                        {uploadProgress[index] ? (
+                          <div className="text-center">
+                            <div className="text-xs font-medium">
+                              {uploadProgress[index].status === 'uploading' && 'Uploading...'}
+                              {uploadProgress[index].status === 'processing' && 'Processing...'}
+                              {uploadProgress[index].status === 'saving' && 'Saving...'}
+                              {uploadProgress[index].status === 'complete' && '✓ Complete'}
+                              {uploadProgress[index].status === 'error' && '✗ Error'}
+                            </div>
+                            {uploadProgress[index].progress > 0 && (
+                              <div className="w-full bg-gray-700 rounded-full h-1 mt-1">
+                                <div 
+                                  className="bg-white h-1 rounded-full transition-all duration-300"
+                                  style={{ width: `${uploadProgress[index].progress}%` }}
+                                ></div>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="font-medium">{index + 1}</span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newFiles = selectedFiles.filter((_, i) => i !== index);
+                          setSelectedFiles(newFiles);
+                          if (newFiles.length === 0) {
+                            setShowForm(false);
+                          }
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Title *
+                    Title * {selectedFiles.length > 1 && <span className="text-xs text-gray-500">(will be numbered for multiple images)</span>}
                   </label>
                   <Input
                     name="title"
@@ -299,31 +591,34 @@ const GalleryManagement = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Image Upload *
-                </label>
-                <div className="space-y-2">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-rose-50 file:text-[#6f0e06] hover:file:bg-rose-100"
-                  />
-                  {uploading && (
-                    <p className="text-sm text-gray-600">Uploading image...</p>
-                  )}
-                  {formData.image_url && (
-                    <div className="mt-2">
-                      <img
-                        src={formData.image_url}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover rounded-lg border border-gray-200"
-                      />
-                    </div>
-                  )}
+              {/* Single Image Upload (only show if no files selected and not editing) */}
+              {selectedFiles.length === 0 && !editingImage && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Single Image Upload *
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSingleImageUpload}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-rose-50 file:text-[#6f0e06] hover:file:bg-rose-100"
+                    />
+                    {uploading && (
+                      <p className="text-sm text-gray-600">Uploading image...</p>
+                    )}
+                    {formData.image_url && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.image_url}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex items-center space-x-2">
                 <input
@@ -341,11 +636,18 @@ const GalleryManagement = () => {
               <div className="flex space-x-3">
                 <Button
                   type="submit"
-                  disabled={uploading}
+                  disabled={uploading || (selectedFiles.length === 0 && !formData.image_url && !editingImage)}
                   className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  {editingImage ? 'Update Image' : 'Add Image'}
+                  {uploading 
+                    ? 'Uploading...' 
+                    : editingImage 
+                      ? 'Update Image' 
+                      : selectedFiles.length > 0 
+                        ? `Upload ${selectedFiles.length} Images`
+                        : 'Add Image'
+                  }
                 </Button>
                 <Button
                   type="button"
