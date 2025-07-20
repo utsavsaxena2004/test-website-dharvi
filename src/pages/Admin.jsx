@@ -595,19 +595,19 @@ const Admin = () => {
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6f0e06] mx-auto"></div>
                       <p className="text-gray-600 mt-2">Loading items...</p>
                     </div>
-                  ) : orderDetails && orderDetails.length > 0 ? (
+                  ) : orderDetails && orderDetails.order_items && orderDetails.order_items.length > 0 ? (
                     <div className="space-y-4">
-                      {orderDetails.map((item) => (
+                      {orderDetails.order_items.map((item) => (
                         <div key={item.id} className="flex items-center space-x-4 p-3 bg-white rounded-lg border border-gray-200">
                           <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                             <img 
-                              src={item.image_url} 
-                              alt={item.name}
+                              src={item.products?.image_urls?.[0] || '/placeholder-product.jpg'} 
+                              alt={item.products?.name || 'Product'}
                               className="w-full h-full object-cover"
                             />
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{item.name}</h4>
+                            <h4 className="font-medium text-gray-900">{item.products?.name || 'Unknown Product'}</h4>
                             <div className="text-sm text-gray-600 space-y-1">
                               {item.color && <p>Color: {item.color}</p>}
                               {item.size && <p>Size: {item.size}</p>}
