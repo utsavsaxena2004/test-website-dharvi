@@ -790,17 +790,26 @@ class SupabaseService {
   // File upload
   async uploadFile(file, bucket = 'images', folder = '') {
     console.log('Uploading file:', file.name, 'to bucket:', bucket);
+    console.log('File type:', file.type);
+    console.log('File size:', file.size);
+    console.log('Target folder:', folder);
     
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = folder ? `${folder}/${fileName}` : fileName;
     
+    console.log('Upload path:', filePath);
+    
     const { data, error } = await supabase.storage
       .from(bucket)
-      .upload(filePath, file);
+      .upload(filePath, file, {
+        contentType: file.type,
+        upsert: false
+      });
     
     if (error) {
       console.error('Error uploading file:', error);
+      console.error('Error details:', error.message);
       throw error;
     }
     
