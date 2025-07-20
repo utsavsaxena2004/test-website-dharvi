@@ -3,8 +3,8 @@ import { supabaseService } from './supabaseService';
 
 class RazorpayService {
   constructor() {
-    this.keyId = 'rzp_test_TadG5QWoYmIZo6';
-    this.keySecret = 'o6JKWT31nQMeck5P6JxiS0Wn';
+    this.keyId = 'rzp_live_wgFZDVL2uCQlLu';
+    this.keySecret = 'WLhFiat4BQ6M5Qk0BlZ6Mg8Q';
     this.isLoaded = false;
     this.loadPromise = null;
   }
