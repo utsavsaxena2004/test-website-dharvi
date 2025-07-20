@@ -28,6 +28,7 @@ const DynamicNavbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [dropdownTimeout, setDropdownTimeout] = useState(null);
   const { user, profile, logout } = useAuth();
   const { cartSummary } = useCart();
   const { wishlistSummary } = useWishlist();
@@ -101,6 +102,25 @@ const DynamicNavbar = () => {
     setSearchQuery(e.target.value);
   };
 
+  const handleUserDropdownEnter = () => {
+    if (dropdownTimeout) {
+      clearTimeout(dropdownTimeout);
+      setDropdownTimeout(null);
+    }
+    setShowUserDropdown(true);
+  };
+
+  const handleUserDropdownLeave = () => {
+    const timeout = setTimeout(() => {
+      setShowUserDropdown(false);
+    }, 200);
+    setDropdownTimeout(timeout);
+  };
+
+  const toggleUserDropdown = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
   return (
     <header className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-gray-800 shadow-lg top-0 z-50">
       {/* Top Bar */}
@@ -168,31 +188,42 @@ const DynamicNavbar = () => {
             <div className="flex items-center gap-4">
               <div 
                 className="relative"
-                onMouseEnter={() => setShowUserDropdown(true)}
-                onMouseLeave={() => setShowUserDropdown(false)}
+                onMouseEnter={handleUserDropdownEnter}
+                onMouseLeave={handleUserDropdownLeave}
               >
-                <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] hover:text-amber-600 transition duration-300 cursor-pointer">
-                  {profile?.full_name || user.email}
-                </span>
+                <div
+                  className="flex items-center gap-1 cursor-pointer group"
+                  onClick={toggleUserDropdown}
+                >
+                  <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] group-hover:text-amber-600 transition duration-300">
+                    {profile?.full_name || user.email}
+                  </span>
+                  <ChevronDownIcon className={`h-4 w-4 text-gray-600 group-hover:text-amber-600 transition-all duration-300 ${showUserDropdown ? 'rotate-180' : ''}`} />
+                </div>
                 
                 {/* User Dropdown */}
                 {showUserDropdown && (
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div 
+                    className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                    onMouseEnter={handleUserDropdownEnter}
+                    onMouseLeave={handleUserDropdownLeave}
+                  >
                     <Link
                       to="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
+                      className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
                       onClick={() => setShowUserDropdown(false)}
                     >
-                      My Orders
+                      📦 My Orders
                     </Link>
+                    <div className="border-t border-gray-100 mx-2"></div>
                     <button
                       onClick={() => {
                         setShowUserDropdown(false);
                         logout();
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
+                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
                     >
-                      Logout
+                      🚪 Logout
                     </button>
                   </div>
                 )}
