@@ -18,7 +18,7 @@ import {
   StarIcon,
   EyeIcon
 } from '@heroicons/react/24/outline';
-import CuratedProductCard from '../components/CuratedProductCard';
+import ProductCard from '../components/ProductCard';
 import ProductQuickView from '../components/ProductQuickView';
 import { supabaseService } from '../services/supabaseService';
 
@@ -471,14 +471,14 @@ const CuratedCollection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
               >
-                <CuratedProductCard
+                <ProductCard
                   product={{
                     ...product,
                     image_urls: product.image_urls || [],
                     colors: product.colors || [],
                   }}
-                  onProductClick={() => handleProductClick(product)}
                   onQuickView={() => handleQuickView(product)}
+                  onClick={() => handleProductClick(product)}
                 />
               </motion.div>
             ))}

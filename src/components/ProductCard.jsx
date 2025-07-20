@@ -12,7 +12,8 @@ const ProductCard = ({
   onAddToCart, 
   className = "",
   showQuickView = true,
-  showAddToCart = true 
+  showAddToCart = true,
+  onClick // Add onClick prop for custom navigation
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -171,8 +172,10 @@ const ProductCard = ({
   };
 
   const handleCardClick = () => {
-    // Open quick view modal instead of navigating
-    if (onQuickView) {
+    // If custom onClick is provided, use it; otherwise open quick view
+    if (onClick) {
+      onClick(product);
+    } else if (onQuickView) {
       onQuickView(product);
     }
   };
