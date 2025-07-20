@@ -1907,37 +1907,7 @@ const Admin = () => {
                 </p>
               </div>
 
-              {/* Hero Content - Now fully functional */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Hero Content (JSON format) ✅
-                </label>
-                <Textarea
-                  value={formData.hero_content}
-                  onChange={(e) => setFormData({...formData, hero_content: e.target.value})}
-                  placeholder='[{"title": "Hero Title", "subtitle": "Hero Subtitle", "image": "image-url"}]'
-                  className="border-rose-200 focus:border-[#6f0e06] h-32 font-mono text-sm"
-                />
-                <p className="text-xs text-green-600 mt-1">
-                  ✅ This field is now fully functional! Changes will be reflected on the website.
-                </p>
-              </div>
 
-              {/* Footer Content - Now fully functional */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Footer Content (JSON format) ✅
-                </label>
-                <Textarea
-                  value={formData.footer_content}
-                  onChange={(e) => setFormData({...formData, footer_content: e.target.value})}
-                  placeholder='{"company": "Dharika", "description": "Premium Indian Traditional Wear", "address": "123 Fashion Street, Mumbai, Maharashtra, India", "email": "contact@dharika.co.in"}'
-                  className="border-rose-200 focus:border-[#6f0e06] h-24 font-mono text-sm"
-                />
-                <p className="text-xs text-green-600 mt-1">
-                  ✅ This field is now fully functional! Changes will be reflected on the website.
-                </p>
-              </div>
 
               <div className="flex space-x-2 pt-4">
                 <Button 
