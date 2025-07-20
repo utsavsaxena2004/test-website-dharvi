@@ -574,6 +574,21 @@ class SupabaseService {
     return data;
   }
 
+  async deleteCustomRequest(id) {
+    console.log('Deleting custom design request:', id);
+    const { error } = await supabase
+      .from('custom_designs')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting custom design request:', error);
+      throw error;
+    }
+    
+    console.log('Custom design request deleted');
+  }
+
   // Site settings
   async getSiteSettings() {
     console.log('Fetching site settings...');
@@ -628,6 +643,10 @@ class SupabaseService {
   // Add alias for compatibility
   async getSettings() {
     return this.getSiteSettings();
+  }
+
+  async updateSettings(settingsData) {
+    return this.updateSiteSettings(settingsData);
   }
 
   async updateSiteSettings(settingsData) {
