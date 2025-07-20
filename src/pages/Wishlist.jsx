@@ -166,7 +166,7 @@ const WishlistPage = () => {
       </div>
       
       {/* Main content */}
-      <div className="relative pt-24 pb-20 px-4 z-10">
+      <div className="relative pt-16 sm:pt-20 lg:pt-24 pb-20 px-3 sm:px-4 z-10">
         {/* Elegant gold accents */}
         <div className="absolute top-0 left-0 right-0 h-32 overflow-hidden pointer-events-none">
           <GoldenAccent className="absolute -top-24 left-1/2 -translate-x-1/2 w-full max-w-6xl" />
@@ -188,7 +188,7 @@ const WishlistPage = () => {
           >
             <div className="relative inline-block">
               <motion.h1 
-                className="text-5xl sm:text-6xl md:text-7xl font-serif text-gray-900 tracking-tight"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif text-gray-900 tracking-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
@@ -211,8 +211,8 @@ const WishlistPage = () => {
               />
             </div>
             
-          <motion.p 
-              className="mt-6 text-gray-600 max-w-2xl mx-auto font-light"
+           <motion.p 
+              className="mt-4 sm:mt-6 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto font-light px-4 sm:px-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1 }}
@@ -221,7 +221,7 @@ const WishlistPage = () => {
           </motion.p>
           </motion.header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
             {/* Left column - Wishlist items */}
             <div className="lg:col-span-2 space-y-8">
               {/* Wishlist items card */}
@@ -233,11 +233,11 @@ const WishlistPage = () => {
               >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-400 via-red-400 to-pink-400" />
                 
-                <div className="p-8">
-                  <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-serif text-gray-800">Saved Items</h2>
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <div className="flex items-center justify-between mb-6 sm:mb-8">
+                    <h2 className="text-xl sm:text-2xl font-serif text-gray-800">Saved Items</h2>
                     <div className="flex items-center space-x-4">
-                      <span className="text-sm text-gray-400 font-light">
+                      <span className="text-xs sm:text-sm text-gray-400 font-light">
                         {wishlistSummary.itemCount} {wishlistSummary.itemCount === 1 ? 'Item' : 'Items'}
                       </span>
                     </div>
@@ -377,13 +377,14 @@ const WishlistPage = () => {
                   ) : (
                     // Wishlist items
                     <div className="space-y-6">
-                      <div className="grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
+                      {/* Desktop Table Header */}
+                      <div className="hidden md:grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
                         <div className="col-span-6">Product</div>
                         <div className="col-span-2 text-center">Price</div>
                         <div className="col-span-2 text-center">Actions</div>
                         <div className="col-span-2 text-right">Remove</div>
-                  </div>
-                  
+                      </div>
+                      
                       <AnimatePresence>
                         {wishlistItems.map((item) => (
                           <motion.div
@@ -391,55 +392,102 @@ const WishlistPage = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            className="grid grid-cols-12 items-center py-4 border-b border-gray-100"
+                            className="bg-white border border-gray-200 rounded-xl overflow-hidden md:bg-transparent md:border-0 md:rounded-none"
                           >
-                            {/* Product Info */}
-                            <div className="col-span-6 flex items-center space-x-4">
-                              <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                                <img
-                                  src={item.products?.image_urls?.[0] || item.products?.image || '/placeholder-image.jpg'}
-                                  alt={item.products?.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div>
-                                <h3 className="font-medium text-gray-900">{item.products?.name}</h3>
-                                <div className="text-sm text-gray-500 space-y-1">
-                                  {item.products?.category_name && <p>Category: {item.products.category_name}</p>}
-                                  {item.products?.description && (
-                                    <p className="line-clamp-2">{item.products.description}</p>
-                                  )}
+                            {/* Mobile Card Layout */}
+                            <div className="block md:hidden p-4 space-y-4">
+                              <div className="flex items-start space-x-4">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                  <img
+                                    src={item.products?.image_urls?.[0] || item.master_products?.image_urls?.[0] || item.products?.image || '/placeholder-image.jpg'}
+                                    alt={item.products?.name || item.master_products?.name}
+                                    className="w-full h-full object-cover"
+                                  />
                                 </div>
-                      </div>
-                    </div>
-                    
-                            {/* Price */}
-                            <div className="col-span-2 text-center">
-                              <span className="font-medium text-gray-900">
-                                {formatPrice(item.products?.price)}
-                              </span>
-                    </div>
-                    
-                            {/* Actions */}
-                            <div className="col-span-2 text-center">
-                      <button
-                                onClick={() => handleAddToCart(item.products)}
-                                className="px-4 py-2 bg-[#6f0e06] text-white rounded-md hover:bg-[#9a1549] transition-colors duration-300 text-sm"
-                              >
-                                Add to Cart
-                      </button>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                                    {item.products?.name || item.master_products?.name}
+                                  </h3>
+                                  <div className="text-xs sm:text-sm text-gray-500 mt-1">
+                                    {item.products?.category_name && <p>Category: {item.products.category_name}</p>}
+                                    <p className="font-semibold text-gray-900 mt-1">
+                                      {formatPrice(item.products?.price || item.master_products?.price)}
+                                    </p>
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => handleRemoveItem(item.product_id || item.master_product_id)}
+                                  className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors duration-300 flex-shrink-0"
+                                >
+                                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div className="flex justify-center">
+                                <button
+                                  onClick={() => handleAddToCart(item.products || item.master_products)}
+                                  className="w-full sm:w-auto px-4 py-2 bg-[#6f0e06] text-white rounded-md hover:bg-[#9a1549] transition-colors duration-300 text-sm font-medium"
+                                >
+                                  Add to Cart
+                                </button>
+                              </div>
                             </div>
-                      
-                            {/* Remove */}
-                            <div className="col-span-2 text-right">
-                      <button
-                                onClick={() => handleRemoveItem(item.product_id)}
-                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors duration-300"
-                              >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                      </button>
+
+                            {/* Desktop Table Layout */}
+                            <div className="hidden md:grid grid-cols-12 items-center py-4 border-b border-gray-100">
+                              {/* Product Info */}
+                              <div className="col-span-6 flex items-center space-x-4">
+                                <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                  <img
+                                    src={item.products?.image_urls?.[0] || item.master_products?.image_urls?.[0] || item.products?.image || '/placeholder-image.jpg'}
+                                    alt={item.products?.name || item.master_products?.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-medium text-gray-900 truncate">
+                                    {item.products?.name || item.master_products?.name}
+                                  </h3>
+                                  <div className="text-sm text-gray-500 space-y-1">
+                                    {item.products?.category_name && <p>Category: {item.products.category_name}</p>}
+                                    {(item.products?.description || item.master_products?.description) && (
+                                      <p className="line-clamp-2">
+                                        {item.products?.description || item.master_products?.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* Price */}
+                              <div className="col-span-2 text-center">
+                                <span className="font-medium text-gray-900">
+                                  {formatPrice(item.products?.price || item.master_products?.price)}
+                                </span>
+                              </div>
+                              
+                              {/* Actions */}
+                              <div className="col-span-2 text-center">
+                                <button
+                                  onClick={() => handleAddToCart(item.products || item.master_products)}
+                                  className="px-4 py-2 bg-[#6f0e06] text-white rounded-md hover:bg-[#9a1549] transition-colors duration-300 text-sm"
+                                >
+                                  Add to Cart
+                                </button>
+                              </div>
+                              
+                              {/* Remove */}
+                              <div className="col-span-2 text-right">
+                                <button
+                                  onClick={() => handleRemoveItem(item.product_id || item.master_product_id)}
+                                  className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors duration-300"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
                             </div>
                           </motion.div>
                         ))}
@@ -481,8 +529,8 @@ const WishlistPage = () => {
                 <div className="absolute top-0 right-0 w-32 h-32 -mr-16 -mt-16 bg-gradient-to-br from-pink-100 to-red-100 rounded-full opacity-60" />
                 <div className="absolute bottom-0 left-0 w-24 h-24 -ml-12 -mb-12 bg-gradient-to-tr from-pink-100 to-red-100 rounded-full opacity-60" />
                 
-                <div className="p-8 relative">
-                  <h3 className="text-2xl font-serif text-gray-800 mb-6">Wishlist Summary</h3>
+                <div className="p-4 sm:p-6 lg:p-8 relative">
+                  <h3 className="text-xl sm:text-2xl font-serif text-gray-800 mb-6">Wishlist Summary</h3>
                   
                   <div className="space-y-4 mb-8">
                     <div className="flex items-center space-x-4 mb-8">
