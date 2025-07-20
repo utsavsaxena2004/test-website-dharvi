@@ -172,6 +172,14 @@ const Checkout = () => {
       console.log('Prepared order items:', orderItems);
 
       // Create order in database
+      console.log('Current user:', user);
+      console.log('User ID:', user?.id);
+      console.log('Is authenticated:', isAuthenticated);
+      
+      if (!user || !user.id) {
+        throw new Error('User is not authenticated or user ID is missing');
+      }
+      
       const orderData = {
         user_id: user.id,
         total_amount: cartSummary.total,
@@ -189,6 +197,8 @@ const Checkout = () => {
         shipping_phone: shippingData.phone,
         notes: `Customer: ${shippingData.full_name}, Email: ${shippingData.email}`
       };
+      
+      console.log('Order data to be created:', orderData);
 
       const order = await supabaseService.createOrder(orderData, orderItems);
       return order;
