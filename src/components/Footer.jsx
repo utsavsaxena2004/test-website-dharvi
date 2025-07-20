@@ -47,7 +47,7 @@ const Footer = () => {
       { name: 'Care Instructions', href: '#', modalType: 'care' },
     ],
     legal: [
-      { name: 'Privacy Policy', href: '/privacy' },
+      { name: 'Privacy Policy', href: '#', modalType: 'privacy' },
       { name: 'Terms of Service', href: '/terms' },
       { name: 'Refund Policy', href: '/refund' },
       { name: 'Sitemap', href: '/sitemap' },
