@@ -2037,19 +2037,6 @@ const Admin = () => {
               />
             )}
 
-            {showMasterProductForm && (
-              <MasterProductForm
-                product={editingMasterProduct}
-                onClose={() => {
-                  setShowMasterProductForm(false);
-                  setEditingMasterProduct(null);
-                }}
-                onSave={() => {
-                  setEditingMasterProduct(null);
-                  loadData();
-                }}
-              />
-            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categories.map((category) => (
@@ -2477,6 +2464,33 @@ const Admin = () => {
             <SettingsForm />
           </TabsContent>
         </Tabs>
+
+        {/* Modal Forms - Rendered outside tabs */}
+        {showMasterProductForm && (
+          <MasterProductForm
+            product={editingMasterProduct}
+            onClose={() => {
+              setShowMasterProductForm(false);
+              setEditingMasterProduct(null);
+            }}
+            onSave={() => {
+              setShowMasterProductForm(false);
+              setEditingMasterProduct(null);
+              loadData();
+            }}
+          />
+        )}
+
+        {selectedOrder && showOrderModal && (
+          <OrderDetailsModal
+            order={selectedOrder}
+            isOpen={showOrderModal}
+            onClose={() => {
+              setShowOrderModal(false);
+              setSelectedOrder(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );
