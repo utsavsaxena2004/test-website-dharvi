@@ -241,13 +241,7 @@ const Orders = () => {
                       </div>
                     )}
 
-                    {/* Order Notes */}
-                    {order.notes && (
-                      <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                        <h4 className="font-medium text-blue-900 mb-2">Order Notes</h4>
-                        <div className="text-sm text-blue-700 break-words whitespace-pre-wrap">{order.notes}</div>
-                      </div>
-                    )}
+                  
 
                     {/* Actions */}
                     <div className="flex justify-end space-x-2">
