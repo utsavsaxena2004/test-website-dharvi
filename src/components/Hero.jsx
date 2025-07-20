@@ -100,6 +100,7 @@ const EnhancedHero = () => {
             <motion.img
               src={slideImages[currentSlide]}
               alt={`Slide ${currentSlide + 1}`}
+              loading={currentSlide === 0 ? "eager" : "lazy"}
               className="h-full w-full object-cover"
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}

@@ -206,6 +206,7 @@ const ProductCard = ({
             <img
               src={product.image_urls?.[0] || product.image || '/placeholder-image.jpg'}
               alt={product.name}
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </motion.div>

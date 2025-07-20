@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
@@ -6,41 +6,47 @@ import { WishlistProvider } from './contexts/WishlistContext';
 import { ToastProvider } from './hooks/use-toast.jsx';
 import { Toaster } from './components/ui/toaster';
 
-// Components
+// Critical components (loaded immediately)
 import DynamicNavbar from './components/DynamicNavbar';
 import DynamicPromoStrip from './components/DynamicPromoStrip';
 import Hero from './components/Hero';
-import Categories from './components/Categories';
-import DynamicCategorySections from './components/DynamicCategorySections';
-import CustomDesignShowcase from './components/CustomDesignShowcase';
-import FeaturedCollection from './components/FeaturedCollection';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
-import FloatingShareButton from './components/FloatingShareButton';
-import Gallery from './components/Gallery';
-import AboutDharika from './components/AboutDharika';
 
+// Lazy load non-critical components
+const Categories = lazy(() => import('./components/Categories'));
+const CustomDesignShowcase = lazy(() => import('./components/CustomDesignShowcase'));
+const FeaturedCollection = lazy(() => import('./components/FeaturedCollection'));
+const Gallery = lazy(() => import('./components/Gallery'));
+const AboutDharika = lazy(() => import('./components/AboutDharika'));
+const FeaturedProductShowcase = lazy(() => import('./components/FeaturedProductShowcase'));
 
-// Pages
-import Auth from './pages/Auth';
-import Admin from './pages/Admin';
-import CustomDesignPage from './components/CustomDesignPage';
-import DynamicCategoryPage from './pages/DynamicCategoryPage';
-import CartPage from './pages/Cart';
-import Checkout from './pages/Checkout';
-import Orders from './pages/Orders';
-import OrderDetails from './pages/OrderDetails';
-import PaymentSuccess from './pages/PaymentSuccess';
-import WishlistPage from './pages/Wishlist';
-import SharedWishlist from './pages/SharedWishlist';
-import SearchResults from './pages/SearchResults';
-import BackendIntegrationExample from './components/BackendIntegrationExample';
-import StatePersistenceDemo from './components/StatePersistenceDemo';
-import FeaturedProductShowcase from './components/FeaturedProductShowcase';
-import SignatureCollection from './pages/SignatureCollection';
-import CuratedCollection from './pages/CuratedCollection';
-import GalleryPage from './pages/GalleryPage';
+// Lazy load pages
+const Auth = lazy(() => import('./pages/Auth'));
+const Admin = lazy(() => import('./pages/Admin'));
+const CustomDesignPage = lazy(() => import('./components/CustomDesignPage'));
+const DynamicCategoryPage = lazy(() => import('./pages/DynamicCategoryPage'));
+const CartPage = lazy(() => import('./pages/Cart'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const Orders = lazy(() => import('./pages/Orders'));
+const OrderDetails = lazy(() => import('./pages/OrderDetails'));
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
+const WishlistPage = lazy(() => import('./pages/Wishlist'));
+const SharedWishlist = lazy(() => import('./pages/SharedWishlist'));
+const SearchResults = lazy(() => import('./pages/SearchResults'));
+const BackendIntegrationExample = lazy(() => import('./components/BackendIntegrationExample'));
+const StatePersistenceDemo = lazy(() => import('./components/StatePersistenceDemo'));
+const SignatureCollection = lazy(() => import('./pages/SignatureCollection'));
+const CuratedCollection = lazy(() => import('./pages/CuratedCollection'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage'));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center py-12">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 // Component to handle route state within Router context
 const AppContent = () => {
@@ -59,158 +65,183 @@ const AppContent = () => {
               <PageTransition transitionType="fade">
                 <>
                   <Hero />
-                  <Categories />
-                  
-                  {/* Dynamic Category Sections - automatically displays all categories */}
-                  {/* <div className="hidden lg:block">
-                    <DynamicCategorySections showCount={6} />
-                  </div> */}
-                  {/* Featured Products */}
-                  
-                  <FeaturedCollection />
-
-                  {/* About Dharika Section */}
-                  <AboutDharika />
-                  
-                  {/* Gallery Section */}
-                  <Gallery />
-
-                  <FeaturedProductShowcase />
-                  
-
-                  
-                  <CustomDesignShowcase />
-                  
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Categories />
+                  </Suspense>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <FeaturedCollection />
+                  </Suspense>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <AboutDharika />
+                  </Suspense>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Gallery />
+                  </Suspense>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <FeaturedProductShowcase />
+                  </Suspense>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <CustomDesignShowcase />
+                  </Suspense>
                 </>
               </PageTransition>
             } />
             
             <Route path="/auth" element={
               <PageTransition transitionType="fade">
-                <Auth />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Auth />
+                </Suspense>
               </PageTransition>
             } />
             
             <Route path="/login" element={
               <PageTransition transitionType="fade">
-                <Auth />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Auth />
+                </Suspense>
               </PageTransition>
             } />
             
             <Route path="/custom-design" element={
               <PageTransition transitionType="slideUp">
-                <CustomDesignPage />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CustomDesignPage />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Backend Integration Demo Route */}
             <Route path="/backend-demo" element={
               <PageTransition transitionType="fade">
-                <BackendIntegrationExample />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <BackendIntegrationExample />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* State Persistence Demo Route */}
             <Route path="/state-persistence-demo" element={
               <PageTransition transitionType="fade">
-                <StatePersistenceDemo />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <StatePersistenceDemo />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Search Results page */}
             <Route path="/search" element={
               <PageTransition transitionType="fade">
-                <SearchResults />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SearchResults />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Dynamic Category pages - this will handle any category slug */}
             <Route path="/category/:categorySlug" element={
               <PageTransition transitionType="slide">
-                <DynamicCategoryPage />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <DynamicCategoryPage />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Cart page */}
             <Route path="/cart" element={
               <PageTransition transitionType="slideUp">
-                <CartPage />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CartPage />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Checkout page */}
             <Route path="/checkout" element={
               <PageTransition transitionType="slideUp">
-                <Checkout />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Checkout />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Orders page */}
             <Route path="/orders" element={
               <PageTransition transitionType="slideUp">
-                <Orders />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Orders />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Order Details page */}
             <Route path="/orders/:orderId" element={
               <PageTransition transitionType="slideUp">
-                <OrderDetails />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <OrderDetails />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Payment Success page */}
             <Route path="/payment-success" element={
               <PageTransition transitionType="fade">
-                <PaymentSuccess />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <PaymentSuccess />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Wishlist page */}
             <Route path="/wishlist" element={
               <PageTransition transitionType="slideUp">
-                <WishlistPage />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <WishlistPage />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Shared Wishlist page */}
             <Route path="/shared-wishlist" element={
               <PageTransition transitionType="fade">
-                <SharedWishlist />
-              </PageTransition>
-            } />
-            
-            {/* State Persistence Demo Route */}
-            <Route path="/state-persistence-demo" element={
-              <PageTransition transitionType="fade">
-                <StatePersistenceDemo />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SharedWishlist />
+                </Suspense>
               </PageTransition>
             } />
             
             <Route path="/admin" element={
               <PageTransition transitionType="fade">
-                <Admin />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Admin />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Signature Collection page */}
             <Route path="/signature-collection" element={
               <PageTransition transitionType="fade">
-                <SignatureCollection />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SignatureCollection />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Curated Collection page */}
             <Route path="/curated-collection" element={
               <PageTransition transitionType="fade">
-                <CuratedCollection />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CuratedCollection />
+                </Suspense>
               </PageTransition>
             } />
             
             {/* Gallery page */}
             <Route path="/gallery" element={
               <PageTransition transitionType="fade">
-                <GalleryPage />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <GalleryPage />
+                </Suspense>
               </PageTransition>
             } />
             

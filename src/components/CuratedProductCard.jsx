@@ -109,6 +109,7 @@ const CuratedProductCard = ({
           <motion.img
             src={product.image_urls?.[0] || product.image || '/placeholder-image.jpg'}
             alt={product.name}
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             whileHover={{ scale: 1.05 }}
           />
