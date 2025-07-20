@@ -141,6 +141,13 @@ const AppContent = () => {
               </PageTransition>
             } />
             
+            {/* Payment Success page */}
+            <Route path="/payment-success" element={
+              <PageTransition transitionType="fade">
+                <PaymentSuccess />
+              </PageTransition>
+            } />
+            
             {/* Wishlist page */}
             <Route path="/wishlist" element={
               <PageTransition transitionType="slideUp">

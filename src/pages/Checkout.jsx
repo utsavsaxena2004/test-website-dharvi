@@ -293,6 +293,9 @@ const Checkout = () => {
           title: "Payment Successful!",
           description: "Your order has been placed successfully.",
         });
+
+        // Navigate to success page
+        navigate('/payment-success');
       }
     } catch (error) {
       console.error('Payment error:', error);

@@ -382,6 +382,22 @@ class SupabaseService {
     console.log('Removed from wishlist');
   }
 
+  // Clear cart items for a user
+  async clearCart(userId) {
+    try {
+      const { error } = await supabase
+        .from('cart_items')
+        .delete()
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      console.log('Cart cleared successfully for user:', userId);
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      throw error;
+    }
+  }
+
   // Add alias for compatibility
   async getWishlist(userId) {
     return this.getWishlistItems(userId);
