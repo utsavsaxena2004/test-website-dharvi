@@ -28,6 +28,7 @@ import DynamicCategoryPage from './pages/DynamicCategoryPage';
 import CartPage from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import OrderDetails from './pages/OrderDetails';
 import PaymentSuccess from './pages/PaymentSuccess';
 import WishlistPage from './pages/Wishlist';
 import SharedWishlist from './pages/SharedWishlist';
@@ -136,6 +137,13 @@ const AppContent = () => {
             <Route path="/orders" element={
               <PageTransition transitionType="slideUp">
                 <Orders />
+              </PageTransition>
+            } />
+            
+            {/* Order Details page */}
+            <Route path="/orders/:orderId" element={
+              <PageTransition transitionType="slideUp">
+                <OrderDetails />
               </PageTransition>
             } />
             
