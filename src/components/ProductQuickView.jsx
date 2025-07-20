@@ -171,7 +171,10 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
     try {
       setIsLoading(true);
       
-      await addToCart(product, quantity, selectedSize, selectedColor);
+      // Determine product type - if it has a 'title' field and no 'sizes' field, it's likely a master product
+      const productType = (product.title && !product.sizes) ? 'master_product' : 'product';
+      
+      await addToCart(product, quantity, selectedSize, selectedColor, productType);
       
       // Show success notification
       const notification = document.createElement('div');
@@ -285,8 +288,11 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
     try {
       setIsLoading(true);
       
+      // Determine product type - if it has a 'title' field and no 'sizes' field, it's likely a master product
+      const productType = (product.title && !product.sizes) ? 'master_product' : 'product';
+      
       // Add to cart first
-      await addToCart(product, quantity, selectedSize, selectedColor);
+      await addToCart(product, quantity, selectedSize, selectedColor, productType);
       
       // Close modal and navigate to checkout
       onClose();
