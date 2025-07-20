@@ -2044,23 +2044,23 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       {/* Decorative header background */}
-      <div className="relative bg-gradient-to-r from-[#6f0e06] to-[#9a1549] py-16 mb-8">
+      <div className="relative bg-gradient-to-r from-[#6f0e06] to-[#9a1549] py-8 sm:py-12 lg:py-16 mb-8">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute inset-0 bg-[url('/patterns/paisley.svg')] opacity-10"></div>
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-white"
           >
-            <h1 className="text-4xl font-serif font-light mb-2">Admin Dashboard</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-light mb-2">Admin Dashboard</h1>
             <div className="w-24 h-[1px] bg-white/50 mx-auto mb-4"></div>
-            <p className="text-white/90">Manage your store's products, categories, and orders</p>
+            <p className="text-sm sm:text-base text-white/90">Manage your store's products, categories, and orders</p>
           </motion.div>
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-6 pb-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 pb-12">
         {(products.length === 0 || categories.length === 0) && (
           <>
             {debugInfo}
@@ -2069,76 +2069,84 @@ const Admin = () => {
         )}
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-8 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 bg-white border border-rose-200 rounded-xl p-1 shadow-sm overflow-x-auto">
             <TabsTrigger 
               value="products" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Package className="w-4 h-4" />
-              Products
+              <Package className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Products</span>
+              <span className="sm:hidden">Prod</span>
             </TabsTrigger>
             <TabsTrigger 
               value="categories" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Users className="w-4 h-4" />
-              Categories
+              <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Categories</span>
+              <span className="sm:hidden">Cat</span>
             </TabsTrigger>
             <TabsTrigger 
               value="orders" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <ShoppingCart className="w-4 h-4" />
-              Orders
+              <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Orders</span>
+              <span className="sm:hidden">Ord</span>
             </TabsTrigger>
             <TabsTrigger 
               value="master-products" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Image className="w-4 h-4" />
-              Master Products
+              <Image className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Master Products</span>
+              <span className="sm:hidden">Mast</span>
             </TabsTrigger>
             <TabsTrigger 
               value="custom-requests" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Image className="w-4 h-4" />
-              Custom Requests
+              <Image className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Custom Requests</span>
+              <span className="sm:hidden">Req</span>
             </TabsTrigger>
             <TabsTrigger 
               value="coupons" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Tag className="w-4 h-4" />
-              Coupons
+              <Tag className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Coupons</span>
+              <span className="sm:hidden">Coup</span>
             </TabsTrigger>
             <TabsTrigger 
               value="gallery" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Image className="w-4 h-4" />
-              Gallery
+              <Image className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Gallery</span>
+              <span className="sm:hidden">Gal</span>
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-2 min-w-0"
             >
-              <Settings className="w-4 h-4" />
-              Settings
+              <Settings className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">Settings</span>
+              <span className="sm:hidden">Set</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="products" className="space-y-6 mt-8">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <h2 className="text-2xl font-serif text-gray-900">Products Management</h2>
-                <p className="text-gray-600 mt-1">Manage your product catalog</p>
+                <h2 className="text-xl sm:text-2xl font-serif text-gray-900">Products Management</h2>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">Manage your product catalog</p>
               </div>
-              <Button 
+              <Button
                 onClick={() => setShowProductForm(true)}
-                className="flex items-center gap-2 bg-[#6f0e06] hover:bg-[#9a1549] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex items-center gap-2 bg-[#6f0e06] hover:bg-[#9a1549] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-sm px-3 py-2 sm:px-4 sm:py-3 w-full sm:w-auto justify-center"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 Add Product
               </Button>
             </div>
