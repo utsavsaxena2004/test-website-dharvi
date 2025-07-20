@@ -92,25 +92,40 @@ class RazorpayService {
   // Complete order after successful payment
   async completeOrder(orderData, paymentResponse) {
     try {
-      // Update order status and payment status
+      console.log('Completing order:', orderData.id);
+      console.log('Payment response:', paymentResponse);
+      
+      // Update order status and payment status to completed
       const updatedOrder = await supabaseService.updateOrderStatus(
         orderData.id, 
-        'completed', // Changed from 'confirmed' to 'completed'
+        'completed', 
         'completed'  // Set payment_status to completed
       );
 
-      // Update payment details in the order notes
-      const paymentNotes = JSON.stringify({
+      console.log('Order status updated to completed:', updatedOrder);
+
+      // Update payment details in the order
+      const updateData = {
+        payment_method: 'razorpay',
+        updated_at: new Date().toISOString()
+      };
+
+      // Add payment details to notes (preserve existing notes if any)
+      const existingOrder = await supabaseService.getOrderDetails(orderData.id);
+      const paymentInfo = {
         razorpay_payment_id: paymentResponse.paymentId,
         razorpay_signature: paymentResponse.signature,
         payment_completed_at: new Date().toISOString()
-      });
+      };
 
-      // Update the order with payment details
-      await supabaseService.updateOrder(orderData.id, {
-        payment_method: 'razorpay',
-        notes: paymentNotes
-      });
+      // If there are existing notes, append payment info
+      if (existingOrder && existingOrder.notes) {
+        updateData.notes = `${existingOrder.notes} | Payment: ${JSON.stringify(paymentInfo)}`;
+      } else {
+        updateData.notes = `Payment: ${JSON.stringify(paymentInfo)}`;
+      }
+
+      await supabaseService.updateOrder(orderData.id, updateData);
 
       // Clear user's cart after successful payment
       if (orderData.userId) {

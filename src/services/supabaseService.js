@@ -489,9 +489,10 @@ class SupabaseService {
       
       if (itemsError) {
         console.error('Error creating order items:', itemsError);
-        // Don't throw error here, order was already created
+        throw itemsError; // Throw error if order items creation fails
       } else {
         console.log('Order items created successfully:', orderItemsData);
+        return { ...data, order_items: orderItemsData };
       }
     } else {
       console.log('No order items provided or empty array');

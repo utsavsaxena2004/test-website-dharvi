@@ -161,12 +161,27 @@ const Checkout = () => {
       console.log('Cart items before creating order:', cartItems);
       const orderItems = cartItems.map(item => {
         console.log('Processing cart item:', item);
+        
+        // Determine which product data to use
+        const productData = item.products || item.master_products;
+        const productId = item.product_id || item.master_product_id;
+        const price = productData?.price || item.price || 0;
+        
+        console.log('Product data:', productData);
+        console.log('Product ID:', productId);
+        console.log('Price:', price);
+        
+        if (!productId) {
+          console.error('No product ID found for cart item:', item);
+          throw new Error('Invalid cart item: missing product ID');
+        }
+        
         return {
-          product_id: item.product_id || item.master_product_id,
-          quantity: item.quantity,
-          price: item.products?.price || item.master_products?.price || 0,
-          size: item.size,
-          color: item.color
+          product_id: productId,
+          quantity: item.quantity || 1,
+          price: price,
+          size: item.size || null,
+          color: item.color || null
         };
       });
       console.log('Prepared order items:', orderItems);
