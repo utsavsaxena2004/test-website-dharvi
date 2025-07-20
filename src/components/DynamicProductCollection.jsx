@@ -137,18 +137,18 @@ const DynamicProductCollection = ({
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-serif font-light text-gray-900 mb-4">{title}</h2>
-          <div className="w-24 h-[1px] bg-[#ba1a5d] mx-auto mb-6"></div>
+          <div className="w-24 h-[1px] bg-pink mx-auto mb-6"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">{subtitle}</p>
           
           {/* Decorative elements */}
           <div className="flex items-center justify-center mt-4 space-x-1">
-            <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-            <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-            <div className="w-12 h-0.5 bg-[#ba1a5d]"></div>
-            <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-            <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
+            <div className="w-1 h-1 rounded-full bg-pink opacity-70"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-pink opacity-80"></div>
+            <div className="w-2 h-2 rounded-full bg-pink opacity-90"></div>
+            <div className="w-12 h-0.5 bg-pink"></div>
+            <div className="w-2 h-2 rounded-full bg-pink opacity-90"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-pink opacity-80"></div>
+            <div className="w-1 h-1 rounded-full bg-pink opacity-70"></div>
           </div>
         </motion.div>
 
@@ -185,7 +185,7 @@ const DynamicProductCollection = ({
           >
             <button
               onClick={() => navigate(`/category/${categorySlug}`)}
-              className="group inline-flex items-center px-8 py-3 border-2 border-[#ba1a5d] text-[#ba1a5d] rounded-md hover:bg-[#ba1a5d] hover:text-white transition-all duration-300"
+              className="group inline-flex items-center px-8 py-3 border-2 border-pink text-pink rounded-md hover:bg-pink hover:text-white transition-all duration-300"
             >
               <span>View All Products</span>
               <svg className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

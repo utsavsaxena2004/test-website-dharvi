@@ -13,7 +13,7 @@
 
 @layer components {
   .btn-primary {
-    @apply px-6 py-2 bg-[#e6c392] text-white rounded-md hover:bg-[#ba1a5d] transition-colors duration-300;
+    @apply px-6 py-2 bg-[#e6c392] text-white rounded-md hover:bg-[#6f0e06] transition-colors duration-300;
   }
   
   .btn-secondary {
@@ -25,7 +25,7 @@
   }
 
   .promo-strip {
-    @apply bg-[#ba1a5d] text-white;
+    @apply bg-[#6f0e06] text-white;
   }
 }
 

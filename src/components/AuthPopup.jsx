@@ -132,7 +132,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
             {floatingElements.map((element, index) => (
               <motion.div
                 key={index}
-                className="absolute w-4 h-4 bg-gradient-to-r from-[#ba1a5d] to-amber-500 rounded-full opacity-10"
+                className="absolute w-4 h-4 bg-gradient-to-r from-pink to-amber-500 rounded-full opacity-10"
                 style={{
                   width: element.size,
                   height: element.size,
@@ -217,7 +217,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ba1a5d]/20 focus:border-[#ba1a5d] transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink/20 focus:border-pink transition-colors"
                     placeholder="Enter your full name"
                     required={!isLogin}
                   />
@@ -234,7 +234,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ba1a5d]/20 focus:border-[#ba1a5d] transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink/20 focus:border-pink transition-colors"
                   placeholder="Enter your email"
                             required
                           />
@@ -251,7 +251,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ba1a5d]/20 focus:border-[#ba1a5d] transition-colors pr-12"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink/20 focus:border-pink transition-colors pr-12"
                     placeholder="Enter your password"
                             required
                           />
@@ -279,7 +279,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
                 disabled={loading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white font-medium rounded-lg hover:from-[#9a1549] hover:to-[#7a1139] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-gradient-to-r from-pink to-pink/80 text-white font-medium rounded-lg hover:from-pink/90 hover:to-pink/70 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                 {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
                       </motion.button>
@@ -289,7 +289,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
               <button
                           type="button"
                           onClick={toggleAuthMode}
-                className="text-[#ba1a5d] hover:text-[#9a1549] font-medium transition-colors"
+                className="text-pink hover:text-pink/80 font-medium transition-colors"
                         >
                 {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
               </button>

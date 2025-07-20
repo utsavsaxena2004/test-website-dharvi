@@ -262,7 +262,7 @@ const DynamicCategorySection = ({ category, limit = 4 }) => {
   if (loading) {
     return (
       <div className="py-16 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ba1a5d] mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink mx-auto"></div>
         <p className="mt-4 text-gray-600">Loading products...</p>
       </div>
     );

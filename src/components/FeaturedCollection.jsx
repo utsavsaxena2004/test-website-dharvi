@@ -70,7 +70,7 @@ const FeaturedCollection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-serif font-light text-gray-900 mb-4">Our Curated Collection</h2>
-          <div className="w-24 h-[1px] bg-[#ba1a5d] mx-auto mb-6"></div>
+          <div className="w-24 h-[1px] bg-pink mx-auto mb-6"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">Discover our handpicked selection of traditional wear, where timeless heritage meets contemporary elegance</p>
         </motion.div>
 
@@ -101,7 +101,7 @@ const FeaturedCollection = () => {
         >
           <a 
             href="/collections" 
-            className="inline-block px-8 py-3 border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300"
+            className="inline-block px-8 py-3 border border-pink text-pink hover:bg-pink hover:text-white transition-all duration-300"
           >
             VIEW ALL COLLECTIONS
           </a>

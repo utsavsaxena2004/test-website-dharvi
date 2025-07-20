@@ -12,7 +12,7 @@ import statePersistence from '../utils/statePersistence';
 const DecorativePattern = () => (
   <svg className="absolute inset-0 w-full h-full z-0 opacity-30" width="100%" height="100%">
     <pattern id="pattern-circles" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="translate(20 20)">
-      <circle cx="10" cy="10" r="1" fill="#ba1a5d" opacity="0.3" />
+      <circle cx="10" cy="10" r="1" fill="#6f0e06" opacity="0.3" />
     </pattern>
     <rect width="100%" height="100%" fill="url(#pattern-circles)" />
   </svg>

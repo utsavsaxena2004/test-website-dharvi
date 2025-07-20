@@ -11,7 +11,7 @@ export default {
         secondary: '#D2691E',
         accent: '#DEB887',
         gold: '#e6c392',
-        pink: '#ba1a5d',
+        pink: '#6f0e06',
       },
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],

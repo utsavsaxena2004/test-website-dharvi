@@ -11,7 +11,7 @@ const featuredProduct = {
   rating: 4.9,
   reviews: 124,
   colors: [
-    { id: 1, name: "Royal Crimson", value: "#ba1a5d", image: "https://images.unsplash.com/photo-1610189031585-fd499562e6c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" },
+    { id: 1, name: "Royal Crimson", value: "#6f0e06", image: "https://images.unsplash.com/photo-1610189031585-fd499562e6c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" },
     { id: 2, name: "Sapphire Blue", value: "#1a56ba", image: "https://images.unsplash.com/photo-1583391733956-3750c46fc212?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFuYXJhc2klMjBzYXJlZXxlbnwwfDB8MHx8fDA%3D" },
     { id: 3, name: "Emerald Green", value: "#0F766E", image: "https://images.unsplash.com/photo-1610957183072-9207ea9b4b98?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmFuYXJhc2klMjBzYXJlZXxlbnwwfDB8MHx8fDA%3D" },
     { id: 4, name: "Royal Gold", value: "#B45309", image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z29sZCUyMHNhcmVlfGVufDB8MHwwfHx8MA%3D%3D" },
@@ -27,7 +27,7 @@ const featuredProduct = {
 
 // Enhanced SVG Motifs and Patterns
 const PatternBorder = ({ className }) => (
-  <svg viewBox="0 0 300 20" className={`${className} text-[#ba1a5d]`}>
+  <svg viewBox="0 0 300 20" className={`${className} text-pink`}>
     <pattern id="patternBorder" patternUnits="userSpaceOnUse" width="20" height="20">
       <circle cx="10" cy="10" r="2" fill="currentColor" opacity="0.3" />
     </pattern>
@@ -37,7 +37,7 @@ const PatternBorder = ({ className }) => (
 );
 
 const PeacockMotif = ({ className }) => (
-  <svg viewBox="0 0 100 120" className={`${className} text-[#ba1a5d]`}>
+  <svg viewBox="0 0 100 120" className={`${className} text-pink`}>
     <g opacity="0.15">
       <path d="M50,80 L50,110" stroke="currentColor" strokeWidth="1.2" />
       <path d="M50,80 Q60,65 50,50 Q40,65 50,80" fill="none" stroke="currentColor" strokeWidth="0.8" />
@@ -99,7 +99,7 @@ const GlowingOrb = ({ size, top, left, color, delay = 0 }) => (
 const DecorativeDivider = () => (
   <div className="flex items-center justify-center my-8 relative">
     <motion.div 
-      className="w-16 h-[1px] bg-[#ba1a5d]/30"
+      className="w-16 h-[1px] bg-pink/30"
       initial={{ width: 0 }}
       whileInView={{ width: 64 }}
       viewport={{ once: true }}
@@ -117,12 +117,12 @@ const DecorativeDivider = () => (
         stiffness: 200
       }}
     >
-      <svg width="20" height="20" viewBox="0 0 20 20" className="text-[#ba1a5d]">
+      <svg width="20" height="20" viewBox="0 0 20 20" className="text-pink">
         <path d="M10,2 L12,8 L18,10 L12,12 L10,18 L8,12 L2,10 L8,8 Z" fill="currentColor" opacity="0.3" />
       </svg>
     </motion.div>
     <motion.div 
-      className="w-16 h-[1px] bg-[#ba1a5d]/30"
+      className="w-16 h-[1px] bg-pink/30"
       initial={{ width: 0 }}
       whileInView={{ width: 64 }}
       viewport={{ once: true }}
@@ -145,7 +145,7 @@ const PremiumBadge = () => (
     }}
   >
     <div className="relative">
-      <svg width="120" height="120" viewBox="0 0 120 120" className="absolute -inset-1 text-[#ba1a5d]">
+      <svg width="120" height="120" viewBox="0 0 120 120" className="absolute -inset-1 text-pink">
         <circle cx="60" cy="60" r="40" fill="white" stroke="currentColor" strokeWidth="1.5" />
         <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.5" />
         <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="1 5" opacity="0.3" />
@@ -162,19 +162,19 @@ const PremiumBadge = () => (
           }}
           className="absolute inset-0 w-full h-full"
         >
-          <svg viewBox="0 0 100 100" className="w-full h-full text-[#ba1a5d]">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-pink">
             <defs>
               <path id="circle-premium" d="M 50, 50 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" />
             </defs>
-            <text fontSize="6.5" fill="#ba1a5d" opacity="0.7">
+            <text fontSize="6.5" fill="#6f0e06" opacity="0.7">
               <textPath xlinkHref="#circle-premium">
                 • PREMIUM • HANDCRAFTED • AUTHENTIC • 
               </textPath>
             </text>
           </svg>
         </motion.div>
-        <span className="text-[#ba1a5d] text-xs font-semibold uppercase tracking-wide">Premium</span>
-        <span className="text-[#ba1a5d] text-[0.65rem] mt-0.5">Collection</span>
+        <span className="text-pink text-xs font-semibold uppercase tracking-wide">Premium</span>
+        <span className="text-pink text-[0.65rem] mt-0.5">Collection</span>
       </div>
     </div>
   </motion.div>
@@ -224,14 +224,14 @@ const FeaturedProductShowcase = () => {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-10" />
       
       <motion.div style={{ opacity: patternOpacity }} className="absolute inset-0">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#ba1a5d]/20 to-transparent"></div>
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#ba1a5d]/20 to-transparent"></div>
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-pink/20 to-transparent"></div>
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-pink/20 to-transparent"></div>
         
         <svg className="absolute inset-0 w-full h-full opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
           <pattern id="ethnicPattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
-            <path d="M25,0 L50,25 L25,50 L0,25 Z" fill="none" stroke="#ba1a5d" strokeWidth="0.5"/>
-            <circle cx="25" cy="25" r="3" fill="#ba1a5d" opacity="0.2"/>
-            <circle cx="25" cy="25" r="8" fill="none" stroke="#ba1a5d" strokeWidth="0.5"/>
+            <path d="M25,0 L50,25 L25,50 L0,25 Z" fill="none" stroke="#6f0e06" strokeWidth="0.5"/>
+            <circle cx="25" cy="25" r="3" fill="#6f0e06" opacity="0.2"/>
+            <circle cx="25" cy="25" r="8" fill="none" stroke="#6f0e06" strokeWidth="0.5"/>
           </pattern>
           <rect x="0" y="0" width="100%" height="100%" fill="url(#ethnicPattern)" />
         </svg>
@@ -240,8 +240,8 @@ const FeaturedProductShowcase = () => {
       {/* Add radial gradient for spotlight effect */}
       <div className="absolute inset-0 bg-radial-gradient opacity-40" />
       
-      <GlowingOrb size="400px" top="10%" left="5%" color="#ba1a5d" delay={0} />
-      <GlowingOrb size="350px" top="60%" left="80%" color="#ba1a5d" delay={2} />
+      <GlowingOrb size="400px" top="10%" left="5%" color="#6f0e06" delay={0} />
+      <GlowingOrb size="350px" top="60%" left="80%" color="#6f0e06" delay={2} />
       
       {/* Add the premium badge */}
       <PremiumBadge />
@@ -283,11 +283,11 @@ const FeaturedProductShowcase = () => {
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               className="w-16 h-16 rounded-full flex items-center justify-center"
             >
-              <svg viewBox="0 0 100 100" className="w-full h-full text-[#ba1a5d]">
+              <svg viewBox="0 0 100 100" className="w-full h-full text-pink">
                 <defs>
                   <path id="circle" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
                 </defs>
-                <text fontSize="9" fill="#ba1a5d" opacity="0.7">
+                <text fontSize="9" fill="#6f0e06" opacity="0.7">
                   <textPath xlinkHref="#circle">
                     ✧ MASTERPIECE COLLECTION ✧ LUXURY ETHNIC WEAR ✧
                   </textPath>
@@ -311,7 +311,7 @@ const FeaturedProductShowcase = () => {
             <span className="relative inline-block">
               The 
               <motion.span 
-                className="absolute -top-6 -right-4 text-sm text-[#ba1a5d]"
+                className="absolute -top-6 -right-4 text-sm text-pink"
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -323,7 +323,7 @@ const FeaturedProductShowcase = () => {
             <span className="relative z-10 inline-block">
               Masterpiece 
               <motion.span
-                className="absolute -z-10 bottom-0 left-0 h-3 bg-[#ba1a5d]/10 w-full"
+                className="absolute -z-10 bottom-0 left-0 h-3 bg-pink/10 w-full"
                 initial={{ width: 0 }}
                 whileInView={{ width: "100%" }}
                 viewport={{ once: true }}
@@ -340,7 +340,7 @@ const FeaturedProductShowcase = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="w-24 h-[1px] bg-[#ba1a5d] mx-auto mb-4"></div>
+            <div className="w-24 h-[1px] bg-pink mx-auto mb-4"></div>
           </motion.div>
           
           <motion.p 
@@ -370,7 +370,7 @@ const FeaturedProductShowcase = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4 }}
-                    className="inline-block px-3 py-1 bg-[#ba1a5d]/10 text-[#ba1a5d] text-xs rounded-full font-medium"
+                    className="inline-block px-3 py-1 bg-pink/10 text-pink text-xs rounded-full font-medium"
                   >
                     Signature Collection
                   </motion.span>
@@ -505,13 +505,13 @@ const FeaturedProductShowcase = () => {
                       className="flex items-start"
                     >
                       <motion.div 
-                        className="mt-0.5 mr-2 flex-shrink-0 w-5 h-5 rounded-full bg-[#ba1a5d]/10 flex items-center justify-center"
+                        className="mt-0.5 mr-2 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
                         initial={{ scale: 0 }}
                         whileInView={{ scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.1 * index }}
                       >
-                        <svg className="w-3 h-3 text-[#ba1a5d]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-3 h-3 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                         </svg>
                       </motion.div>
@@ -528,7 +528,7 @@ const FeaturedProductShowcase = () => {
                   transition={{ duration: 0.5, delay: 0.8 }}
                 >
                   <motion.span 
-                    className="text-3xl font-bold text-[#ba1a5d]"
+                    className="text-3xl font-bold text-pink"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
@@ -564,7 +564,7 @@ const FeaturedProductShowcase = () => {
                       boxShadow: "0 10px 15px -3px rgba(186, 26, 93, 0.2)" 
                     }}
                     whileTap={{ scale: 0.98 }}
-                    className="relative px-8 py-3 bg-[#ba1a5d] text-white rounded-md flex items-center justify-center overflow-hidden group"
+                    className="relative px-8 py-3 bg-pink text-white rounded-md flex items-center justify-center overflow-hidden group"
                   >
                     <motion.span
                       className="absolute inset-0 bg-gradient-to-r from-[#ba1a5d] via-pink-600 to-[#ba1a5d] opacity-0 group-hover:opacity-100"
@@ -584,7 +584,7 @@ const FeaturedProductShowcase = () => {
                       backgroundColor: "rgba(186, 26, 93, 0.08)" 
                     }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-6 py-3 border border-[#ba1a5d] text-[#ba1a5d] rounded-md flex items-center justify-center transition-colors duration-300"
+                    className="px-6 py-3 border border-pink text-pink rounded-md flex items-center justify-center transition-colors duration-300"
                   >
                     <span>Shop The Look</span>
                     <motion.svg 

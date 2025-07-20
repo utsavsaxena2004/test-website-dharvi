@@ -5,20 +5,20 @@ import { supabaseService } from '../services/supabaseService';
 
 // Updated color map to match design template colors
 const colorMap = {
-  'Sarees': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }, // Traditional Paisley template
+  'Sarees': { color: '#6f0e06', lightColor: 'bg-rose-50/80' }, // Traditional Paisley template
   'Lehengas': { color: '#B45309', lightColor: 'bg-amber-50/80' }, // Royal Mandala template (amber)
   'Suits': { color: '#1a56ba', lightColor: 'bg-blue-50/80' }, // Contemporary Floral template
   'Kurtis': { color: '#0F766E', lightColor: 'bg-emerald-50/80' }, // Elegant Geometric template
-  'default': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }
+  'default': { color: '#6f0e06', lightColor: 'bg-rose-50/80' }
 };
 
 // Design template color schemes (matching DynamicCategorySection)
 const designTemplateColors = {
-  'traditional': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }, // Rose theme
+  'traditional': { color: '#6f0e06', lightColor: 'bg-rose-50/80' }, // Rose theme
   'royal': { color: '#B45309', lightColor: 'bg-amber-50/80' }, // Amber theme (matches Lehengas)
   'contemporary': { color: '#1a56ba', lightColor: 'bg-blue-50/80' }, // Blue theme
   'elegant': { color: '#0F766E', lightColor: 'bg-emerald-50/80' }, // Emerald theme
-  'default': { color: '#ba1a5d', lightColor: 'bg-rose-50/80' }
+  'default': { color: '#6f0e06', lightColor: 'bg-rose-50/80' }
 };
 
 // Create SVG patterns for background elements
@@ -41,14 +41,14 @@ const patterns = {
 
 const decorativeElements = {
   corner: (
-    <svg width="80" height="80" viewBox="0 0 80 80" className="opacity-20 absolute text-[#ba1a5d]">
+    <svg width="80" height="80" viewBox="0 0 80 80" className="opacity-20 absolute text-pink">
       <path d="M0,0 Q40,0 40,40 Q40,80 80,80" fill="none" stroke="currentColor" strokeWidth="1" />
       <path d="M10,0 Q45,5 45,45 Q45,75 75,75" fill="none" stroke="currentColor" strokeWidth="1" />
       <path d="M20,0 Q50,10 50,50 Q50,70 70,70" fill="none" stroke="currentColor" strokeWidth="1" />
     </svg>
   ),
   flower: (
-    <svg width="50" height="50" viewBox="0 0 50 50" className="opacity-20 absolute text-[#ba1a5d]">
+    <svg width="50" height="50" viewBox="0 0 50 50" className="opacity-20 absolute text-pink">
       <path d="M25,10 Q35,20 25,30 Q15,20 25,10" fill="currentColor" />
       <path d="M10,25 Q20,35 30,25 Q20,15 10,25" fill="currentColor" />
       <path d="M25,40 Q35,30 25,20 Q15,30 25,40" fill="currentColor" />
@@ -57,7 +57,7 @@ const decorativeElements = {
     </svg>
   ),
   lotus: (
-    <svg width="70" height="70" viewBox="0 0 70 70" className="opacity-15 absolute text-[#ba1a5d]">
+    <svg width="70" height="70" viewBox="0 0 70 70" className="opacity-15 absolute text-pink">
       <path d="M35,10 Q45,15 50,25 Q55,35 50,45 Q45,55 35,60 Q25,55 20,45 Q15,35 20,25 Q25,15 35,10" fill="none" stroke="currentColor" strokeWidth="0.8" />
       <path d="M35,15 Q43,19 47,27 Q51,35 47,43 Q43,51 35,55 Q27,51 23,43 Q19,35 23,27 Q27,19 35,15" fill="none" stroke="currentColor" strokeWidth="0.8" />
       <path d="M35,20 Q41,23 44,29 Q47,35 44,41 Q41,47 35,50 Q29,47 26,41 Q23,35 26,29 Q29,23 35,20" fill="none" stroke="currentColor" strokeWidth="0.8" />
@@ -65,7 +65,7 @@ const decorativeElements = {
     </svg>
   ),
   rangoli: (
-    <svg width="100" height="100" viewBox="0 0 100 100" className="opacity-15 absolute text-[#ba1a5d]">
+    <svg width="100" height="100" viewBox="0 0 100 100" className="opacity-15 absolute text-pink">
       <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" />
       <path d="M50,10 L50,90 M10,50 L90,50" stroke="currentColor" strokeWidth="0.5" />
       <path d="M22,22 L78,78 M22,78 L78,22" stroke="currentColor" strokeWidth="0.5" />
@@ -76,7 +76,7 @@ const decorativeElements = {
     </svg>
   ),
   peacock: (
-    <svg width="80" height="120" viewBox="0 0 80 120" className="opacity-20 absolute text-[#ba1a5d]">
+    <svg width="80" height="120" viewBox="0 0 80 120" className="opacity-20 absolute text-pink">
       <path d="M40,80 Q50,65 40,50 Q30,65 40,80" fill="none" stroke="currentColor" strokeWidth="0.8" />
       <path d="M40,80 Q60,70 70,80 Q60,90 40,80" fill="none" stroke="currentColor" strokeWidth="0.8" />
       <path d="M40,80 Q65,60 70,40 Q55,60 40,80" fill="none" stroke="currentColor" strokeWidth="0.8" />
@@ -90,13 +90,13 @@ const decorativeElements = {
   borderDesign: (
     <div className="absolute inset-x-0 h-8 opacity-20">
       <div className="h-full w-full flex items-center justify-center">
-        <div className="w-full h-[1px] bg-[#ba1a5d]"></div>
+        <div className="w-full h-[1px] bg-pink"></div>
         <div className="flex-shrink-0 mx-4">
-          <svg width="120" height="8" viewBox="0 0 120 8" className="text-[#ba1a5d]">
+          <svg width="120" height="8" viewBox="0 0 120 8" className="text-pink">
             <path d="M0,4 H120 M20,1 L30,4 L20,7 M40,1 L50,4 L40,7 M60,1 L70,4 L60,7 M80,1 L90,4 L80,7 M100,1 L110,4 L100,7" stroke="currentColor" strokeWidth="0.5" fill="none" />
           </svg>
         </div>
-        <div className="w-full h-[1px] bg-[#ba1a5d]"></div>
+        <div className="w-full h-[1px] bg-pink"></div>
       </div>
     </div>
   )
@@ -221,18 +221,18 @@ const Categories = () => {
         className="container mx-auto px-4 text-center mb-16 relative z-10"
       >
         <h2 className="text-4xl font-serif font-light text-gray-900 mb-4">Explore Our Collections</h2>
-        <div className="w-24 h-[1px] bg-[#ba1a5d] mx-auto mb-6"></div>
+        <div className="w-24 h-[1px] bg-pink mx-auto mb-6"></div>
         <p className="text-gray-600 max-w-2xl mx-auto">Discover the perfect blend of traditional craftsmanship and contemporary design across our curated categories</p>
         
         {/* Decorative title underline with dots */}
         <div className="flex items-center justify-center mt-4 space-x-1">
-          <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-          <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-          <div className="w-12 h-0.5 bg-[#ba1a5d]"></div>
-          <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-          <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
+          <div className="w-1 h-1 rounded-full bg-pink opacity-70"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-pink opacity-80"></div>
+          <div className="w-2 h-2 rounded-full bg-pink opacity-90"></div>
+          <div className="w-12 h-0.5 bg-pink"></div>
+          <div className="w-2 h-2 rounded-full bg-pink opacity-90"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-pink opacity-80"></div>
+          <div className="w-1 h-1 rounded-full bg-pink opacity-70"></div>
         </div>
       </motion.div>
 
@@ -358,35 +358,35 @@ const Categories = () => {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 1 }}
-            className="w-6 h-[1px] bg-[#ba1a5d] opacity-40 self-center"
+            className="w-6 h-[1px] bg-pink opacity-40 self-center"
           ></motion.div>
           <motion.div 
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 1.1 }}
-            className="w-3 h-3 rounded-full border border-[#ba1a5d] opacity-40"
+            className="w-3 h-3 rounded-full border border-pink opacity-40"
           ></motion.div>
           <motion.div 
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 1.2 }}
-            className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-40"
+            className="w-2 h-2 rounded-full bg-pink opacity-40"
           ></motion.div>
           <motion.div 
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 1.1 }}
-            className="w-3 h-3 rounded-full border border-[#ba1a5d] opacity-40"
+            className="w-3 h-3 rounded-full border border-pink opacity-40"
           ></motion.div>
           <motion.div 
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 1 }}
-            className="w-6 h-[1px] bg-[#ba1a5d] opacity-40 self-center"
+            className="w-6 h-[1px] bg-pink opacity-40 self-center"
           ></motion.div>
         </div>
       </motion.div>

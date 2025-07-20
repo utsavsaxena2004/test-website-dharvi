@@ -85,7 +85,7 @@ const DynamicPromoStrip = () => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-pink to-[#ba1a5d] text-white py-2">
+      <div className="bg-gradient-to-r from-pink to-pink text-white py-2">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center">
             <div className="animate-pulse">
@@ -102,7 +102,7 @@ const DynamicPromoStrip = () => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-pink to-[#ba1a5d] text-white py-2 relative overflow-hidden">
+    <div className="bg-gradient-to-r from-pink to-pink text-white py-2 relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[url('/patterns/dots.svg')] opacity-30"></div>
