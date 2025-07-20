@@ -23,13 +23,7 @@ export default defineConfig(({ mode }) => ({
     target: 'es2015',
     cssCodeSplit: true,
     sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: mode === 'production',
-        drop_debugger: mode === 'production',
-      },
-    },
+    minify: 'esbuild', // Use esbuild instead of terser (faster and built-in)
     rollupOptions: {
       output: {
         manualChunks: {
