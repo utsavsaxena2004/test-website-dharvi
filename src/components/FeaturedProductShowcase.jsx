@@ -607,7 +607,7 @@ const FeaturedProductShowcase = () => {
                 
                 {currentProduct.special_points && currentProduct.special_points.length > 0 && (
                   <motion.ul 
-                    className="space-y-2 mb-8"
+                    className="space-y-3 mb-8"
                     variants={{
                       hidden: { opacity: 0 },
                       show: {
@@ -629,10 +629,10 @@ const FeaturedProductShowcase = () => {
                           hidden: { opacity: 0, x: -20 },
                           show: { opacity: 1, x: 0 }
                         }}
-                        className="flex items-start"
+                        className="flex items-start space-x-3"
                       >
                         <motion.div 
-                          className="mt-0.5 mr-2 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
+                          className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
                           initial={{ scale: 0 }}
                           whileInView={{ scale: 1 }}
                           viewport={{ once: true }}
@@ -642,7 +642,7 @@ const FeaturedProductShowcase = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                           </svg>
                         </motion.div>
-                        <span className="text-gray-700 break-words">{feature}</span>
+                        <span className="text-gray-700 leading-relaxed text-sm">{feature}</span>
                       </motion.li>
                     ))}
                   </motion.ul>
