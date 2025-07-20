@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import statePersistence from '../utils/statePersistence';
 import { sendOrderStatusUpdateEmail } from '../services/emailService';
 import ImageUpload from '../components/ImageUpload';
+import VideoUpload from '../components/VideoUpload';
 
 const Admin = () => {
   const { user } = useAuth();
@@ -1207,6 +1208,7 @@ const Admin = () => {
       colors: [],
       special_points: [],
       image_urls: [],
+      video_urls: [],
       is_active: true
     });
 
@@ -1488,6 +1490,39 @@ const Admin = () => {
                     ))}
                   </div>
                 )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Videos
+                </label>
+                <VideoUpload
+                  value={formData.video_urls}
+                  onChange={(urls) => {
+                    console.log('Master product form - video onChange called with:', urls);
+                    
+                    // Ensure urls is an array
+                    const videoUrls = Array.isArray(urls) ? urls : (urls ? [urls] : []);
+                    console.log('Normalized videoUrls:', videoUrls);
+                    
+                    // Force update the form data
+                    setFormData(prevData => {
+                      const newData = {...prevData, video_urls: videoUrls};
+                      console.log('Master product form - new formData after video update:', newData);
+                      
+                      // Only save to persistence for new products (not editing)
+                      if (!product && videoUrls.length > 0) {
+                        console.log('Saving master product video to persistence (new product):', newData);
+                        statePersistence.saveAdminMasterProductForm(newData);
+                      }
+                      
+                      return newData;
+                    });
+                  }}
+                  multiple={true}
+                  maxFiles={3}
+                  label="Upload Product Videos"
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
