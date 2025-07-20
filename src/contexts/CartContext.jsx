@@ -52,7 +52,16 @@ export const CartProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      await supabaseService.addToCart(user.id, product.id, quantity, size, color);
+      // Create cart item object with correct format for supabaseService
+      const cartItem = {
+        user_id: user.id,
+        product_id: product.id,
+        quantity,
+        size,
+        color
+      };
+      
+      await supabaseService.addToCart(cartItem);
       
       // Refresh cart items
       await fetchCartItems();

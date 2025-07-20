@@ -236,6 +236,7 @@ export type Database = {
           name: string
           price: number
           special_points: string[] | null
+          stock_quantity: number | null
           tag: string | null
           title: string
           updated_at: string
@@ -250,6 +251,7 @@ export type Database = {
           name: string
           price: number
           special_points?: string[] | null
+          stock_quantity?: number | null
           tag?: string | null
           title: string
           updated_at?: string
@@ -264,6 +266,7 @@ export type Database = {
           name?: string
           price?: number
           special_points?: string[] | null
+          stock_quantity?: number | null
           tag?: string | null
           title?: string
           updated_at?: string

@@ -1202,6 +1202,7 @@ const Admin = () => {
       description: '',
       tag: '',
       price: '',
+      stock_quantity: 0,
       colors: [],
       special_points: [],
       image_urls: [],
@@ -1233,6 +1234,7 @@ const Admin = () => {
           description: product.description || '',
           tag: product.tag || '',
           price: product.price || '',
+          stock_quantity: product.stock_quantity || 0,
           colors: Array.isArray(product.colors) ? product.colors : (product.colors || []),
           special_points: Array.isArray(product.special_points) ? product.special_points : (product.special_points || []),
           image_urls: Array.isArray(product.image_urls) ? product.image_urls : [],
@@ -1268,6 +1270,7 @@ const Admin = () => {
         const processedData = {
           ...formData,
           price: parseFloat(formData.price),
+          stock_quantity: parseInt(formData.stock_quantity) || 0,
           colors: typeof formData.colors === 'string' 
             ? formData.colors.split(',').map(c => c.trim()).filter(c => c) 
             : formData.colors,
@@ -1377,18 +1380,33 @@ const Admin = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price *
-                </label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: e.target.value})}
-                  required
-                  placeholder="0.00"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Price *
+                  </label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData({...formData, price: e.target.value})}
+                    required
+                    placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Stock Quantity *
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={formData.stock_quantity}
+                    onChange={(e) => setFormData({...formData, stock_quantity: e.target.value})}
+                    required
+                    placeholder="0"
+                  />
+                </div>
               </div>
 
               <div>
