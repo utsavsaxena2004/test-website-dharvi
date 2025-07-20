@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Package, Users, ShoppingCart, Settings, ArrowLeft, Image, Clock, Eye, EyeOff, X, Phone, Mail, MapPin, User, Truck } from 'lucide-react';
+import { Plus, Edit, Trash2, Package, Users, ShoppingCart, Settings, ArrowLeft, Image, Clock, Eye, EyeOff, X, Phone, Mail, MapPin, User, Truck, Tag } from 'lucide-react';
+import CouponManagement from '../components/admin/CouponManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -2017,7 +2018,7 @@ const Admin = () => {
         )}
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-7 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
             <TabsTrigger 
               value="products" 
               className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
@@ -2052,6 +2053,13 @@ const Admin = () => {
             >
               <Image className="w-4 h-4" />
               Custom Requests
+            </TabsTrigger>
+            <TabsTrigger 
+              value="coupons" 
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+            >
+              <Tag className="w-4 h-4" />
+              Coupons
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
@@ -2657,6 +2665,10 @@ const Admin = () => {
                 })
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="coupons" className="space-y-6 mt-8">
+            <CouponManagement />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6 mt-8">

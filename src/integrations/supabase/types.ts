@@ -107,6 +107,60 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          maximum_discount: number | null
+          minimum_order_amount: number | null
+          name: string
+          updated_at: string
+          usage_limit: number | null
+          used_count: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean | null
+          maximum_discount?: number | null
+          minimum_order_amount?: number | null
+          name: string
+          updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          maximum_discount?: number | null
+          minimum_order_amount?: number | null
+          name?: string
+          updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       custom_designs: {
         Row: {
           budget: number | null
@@ -336,7 +390,10 @@ export type Database = {
       }
       orders: {
         Row: {
+          coupon_code: string | null
+          coupon_id: string | null
           created_at: string
+          discount_amount: number | null
           id: string
           notes: string | null
           payment_method: string | null
@@ -356,7 +413,10 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          coupon_code?: string | null
+          coupon_id?: string | null
           created_at?: string
+          discount_amount?: number | null
           id?: string
           notes?: string | null
           payment_method?: string | null
@@ -376,7 +436,10 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          coupon_code?: string | null
+          coupon_id?: string | null
           created_at?: string
+          discount_amount?: number | null
           id?: string
           notes?: string | null
           payment_method?: string | null
@@ -605,7 +668,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      validate_coupon: {
+        Args: { coupon_code_input: string; order_amount: number }
+        Returns: {
+          valid: boolean
+          coupon_id: string
+          discount_amount: number
+          message: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

@@ -7,6 +7,7 @@ import razorpayService from '../services/razorpayService';
 import { sendOrderConfirmationEmail } from '../services/emailService';
 import { useToast } from '../hooks/use-toast.jsx';
 import statePersistence from '../utils/statePersistence';
+import CouponInput from '../components/CouponInput';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,7 +32,7 @@ import {
 const Checkout = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  const { cartItems, cartSummary, clearCart } = useCart();
+  const { cartItems, cartSummary, clearCart, applyCoupon, removeCoupon } = useCart();
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(false);
@@ -210,7 +211,10 @@ const Checkout = () => {
         shipping_postal_code: shippingData.postal_code,
         shipping_country: shippingData.country,
         shipping_phone: shippingData.phone,
-        notes: `Customer: ${shippingData.full_name}, Email: ${shippingData.email}`
+        notes: `Customer: ${shippingData.full_name}, Email: ${shippingData.email}`,
+        coupon_id: cartSummary.appliedCoupon?.id || null,
+        coupon_code: cartSummary.appliedCoupon?.code || null,
+        discount_amount: cartSummary.discount || 0
       };
       
       console.log('Order data to be created:', orderData);
@@ -835,11 +839,28 @@ const Checkout = () => {
                   ))}
                 </div>
 
+                {step < 3 && (
+                  <div className="mb-6">
+                    <CouponInput
+                      cartTotal={cartSummary.subtotal}
+                      onCouponApplied={applyCoupon}
+                      appliedCoupon={cartSummary.appliedCoupon}
+                      onCouponRemoved={removeCoupon}
+                    />
+                  </div>
+                )}
+
                 <div className="mt-6 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-medium">{formatPrice(cartSummary.subtotal)}</span>
                   </div>
+                  {cartSummary.discount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-green-600">Discount ({cartSummary.appliedCoupon?.code})</span>
+                      <span className="font-medium text-green-600">-{formatPrice(cartSummary.discount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium text-green-600">Free</span>

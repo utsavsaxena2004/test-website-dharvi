@@ -16,6 +16,7 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
   const { user, isAuthenticated } = useAuth();
 
   // Fetch cart items when user changes
@@ -143,6 +144,16 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Apply coupon
+  const applyCoupon = (coupon) => {
+    setAppliedCoupon(coupon);
+  };
+
+  // Remove coupon
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+  };
+
   // Calculate cart totals
   const getCartSummary = () => {
     const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -152,12 +163,17 @@ export const CartProvider = ({ children }) => {
       const price = product?.price || 0;
       return sum + (price * item.quantity);
     }, 0);
+    
+    const discount = appliedCoupon ? appliedCoupon.discount : 0;
+    const total = Math.max(0, subtotal - discount);
 
     return {
       itemCount,
       subtotal,
-      total: subtotal, // Add tax/shipping calculation here if needed
-      items: cartItems
+      discount,
+      total,
+      items: cartItems,
+      appliedCoupon
     };
   };
 
@@ -171,7 +187,10 @@ export const CartProvider = ({ children }) => {
     clearCart,
     refreshCart: fetchCartItems,
     cartSummary: getCartSummary(),
-    isAuthenticated
+    isAuthenticated,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon
   };
 
   return (
