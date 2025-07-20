@@ -1967,10 +1967,10 @@ const Admin = () => {
             </div>
             <div className="text-right">
               <p className="font-bold text-[#6f0e06]">₹{order.total_amount?.toLocaleString('en-IN')}</p>
-              <Badge 
-                variant={order.status === 'completed' || order.status === 'delivered' ? 'default' : 'secondary'}
-                className={order.status === 'completed' || order.status === 'delivered' ? 'bg-green-500' : ''}
-              >
+                <Badge 
+                  variant={order.status === 'confirmed' || order.status === 'delivered' ? 'default' : 'secondary'}
+                  className={order.status === 'confirmed' || order.status === 'delivered' ? 'bg-green-500' : ''}
+                >
                 {order.status || 'pending'}
               </Badge>
             </div>
@@ -2443,7 +2443,7 @@ const Admin = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600">Completed Orders</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {orders.filter(order => order.status === 'completed' || order.status === 'delivered').length}
+                        {orders.filter(order => order.status === 'confirmed' || order.status === 'delivered').length}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -2661,10 +2661,10 @@ const Admin = () => {
                               <div className="flex items-center gap-2 mt-2">
                                 <Badge 
                                   variant={request.status === 'pending' ? 'secondary' : 
-                                          request.status === 'completed' ? 'default' : 'outline'}
+                                  request.status === 'confirmed' ? 'default' : 'outline'}
                                   className={
                                     request.status === 'pending' ? 'bg-yellow-500 hover:bg-yellow-600 text-white' :
-                                    request.status === 'completed' ? 'bg-green-500 hover:bg-green-600' :
+                                    request.status === 'confirmed' ? 'bg-green-500 hover:bg-green-600' :
                                     request.status === 'in_progress' ? 'bg-blue-500 hover:bg-blue-600 text-white' :
                                     'bg-gray-500 hover:bg-gray-600 text-white'
                                   }

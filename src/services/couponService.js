@@ -127,7 +127,7 @@ class CouponService {
       const totalOrders = orders.length;
       const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0);
       const totalDiscount = orders.reduce((sum, order) => sum + parseFloat(order.discount_amount || 0), 0);
-      const completedOrders = orders.filter(order => order.status === 'completed').length;
+      const completedOrders = orders.filter(order => order.status === 'confirmed').length;
 
       return {
         coupon,

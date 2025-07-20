@@ -283,7 +283,7 @@ const CouponManagement = () => {
                       <p className="font-medium">{formatCurrency(order.total_amount)}</p>
                       <p className="text-sm text-success">-{formatCurrency(order.discount_amount)} discount</p>
                     </div>
-                    <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
+                    <Badge variant={order.status === 'confirmed' ? 'default' : 'secondary'}>
                       {order.status}
                     </Badge>
                   </div>
