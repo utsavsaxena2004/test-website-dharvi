@@ -1117,7 +1117,7 @@ const Admin = () => {
       promotional_messages: '',
       hero_content: '',
       footer_content: '',
-      site_title: '',
+      site_name: '',
       site_description: '',
       contact_email: '',
       contact_phone: '',
@@ -1164,7 +1164,7 @@ const Admin = () => {
               phone: "+91 98765 43210",
               email: "info@dharikafashion.com"
             }, null, 2),
-          site_title: settings.site_title || 'Dharika Fashion',
+          site_name: settings.site_name || 'Dharika Fashion',
           site_description: settings.site_description || 'Premium ethnic wear collection',
           contact_email: settings.contact_email || '',
           contact_phone: settings.contact_phone || '',
@@ -1188,7 +1188,7 @@ const Admin = () => {
         
         // Prepare settings data - now all fields are supported
         const settingsData = {
-          site_title: formData.site_title,
+          site_name: formData.site_name,
           site_description: formData.site_description,
           contact_email: formData.contact_email,
           contact_phone: formData.contact_phone,
@@ -1255,11 +1255,11 @@ const Admin = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Site Title ✅
+                    Site Name ✅
                   </label>
                   <Input
-                    value={formData.site_title}
-                    onChange={(e) => setFormData({...formData, site_title: e.target.value})}
+                    value={formData.site_name}
+                    onChange={(e) => setFormData({...formData, site_name: e.target.value})}
                     className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>

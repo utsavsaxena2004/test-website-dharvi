@@ -602,7 +602,7 @@ class SupabaseService {
       console.error('Error fetching site settings:', error);
       // Return default settings if none exist
       return {
-        site_title: 'Dharika',
+        site_name: 'Dharika',
         site_description: 'Premium Indian Traditional Wear',
         contact_email: 'info@dharika.com',
         contact_phone: '+91 9876543210',
