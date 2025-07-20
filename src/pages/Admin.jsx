@@ -1193,12 +1193,11 @@ const Admin = () => {
 
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
       >
-        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <Card className="border-rose-100 bg-white/70 backdrop-blur-sm">
           <CardHeader className="border-b border-rose-100">
             <div className="flex justify-between items-center">
               <div>
@@ -2217,6 +2216,21 @@ const Admin = () => {
               </Button>
             </div>
 
+            {showMasterProductForm && (
+              <MasterProductForm
+                product={editingMasterProduct}
+                onClose={() => {
+                  setShowMasterProductForm(false);
+                  setEditingMasterProduct(null);
+                }}
+                onSave={() => {
+                  setShowMasterProductForm(false);
+                  setEditingMasterProduct(null);
+                  loadData();
+                }}
+              />
+            )}
+
             <div className="grid gap-6">
               {masterProducts.length === 0 ? (
                 <Card className="border-rose-100 bg-white/70 backdrop-blur-sm">
@@ -2466,21 +2480,6 @@ const Admin = () => {
         </Tabs>
 
         {/* Modal Forms - Rendered outside tabs */}
-        {showMasterProductForm && (
-          <MasterProductForm
-            product={editingMasterProduct}
-            onClose={() => {
-              setShowMasterProductForm(false);
-              setEditingMasterProduct(null);
-            }}
-            onSave={() => {
-              setShowMasterProductForm(false);
-              setEditingMasterProduct(null);
-              loadData();
-            }}
-          />
-        )}
-
         {selectedOrder && showOrderModal && (
           <OrderDetailsModal
             order={selectedOrder}
