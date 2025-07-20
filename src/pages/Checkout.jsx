@@ -157,13 +157,19 @@ const Checkout = () => {
   const createOrder = async () => {
     try {
       // Prepare order items
-      const orderItems = cartItems.map(item => ({
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price: item.products?.price || item.master_products?.price || 0,
-        size: item.size,
-        color: item.color
-      }));
+      // Prepare order items from cart items
+      console.log('Cart items before creating order:', cartItems);
+      const orderItems = cartItems.map(item => {
+        console.log('Processing cart item:', item);
+        return {
+          product_id: item.product_id || item.master_product_id,
+          quantity: item.quantity,
+          price: item.products?.price || item.master_products?.price || 0,
+          size: item.size,
+          color: item.color
+        };
+      });
+      console.log('Prepared order items:', orderItems);
 
       // Create order in database
       const orderData = {
