@@ -2407,7 +2407,7 @@ const Admin = () => {
                       <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                       <p className="text-2xl font-bold text-gray-900">
                         ₹{orders
-                          .filter(order => (order.status === 'delivered' || order.status === 'confirmed') && (order.payment_status === 'completed' || order.payment_status === 'confirmed'))
+                          .filter(order => order.status === 'delivered' || order.status === 'confirmed')
                           .reduce((sum, order) => sum + (order.total_amount || 0), 0)
                           .toLocaleString('en-IN')}
                       </p>
