@@ -184,7 +184,7 @@ const Checkout = () => {
         notes: `Customer: ${shippingData.full_name}, Email: ${shippingData.email}`
       };
 
-      const { order } = await supabaseService.createOrder(orderData, orderItems);
+      const order = await supabaseService.createOrder(orderData);
       return order;
     } catch (error) {
       console.error('Error creating order:', error);
