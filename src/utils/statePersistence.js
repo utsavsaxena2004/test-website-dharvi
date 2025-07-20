@@ -10,6 +10,7 @@ class StatePersistence {
       ADMIN_TAB: 'admin_tab',
       ADMIN_PRODUCT_FORM: 'admin_product_form',
       ADMIN_CATEGORY_FORM: 'admin_category_form',
+      ADMIN_MASTER_PRODUCT_FORM: 'admin_master_product_form',
       ADMIN_SETTINGS_FORM: 'admin_settings_form',
       AUTH_FORM: 'auth_form',
       LAST_ROUTE: 'last_route',
@@ -179,6 +180,18 @@ class StatePersistence {
 
   clearAdminSettingsForm() {
     this.remove(this.keys.ADMIN_SETTINGS_FORM);
+  }
+
+  saveAdminMasterProductForm(formData) {
+    this.save(this.keys.ADMIN_MASTER_PRODUCT_FORM, formData);
+  }
+
+  loadAdminMasterProductForm() {
+    return this.load(this.keys.ADMIN_MASTER_PRODUCT_FORM, 60 * 60 * 1000); // 1 hour
+  }
+
+  clearAdminMasterProductForm() {
+    this.remove(this.keys.ADMIN_MASTER_PRODUCT_FORM);
   }
 
   // Authentication form persistence

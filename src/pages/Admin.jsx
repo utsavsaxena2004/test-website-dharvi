@@ -1152,6 +1152,56 @@ const Admin = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    // Load saved form data on mount
+    useEffect(() => {
+      if (!product) {
+        // Only load saved data if we're not editing an existing product
+        const savedData = statePersistence.loadAdminMasterProductForm();
+        if (savedData) {
+          setFormData(prev => ({ 
+            ...prev, 
+            ...savedData,
+            // Ensure arrays are properly handled
+            colors: Array.isArray(savedData.colors) ? savedData.colors : (savedData.colors || []),
+            special_points: Array.isArray(savedData.special_points) ? savedData.special_points : (savedData.special_points || []),
+            image_urls: Array.isArray(savedData.image_urls) ? savedData.image_urls : []
+          }));
+        }
+      } else {
+        // If editing existing product, populate form with product data
+        setFormData({
+          name: product.name || '',
+          title: product.title || '',
+          description: product.description || '',
+          tag: product.tag || '',
+          price: product.price || '',
+          colors: Array.isArray(product.colors) ? product.colors : (product.colors || []),
+          special_points: Array.isArray(product.special_points) ? product.special_points : (product.special_points || []),
+          image_urls: Array.isArray(product.image_urls) ? product.image_urls : [],
+          is_active: product.is_active !== undefined ? product.is_active : true
+        });
+      }
+    }, [product]);
+
+    // Save form data as user types (but only for new products, not when editing)
+    useEffect(() => {
+      if (!product) {
+        // Only auto-save for new products
+        const timeoutId = setTimeout(() => {
+          const hasData = Object.values(formData).some(value => {
+            if (Array.isArray(value)) return value.length > 0;
+            return value && (typeof value === 'string' ? value.trim() : value);
+          });
+          if (hasData) {
+            console.log('Auto-saving master product form data to persistence:', formData);
+            statePersistence.saveAdminMasterProductForm(formData);
+          }
+        }, 1000); // Save after 1 second of no changes
+
+        return () => clearTimeout(timeoutId);
+      }
+    }, [formData, product]);
+
     const handleSubmit = async (e) => {
       e.preventDefault();
       setIsLoading(true);
@@ -1173,6 +1223,8 @@ const Admin = () => {
           result = await supabaseService.updateMasterProduct(product.id, processedData);
         } else {
           result = await supabaseService.createMasterProduct(processedData);
+          // Clear saved form data on successful creation
+          statePersistence.clearAdminMasterProductForm();
         }
 
         onSave?.(result);
@@ -1312,9 +1364,31 @@ const Admin = () => {
                   Product Images
                 </label>
                 <ImageUpload
-                  onUpload={(urls) => setFormData({...formData, image_urls: [...formData.image_urls, ...urls]})}
+                  value={formData.image_urls}
+                  onChange={(urls) => {
+                    console.log('Master product form - onChange called with:', urls);
+                    
+                    // Ensure urls is an array
+                    const imageUrls = Array.isArray(urls) ? urls : (urls ? [urls] : []);
+                    console.log('Normalized imageUrls:', imageUrls);
+                    
+                    // Force update the form data
+                    setFormData(prevData => {
+                      const newData = {...prevData, image_urls: imageUrls};
+                      console.log('Master product form - new formData after update:', newData);
+                      
+                      // Only save to persistence for new products (not editing)
+                      if (!product && imageUrls.length > 0) {
+                        console.log('Saving master product to persistence (new product):', newData);
+                        statePersistence.saveAdminMasterProductForm(newData);
+                      }
+                      
+                      return newData;
+                    });
+                  }}
                   multiple={true}
-                  className="w-full"
+                  maxFiles={8}
+                  label="Upload Product Images"
                 />
                 {formData.image_urls && formData.image_urls.length > 0 && (
                   <div className="grid grid-cols-4 gap-2 mt-2">
