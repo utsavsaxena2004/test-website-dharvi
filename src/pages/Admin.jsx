@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Package, Users, ShoppingCart, Settings, ArrowLeft, Image, Clock, Eye, X, Phone, Mail, MapPin, User, Truck } from 'lucide-react';
+import { Plus, Edit, Trash2, Package, Users, ShoppingCart, Settings, ArrowLeft, Image, Clock, Eye, EyeOff, X, Phone, Mail, MapPin, User, Truck } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
