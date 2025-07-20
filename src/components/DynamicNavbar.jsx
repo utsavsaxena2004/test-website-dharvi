@@ -28,6 +28,7 @@ const DynamicNavbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [dropdownTimeout, setDropdownTimeout] = useState(null);
   const { user, profile, logout } = useAuth();
   const { cartSummary } = useCart();
   const { wishlistSummary } = useWishlist();
@@ -101,6 +102,21 @@ const DynamicNavbar = () => {
     setSearchQuery(e.target.value);
   };
 
+  const handleUserDropdownEnter = () => {
+    if (dropdownTimeout) {
+      clearTimeout(dropdownTimeout);
+      setDropdownTimeout(null);
+    }
+    setShowUserDropdown(true);
+  };
+
+  const handleUserDropdownLeave = () => {
+    const timeout = setTimeout(() => {
+      setShowUserDropdown(false);
+    }, 200); // 200ms delay before hiding
+    setDropdownTimeout(timeout);
+  };
+
   return (
     <header className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-gray-800 shadow-lg top-0 z-50">
       {/* Top Bar */}
@@ -168,31 +184,36 @@ const DynamicNavbar = () => {
             <div className="flex items-center gap-4">
               <div 
                 className="relative"
-                onMouseEnter={() => setShowUserDropdown(true)}
-                onMouseLeave={() => setShowUserDropdown(false)}
+                onMouseEnter={handleUserDropdownEnter}
+                onMouseLeave={handleUserDropdownLeave}
               >
-                <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] hover:text-amber-600 transition duration-300 cursor-pointer">
+                <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] hover:text-amber-600 transition duration-300 cursor-pointer flex items-center gap-1">
                   {profile?.full_name || user.email}
+                  <ChevronDownIcon className="h-3 w-3 text-gray-500" />
                 </span>
                 
                 {/* User Dropdown */}
                 {showUserDropdown && (
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div 
+                    className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                    onMouseEnter={handleUserDropdownEnter}
+                    onMouseLeave={handleUserDropdownLeave}
+                  >
                     <Link
                       to="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
+                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition duration-200 border-b border-gray-100"
                       onClick={() => setShowUserDropdown(false)}
                     >
-                      My Orders
+                      📋 My Orders
                     </Link>
                     <button
                       onClick={() => {
                         setShowUserDropdown(false);
                         logout();
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
+                      className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition duration-200"
                     >
-                      Logout
+                      🚪 Logout
                     </button>
                   </div>
                 )}
