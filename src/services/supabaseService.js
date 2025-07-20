@@ -590,6 +590,12 @@ class SupabaseService {
             name,
             price,
             image_urls
+          ),
+          master_products (
+            id,
+            name,
+            price,
+            image_urls
           )
         )
       `)

@@ -481,11 +481,14 @@ const Admin = () => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Payment Status:</span>
                       <span className={`px-2 py-1 rounded text-sm font-medium ${
-                        order.payment_status === 'completed' ? 'bg-green-100 text-green-800' :
+                        order.payment_status === 'completed' || order.payment_status === 'confirmed' ? 'bg-green-100 text-green-800' :
                         order.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
+                        order.payment_status === 'failed' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
                       }`}>
-                        {order.payment_status || 'pending'}
+                        {order.payment_status === 'completed' || order.payment_status === 'confirmed' ? 'Confirmed Payment' :
+                         order.payment_status === 'failed' ? 'Payment Failed' :
+                         order.payment_status || 'pending'}
                       </span>
                     </div>
                   </div>
@@ -599,29 +602,37 @@ const Admin = () => {
                     </div>
                   ) : orderDetails && orderDetails.order_items && orderDetails.order_items.length > 0 ? (
                     <div className="space-y-4">
-                      {orderDetails.order_items.map((item) => (
-                        <div key={item.id} className="flex items-center space-x-4 p-3 bg-white rounded-lg border border-gray-200">
-                          <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                            <img 
-                              src={item.products?.image_urls?.[0] || '/placeholder-product.jpg'} 
-                              alt={item.products?.name || 'Product'}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{item.products?.name || 'Unknown Product'}</h4>
-                            <div className="text-sm text-gray-600 space-y-1">
-                              {item.color && <p>Color: {item.color}</p>}
-                              {item.size && <p>Size: {item.size}</p>}
-                              <p>Quantity: {item.quantity}</p>
+                      {orderDetails.order_items.map((item) => {
+                        // Get product data from either products or master_products
+                        const productData = item.products || item.master_products;
+                        const productImage = productData?.image_urls?.[0];
+                        const productName = productData?.name;
+                        
+                        return (
+                          <div key={item.id} className="flex items-center space-x-4 p-3 bg-white rounded-lg border border-gray-200">
+                            <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                              <img 
+                                src={productImage || '/placeholder-product.jpg'} 
+                                alt={productName || 'Product'}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900">{productName || 'Unknown Product'}</h4>
+                              <div className="text-sm text-gray-600 space-y-1">
+                                {item.color && <p>Color: {item.color}</p>}
+                                {item.size && <p>Size: {item.size}</p>}
+                                <p>Quantity: {item.quantity}</p>
+                                <p>Type: {item.product_type || 'product'}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-[#6f0e06]">₹{item.price?.toLocaleString('en-IN')}</p>
+                              <p className="text-sm text-gray-600">per item</p>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="font-bold text-[#6f0e06]">₹{item.price?.toLocaleString('en-IN')}</p>
-                            <p className="text-sm text-gray-600">per item</p>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                       
                       {/* Order Total */}
                       <div className="border-t border-gray-200 pt-4">
@@ -1936,7 +1947,11 @@ const Admin = () => {
           </div>
           
           <div className="text-sm space-y-1 mb-4">
-            <p><strong>Payment Status:</strong> {order.payment_status || 'pending'}</p>
+            <p><strong>Payment Status:</strong> {
+              order.payment_status === 'completed' || order.payment_status === 'confirmed' ? 'Confirmed Payment' :
+              order.payment_status === 'failed' ? 'Payment Failed' :
+              order.payment_status || 'pending'
+            }</p>
             <p><strong>Shipping:</strong> {order.shipping_address_line1}</p>
             <p><strong>Phone:</strong> {order.shipping_phone || 'Not provided'}</p>
           </div>
@@ -2342,7 +2357,10 @@ const Admin = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        ₹{orders.reduce((sum, order) => sum + (order.total_amount || 0), 0).toLocaleString('en-IN')}
+                        ₹{orders
+                          .filter(order => order.status === 'delivered' && (order.payment_status === 'completed' || order.payment_status === 'confirmed'))
+                          .reduce((sum, order) => sum + (order.total_amount || 0), 0)
+                          .toLocaleString('en-IN')}
                       </p>
                     </div>
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
