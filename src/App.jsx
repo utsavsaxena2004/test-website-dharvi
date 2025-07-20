@@ -66,15 +66,20 @@ const AppContent = () => {
                     <DynamicCategorySections showCount={6} />
                   </div> */}
                   {/* Featured Products */}
+                  
                   <FeaturedCollection />
 
-                  <FeaturedProductShowcase />
+                  {/* About Dharika Section */}
+                  <AboutDharika />
                   
                   {/* Gallery Section */}
                   <Gallery />
+
+                  <FeaturedProductShowcase />
                   
-                  {/* About Dharika Section */}
-                  <AboutDharika />
+
+                  
+
                   
                   <CustomDesignShowcase />
                   
