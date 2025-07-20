@@ -12,11 +12,16 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Creating Razorpay order...");
     const { amount, currency = "INR", notes = {} } = await req.json();
+    console.log("Order details:", { amount, currency, notes });
 
     // Get Razorpay credentials from environment
     const razorpayKeyId = Deno.env.get("RAZORPAY_KEY_ID");
     const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
+
+    console.log("Key ID available:", !!razorpayKeyId);
+    console.log("Key Secret available:", !!razorpayKeySecret);
 
     if (!razorpayKeyId || !razorpayKeySecret) {
       throw new Error("Razorpay credentials not configured");
@@ -26,9 +31,12 @@ serve(async (req) => {
     const orderData = {
       amount: Math.round(amount * 100), // Convert to paisa
       currency,
+      receipt: `receipt_${Date.now()}`,
       notes,
       payment_capture: 1
     };
+
+    console.log("Creating order with data:", orderData);
 
     const auth = btoa(`${razorpayKeyId}:${razorpayKeySecret}`);
     
@@ -41,13 +49,16 @@ serve(async (req) => {
       body: JSON.stringify(orderData),
     });
 
+    console.log("Razorpay API response status:", response.status);
+
     if (!response.ok) {
-      const error = await response.text();
-      console.error("Razorpay API error:", error);
-      throw new Error(`Razorpay API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error("Razorpay API error:", errorText);
+      throw new Error(`Razorpay API error: ${response.status} - ${errorText}`);
     }
 
     const order = await response.json();
+    console.log("Order created successfully:", order.id);
 
     return new Response(
       JSON.stringify({
@@ -55,7 +66,8 @@ serve(async (req) => {
         order_id: order.id,
         amount: order.amount,
         currency: order.currency,
-        key_id: razorpayKeyId
+        key_id: razorpayKeyId,
+        receipt: order.receipt
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
