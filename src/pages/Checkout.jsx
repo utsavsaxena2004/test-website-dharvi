@@ -240,7 +240,26 @@ const Checkout = () => {
       // Create order in database first
       const order = await createOrder();
       
-      // Process payment with Razorpay
+      // Check if amount is below minimum payment threshold
+      if (cartSummary.total < 1) {
+        // For orders below ₹1, complete as free order without payment
+        await supabaseService.updateOrderStatus(order.id, 'confirmed', 'completed');
+        
+        // Clear cart
+        await supabaseService.clearCart(user.id);
+        
+        // Navigate to success page
+        navigate('/payment-success', { 
+          state: { 
+            orderId: order.id,
+            amount: cartSummary.total,
+            paymentMethod: 'Free Order'
+          } 
+        });
+        return;
+      }
+      
+      // Process payment with Razorpay for orders ≥ ₹1
       const paymentData = {
         amount: cartSummary.total,
         customerName: shippingData.full_name,

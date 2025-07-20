@@ -16,6 +16,11 @@ serve(async (req) => {
     const { amount, currency = "INR", notes = {} } = await req.json();
     console.log("Order details:", { amount, currency, notes });
 
+    // Validate minimum amount (Razorpay minimum is ₹1)
+    if (!amount || amount < 1) {
+      throw new Error("Amount must be at least ₹1 for Razorpay payments");
+    }
+
     // Get Razorpay credentials from environment
     const razorpayKeyId = Deno.env.get("RAZORPAY_KEY_ID");
     const razorpayKeySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
