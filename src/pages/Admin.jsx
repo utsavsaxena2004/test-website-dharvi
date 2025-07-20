@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabaseService } from '../services/supabaseService';
 import { useToast } from '../hooks/use-toast.jsx';
 import { useAuth } from '../contexts/AuthContext';
-import { useFormPersistence } from '../hooks/useFormPersistence';
+import { useFormPersistence } from '../hooks/useFormPersistence.jsx';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import statePersistence from '../utils/statePersistence';
