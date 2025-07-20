@@ -272,12 +272,7 @@ const FeaturedProductShowcase = () => {
     if (!currentProduct) return;
     
     try {
-      const success = await addToWishlist({
-        id: currentProduct.id,
-        name: currentProduct.name,
-        price: currentProduct.price,
-        image_urls: currentProduct.image_urls
-      });
+      const success = await addToWishlist(currentProduct, 'master_product');
       
       if (success) {
         toast({
@@ -298,13 +293,7 @@ const FeaturedProductShowcase = () => {
     if (!currentProduct) return;
     
     try {
-      const success = await addToCart({
-        id: currentProduct.id,
-        name: currentProduct.name,
-        price: currentProduct.price,
-        image_urls: currentProduct.image_urls,
-        colors: currentProduct.colors
-      }, 1, null, currentColor);
+      const success = await addToCart(currentProduct, 1, null, currentColor, 'master_product');
       
       if (success) {
         toast({
@@ -716,12 +705,12 @@ const FeaturedProductShowcase = () => {
                     }}
                     whileTap={{ scale: 0.9 }}
                     className={`p-3 rounded-full border-2 transition-colors duration-300 ${
-                      isInWishlist(currentProduct.id)
+                      isInWishlist(currentProduct.id, 'master_product')
                         ? 'bg-pink text-white border-pink' 
                         : 'bg-white text-pink border-pink hover:bg-pink hover:text-white'
                     }`}
                   >
-                    <Heart className={`w-5 h-5 ${isInWishlist(currentProduct.id) ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 ${isInWishlist(currentProduct.id, 'master_product') ? 'fill-current' : ''}`} />
                   </motion.button>
                 </motion.div>
               </div>

@@ -43,7 +43,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (product, quantity = 1, size = null, color = null) => {
+  const addToCart = async (product, quantity = 1, size = null, color = null, productType = 'product') => {
     if (!isAuthenticated) {
       throw new Error('Please login to add items to cart');
     }
@@ -55,11 +55,20 @@ export const CartProvider = ({ children }) => {
       // Create cart item object with correct format for supabaseService
       const cartItem = {
         user_id: user.id,
-        product_id: product.id,
         quantity,
         size,
-        color
+        color,
+        product_type: productType
       };
+
+      // Set the appropriate product ID based on type
+      if (productType === 'master_product') {
+        cartItem.master_product_id = product.id;
+        cartItem.product_id = null;
+      } else {
+        cartItem.product_id = product.id;
+        cartItem.master_product_id = null;
+      }
       
       await supabaseService.addToCart(cartItem);
       
@@ -138,7 +147,9 @@ export const CartProvider = ({ children }) => {
   const getCartSummary = () => {
     const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = cartItems.reduce((sum, item) => {
-      const price = item.products?.price || 0;
+      // Handle both regular products and master products
+      const product = item.products || item.master_products;
+      const price = product?.price || 0;
       return sum + (price * item.quantity);
     }, 0);
 

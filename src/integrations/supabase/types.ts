@@ -19,7 +19,9 @@ export type Database = {
           color: string | null
           created_at: string
           id: string
+          master_product_id: string | null
           product_id: string | null
+          product_type: string | null
           quantity: number
           size: string | null
           updated_at: string
@@ -29,7 +31,9 @@ export type Database = {
           color?: string | null
           created_at?: string
           id?: string
+          master_product_id?: string | null
           product_id?: string | null
+          product_type?: string | null
           quantity?: number
           size?: string | null
           updated_at?: string
@@ -39,7 +43,9 @@ export type Database = {
           color?: string | null
           created_at?: string
           id?: string
+          master_product_id?: string | null
           product_id?: string | null
+          product_type?: string | null
           quantity?: number
           size?: string | null
           updated_at?: string
@@ -47,10 +53,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "cart_items_product_id_fkey"
-            columns: ["product_id"]
+            foreignKeyName: "cart_items_master_product_id_fkey"
+            columns: ["master_product_id"]
             isOneToOne: false
-            referencedRelation: "products"
+            referencedRelation: "master_products"
             referencedColumns: ["id"]
           },
         ]
@@ -549,27 +555,33 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          master_product_id: string | null
           product_id: string | null
+          product_type: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
+          master_product_id?: string | null
           product_id?: string | null
+          product_type?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
+          master_product_id?: string | null
           product_id?: string | null
+          product_type?: string | null
           user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "wishlist_items_product_id_fkey"
-            columns: ["product_id"]
+            foreignKeyName: "wishlist_items_master_product_id_fkey"
+            columns: ["master_product_id"]
             isOneToOne: false
-            referencedRelation: "products"
+            referencedRelation: "master_products"
             referencedColumns: ["id"]
           },
         ]

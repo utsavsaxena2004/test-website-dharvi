@@ -43,7 +43,7 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
-  const addToWishlist = async (product) => {
+  const addToWishlist = async (product, productType = 'product') => {
     if (!isAuthenticated) {
       throw new Error('Please login to add items to wishlist');
     }
@@ -52,7 +52,22 @@ export const WishlistProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      await supabaseService.addToWishlist(user.id, product.id);
+      // Create wishlist item object with correct format for supabaseService
+      const wishlistItem = {
+        user_id: user.id,
+        product_type: productType
+      };
+
+      // Set the appropriate product ID based on type
+      if (productType === 'master_product') {
+        wishlistItem.master_product_id = product.id;
+        wishlistItem.product_id = null;
+      } else {
+        wishlistItem.product_id = product.id;
+        wishlistItem.master_product_id = null;
+      }
+      
+      await supabaseService.addToWishlist(wishlistItem);
       
       // Refresh wishlist items
       await fetchWishlistItems();
@@ -87,8 +102,14 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
-  const isInWishlist = (productId) => {
-    return wishlistItems.some(item => item.product_id === productId);
+  const isInWishlist = (productId, productType = 'product') => {
+    return wishlistItems.some(item => {
+      if (productType === 'master_product') {
+        return item.master_product_id === productId;
+      } else {
+        return item.product_id === productId;
+      }
+    });
   };
 
   const toggleWishlist = async (product) => {
@@ -111,7 +132,9 @@ export const WishlistProvider = ({ children }) => {
   const getWishlistSummary = () => {
     const itemCount = wishlistItems.length;
     const totalValue = wishlistItems.reduce((sum, item) => {
-      const price = item.products?.price || 0;
+      // Handle both regular products and master products
+      const product = item.products || item.master_products;
+      const price = product?.price || 0;
       return sum + price;
     }, 0);
 

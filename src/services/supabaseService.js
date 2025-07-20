@@ -207,6 +207,12 @@ class SupabaseService {
           name,
           price,
           image_urls
+        ),
+        master_products (
+          id,
+          name,
+          price,
+          image_urls
         )
       `)
       .eq('user_id', userId);
@@ -233,6 +239,12 @@ class SupabaseService {
       .select(`
         *,
         products (
+          id,
+          name,
+          price,
+          image_urls
+        ),
+        master_products (
           id,
           name,
           price,
@@ -303,6 +315,12 @@ class SupabaseService {
           name,
           price,
           image_urls
+        ),
+        master_products (
+          id,
+          name,
+          price,
+          image_urls
         )
       `)
       .eq('user_id', userId);
@@ -316,14 +334,8 @@ class SupabaseService {
     return data || [];
   }
 
-  async addToWishlist(userId, productId) {
-    console.log('Adding to wishlist:', { userId, productId });
-    
-    // Create wishlist item object
-    const wishlistItem = {
-      user_id: userId,
-      product_id: productId
-    };
+  async addToWishlist(wishlistItem) {
+    console.log('Adding to wishlist:', wishlistItem);
     
     const { data, error } = await supabase
       .from('wishlist_items')
@@ -331,6 +343,12 @@ class SupabaseService {
       .select(`
         *,
         products (
+          id,
+          name,
+          price,
+          image_urls
+        ),
+        master_products (
           id,
           name,
           price,
