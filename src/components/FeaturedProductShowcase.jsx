@@ -749,21 +749,21 @@ const FeaturedProductShowcase = () => {
                     className="absolute inset-0"
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
-                    {currentVideo ? (
+                    {currentVideo && (
                       <video 
                         src={currentVideo} 
                         alt={`${currentProduct.name} in ${currentColor}`}
                         className="w-full h-full object-cover"
-                        controls
                         muted
                         loop
                         autoPlay
                       />
-                    ) : (
+                    )}
+                    {currentImage && (
                       <img 
                         src={currentImage} 
                         alt={`${currentProduct.name} in ${currentColor}`}
-                        className="w-full h-full object-cover"
+                        className={`w-full h-full object-cover ${currentVideo ? 'absolute inset-0 -z-10' : ''}`}
                       />
                     )}
                     
