@@ -606,17 +606,21 @@ const FeaturedProductShowcase = () => {
                 )}
                 
                 {currentProduct.special_points && currentProduct.special_points.length > 0 && (
-                  <motion.ul 
-                    className="space-y-3 mb-8"
-                    variants={{
-                      hidden: { opacity: 0 },
-                      show: {
-                        opacity: 1,
-                        transition: {
-                          staggerChildren: 0.1,
-                          delayChildren: 0.3
+                  <>
+                    {console.log('Special points data:', currentProduct.special_points)}
+                    {console.log('Number of special points:', currentProduct.special_points.length)}
+                    <motion.ul 
+                      className="space-y-3 mb-8"
+                      variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                          opacity: 1,
+                          transition: {
+                            staggerChildren: 0.1,
+                            delayChildren: 0.3
+                          }
                         }
-                      }
+                      }}
                     }}
                     initial="hidden"
                     whileInView="show"
@@ -642,10 +646,10 @@ const FeaturedProductShowcase = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                           </svg>
                         </motion.div>
-                        <span className="text-gray-700 leading-relaxed text-sm">{feature}</span>
+                        <span className="text-gray-700 leading-relaxed text-sm">{feature} (Point #{index + 1})</span>
                       </motion.li>
                     ))}
-                  </motion.ul>
+                    </>
                 )}
                 
                 <motion.div 
