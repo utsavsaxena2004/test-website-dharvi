@@ -348,9 +348,11 @@ export type Database = {
           color: string | null
           created_at: string
           id: string
+          master_product_id: string | null
           order_id: string | null
           price: number
-          product_id: string
+          product_id: string | null
+          product_type: string | null
           quantity: number
           size: string | null
         }
@@ -358,9 +360,11 @@ export type Database = {
           color?: string | null
           created_at?: string
           id?: string
+          master_product_id?: string | null
           order_id?: string | null
           price: number
-          product_id: string
+          product_id?: string | null
+          product_type?: string | null
           quantity: number
           size?: string | null
         }
@@ -368,13 +372,22 @@ export type Database = {
           color?: string | null
           created_at?: string
           id?: string
+          master_product_id?: string | null
           order_id?: string | null
           price?: number
-          product_id?: string
+          product_id?: string | null
+          product_type?: string | null
           quantity?: number
           size?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "order_items_master_product_id_fkey"
+            columns: ["master_product_id"]
+            isOneToOne: false
+            referencedRelation: "master_products"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "order_items_order_id_fkey"
             columns: ["order_id"]

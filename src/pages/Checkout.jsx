@@ -165,25 +165,31 @@ const Checkout = () => {
         
         // Determine which product data to use
         const productData = item.products || item.master_products;
-        const productId = item.product_id || item.master_product_id;
         const price = productData?.price || item.price || 0;
         
         console.log('Product data:', productData);
-        console.log('Product ID:', productId);
+        console.log('Product type:', item.product_type);
         console.log('Price:', price);
         
-        if (!productId) {
-          console.error('No product ID found for cart item:', item);
-          throw new Error('Invalid cart item: missing product ID');
-        }
-        
-        return {
-          product_id: productId,
+        // Handle both regular products and master products
+        let orderItem = {
           quantity: item.quantity || 1,
           price: price,
           size: item.size || null,
-          color: item.color || null
+          color: item.color || null,
+          product_type: item.product_type || 'product'
         };
+
+        if (item.product_type === 'master_product') {
+          orderItem.master_product_id = item.master_product_id;
+          orderItem.product_id = null;
+        } else {
+          orderItem.product_id = item.product_id;
+          orderItem.master_product_id = null;
+        }
+        
+        console.log('Prepared order item:', orderItem);
+        return orderItem;
       });
       console.log('Prepared order items:', orderItems);
 
