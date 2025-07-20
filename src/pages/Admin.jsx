@@ -1187,7 +1187,6 @@ const Admin = () => {
           tax_rate: settings.tax_rate || '18',
           currency: settings.currency || 'INR'
         });
-        });
       }
     }, [settings]);
 
