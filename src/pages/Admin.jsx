@@ -1931,7 +1931,7 @@ const Admin = () => {
                 <Textarea
                   value={formData.footer_content}
                   onChange={(e) => setFormData({...formData, footer_content: e.target.value})}
-                  placeholder='{"company": "Company Name", "description": "Company description"}'
+                  placeholder='{"company": "Dharika", "description": "Premium Indian Traditional Wear", "address": "123 Fashion Street, Mumbai, Maharashtra, India", "email": "contact@dharika.co.in"}'
                   className="border-rose-200 focus:border-[#6f0e06] h-24 font-mono text-sm"
                 />
                 <p className="text-xs text-green-600 mt-1">
