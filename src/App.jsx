@@ -29,6 +29,7 @@ import DynamicCategoryPage from './pages/DynamicCategoryPage';
 import CartPage from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
+import PaymentSuccess from './pages/PaymentSuccess';
 import WishlistPage from './pages/Wishlist';
 import SharedWishlist from './pages/SharedWishlist';
 import SearchResults from './pages/SearchResults';
