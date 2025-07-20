@@ -351,26 +351,36 @@ const CartPage = () => {
                           >
                             {/* Product Info */}
                             <div className="col-span-6 flex items-center space-x-4">
-                              <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                                <img
-                                  src={item.products?.image_urls?.[0] || item.products?.image || '/placeholder-image.jpg'}
-                                  alt={item.products?.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <div>
-                                <h3 className="font-medium text-gray-900">{item.products?.name}</h3>
-                                <div className="text-sm text-gray-500 space-y-1">
-                                  {item.size && <p>Size: {item.size}</p>}
-                                  {item.color && <p>Color: {item.color}</p>}
-                                </div>
-                              </div>
+                              {(() => {
+                                const product = item.products || item.master_products;
+                                return (
+                                  <>
+                                    <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                                      <img
+                                        src={product?.image_urls?.[0] || '/placeholder-image.jpg'}
+                                        alt={product?.name}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                    <div>
+                                      <h3 className="font-medium text-gray-900">{product?.name}</h3>
+                                      <div className="text-sm text-gray-500 space-y-1">
+                                        {item.size && <p>Size: {item.size}</p>}
+                                        {item.color && <p>Color: {item.color}</p>}
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              })()}
                             </div>
                             
                             {/* Price */}
                             <div className="col-span-2 text-center">
                               <span className="font-medium text-gray-900">
-                                {formatPrice(item.products?.price)}
+                                {(() => {
+                                  const product = item.products || item.master_products;
+                                  return formatPrice(product?.price);
+                                })()}
                               </span>
                             </div>
                             
@@ -401,7 +411,10 @@ const CartPage = () => {
                             <div className="col-span-2 text-right">
                               <div className="flex items-center justify-end space-x-2">
                                 <span className="font-medium text-gray-900">
-                                  {formatPrice(item.products?.price * item.quantity)}
+                                  {(() => {
+                                    const product = item.products || item.master_products;
+                                    return formatPrice(product?.price * item.quantity);
+                                  })()}
                                 </span>
                                 <button
                                   onClick={() => handleRemoveItem(item.id)}
