@@ -202,13 +202,13 @@ class SupabaseService {
       .from('cart_items')
       .select(`
         *,
-        products (
+        products!cart_items_product_id_fkey (
           id,
           name,
           price,
           image_urls
         ),
-        master_products (
+        master_products!cart_items_master_product_id_fkey (
           id,
           name,
           price,
@@ -238,13 +238,13 @@ class SupabaseService {
       .insert([cartItem])
       .select(`
         *,
-        products (
+        products!cart_items_product_id_fkey (
           id,
           name,
           price,
           image_urls
         ),
-        master_products (
+        master_products!cart_items_master_product_id_fkey (
           id,
           name,
           price,
@@ -310,13 +310,13 @@ class SupabaseService {
       .from('wishlist_items')
       .select(`
         *,
-        products (
+        products!wishlist_items_product_id_fkey (
           id,
           name,
           price,
           image_urls
         ),
-        master_products (
+        master_products!wishlist_items_master_product_id_fkey (
           id,
           name,
           price,
@@ -342,13 +342,13 @@ class SupabaseService {
       .insert([wishlistItem])
       .select(`
         *,
-        products (
+        products!wishlist_items_product_id_fkey (
           id,
           name,
           price,
           image_urls
         ),
-        master_products (
+        master_products!wishlist_items_master_product_id_fkey (
           id,
           name,
           price,
