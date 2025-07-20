@@ -20,7 +20,7 @@ export type Database = {
           created_at: string
           id: string
           master_product_id: string | null
-          product_id: string
+          product_id: string | null
           product_type: string | null
           quantity: number
           size: string | null
@@ -32,7 +32,7 @@ export type Database = {
           created_at?: string
           id?: string
           master_product_id?: string | null
-          product_id: string
+          product_id?: string | null
           product_type?: string | null
           quantity?: number
           size?: string | null
@@ -44,7 +44,7 @@ export type Database = {
           created_at?: string
           id?: string
           master_product_id?: string | null
-          product_id?: string
+          product_id?: string | null
           product_type?: string | null
           quantity?: number
           size?: string | null
