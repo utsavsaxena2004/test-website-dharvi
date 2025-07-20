@@ -44,7 +44,10 @@ const ProductCard = ({
     try {
       setIsLoading(true);
       
-      await addToCart(product, 1);
+      // Determine product type - if it has a 'title' field and no 'sizes' field, it's likely a master product
+      const productType = (product.title && !product.sizes) ? 'master_product' : 'product';
+      
+      await addToCart(product, 1, null, null, productType);
       
       // Show success notification
       const notification = document.createElement('div');
@@ -147,7 +150,10 @@ const ProductCard = ({
     setIsAuthPopupOpen(false);
     // Try adding to cart again after successful login
     try {
-      await addToCart(product, 1);
+      // Determine product type - if it has a 'title' field and no 'sizes' field, it's likely a master product
+      const productType = (product.title && !product.sizes) ? 'master_product' : 'product';
+      
+      await addToCart(product, 1, null, null, productType);
       
       // Show success notification
       const notification = document.createElement('div');
