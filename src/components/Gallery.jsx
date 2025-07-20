@@ -241,6 +241,11 @@ const Gallery = ({ showAll = false, limit = 8 }) => {
                   variant="ghost"
                   size="sm"
                   className="text-gray-600 hover:text-[#6f0e06]"
+                  onClick={() => {
+                    // Add to favorites or show toast
+                    console.log('Liked image:', selectedImage.title);
+                    // You can implement actual like functionality here
+                  }}
                 >
                   <Heart className="w-4 h-4 mr-1" />
                   Like
@@ -249,6 +254,19 @@ const Gallery = ({ showAll = false, limit = 8 }) => {
                   variant="ghost"
                   size="sm"
                   className="text-gray-600 hover:text-[#6f0e06]"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: selectedImage.title || 'Gallery Image',
+                        text: selectedImage.description || 'Check out this beautiful image from our gallery',
+                        url: selectedImage.image_url
+                      });
+                    } else {
+                      // Fallback: copy to clipboard
+                      navigator.clipboard.writeText(selectedImage.image_url);
+                      console.log('Image URL copied to clipboard');
+                    }
+                  }}
                 >
                   <Share2 className="w-4 h-4 mr-1" />
                   Share
