@@ -320,6 +320,7 @@ const FeaturedProductShowcase = () => {
   const handleDotClick = (index) => {
     setCurrentProductIndex(index);
     setSelectedColorIndex(0);
+    setSelectedImageIndex(0);
     // Reset the auto-cycle timer
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -329,6 +330,7 @@ const FeaturedProductShowcase = () => {
             prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
           );
           setSelectedColorIndex(0);
+          setSelectedImageIndex(0);
         }, 30000);
       }
     }
@@ -356,8 +358,13 @@ const FeaturedProductShowcase = () => {
     );
   }
 
-  const currentImage = currentProduct.image_urls?.[selectedImageIndex] || currentProduct.image_urls?.[0] || '';
-  const currentVideo = currentProduct.video_urls?.[selectedImageIndex] || currentProduct.video_urls?.[0] || '';
+  // Create combined media array: videos first, then images
+  const combinedMedia = [
+    ...(currentProduct.video_urls || []).map(url => ({ type: 'video', url })),
+    ...(currentProduct.image_urls || []).map(url => ({ type: 'image', url }))
+  ];
+  
+  const currentMedia = combinedMedia[selectedImageIndex] || combinedMedia[0] || { type: 'image', url: '' };
   const currentColor = currentProduct.colors?.[selectedColorIndex] || currentProduct.colors?.[0] || 'Default';
   
   return (
@@ -750,21 +757,20 @@ const FeaturedProductShowcase = () => {
                     className="absolute inset-0"
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
-                    {currentVideo && (
+                    {currentMedia.type === 'video' ? (
                       <video 
-                        src={currentVideo} 
+                        src={currentMedia.url} 
                         alt={`${currentProduct.name} in ${currentColor}`}
                         className="w-full h-full object-cover"
                         muted
                         loop
                         autoPlay
                       />
-                    )}
-                    {currentImage && (
+                    ) : (
                       <img 
-                        src={currentImage} 
+                        src={currentMedia.url} 
                         alt={`${currentProduct.name} in ${currentColor}`}
-                        className={`w-full h-full object-cover ${currentVideo ? 'absolute inset-0 -z-10' : ''}`}
+                        className="w-full h-full object-cover"
                       />
                     )}
                     
@@ -831,10 +837,10 @@ const FeaturedProductShowcase = () => {
               </motion.div>
             </div>
             
-            {/* Enhanced Thumbnail Navigation */}
-            {currentProduct.image_urls && currentProduct.image_urls.length > 1 && (
+            {/* Enhanced Media Navigation - Videos and Images */}
+            {combinedMedia.length > 1 && (
               <div className="flex justify-center mt-6 space-x-3">
-                {currentProduct.image_urls.map((imageUrl, index) => (
+                {combinedMedia.map((media, index) => (
                   <motion.button
                     key={index}
                     whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
@@ -846,14 +852,29 @@ const FeaturedProductShowcase = () => {
                       duration: 0.4,
                       y: { type: "spring", stiffness: 300, damping: 20 }
                     }}
-                    onClick={() => setSelectedColorIndex(index)}
-                    className={`relative rounded-md overflow-hidden w-16 h-16 ${selectedColorIndex === index ? 'ring-2 ring-[#6f0e06]' : 'ring-1 ring-gray-200'}`}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`relative rounded-md overflow-hidden w-16 h-16 ${selectedImageIndex === index ? 'ring-2 ring-[#6f0e06]' : 'ring-1 ring-gray-200'}`}
                   >
-                    <img 
-                      src={imageUrl} 
-                      alt={`View ${index + 1}`} 
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                    />
+                    {media.type === 'video' ? (
+                      <div className="relative w-full h-full">
+                        <video 
+                          src={media.url} 
+                          className="w-full h-full object-cover"
+                          muted
+                        />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    ) : (
+                      <img 
+                        src={media.url} 
+                        alt={`View ${index + 1}`} 
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                      />
+                    )}
                   </motion.button>
                 ))}
               </div>
