@@ -25,11 +25,13 @@ class RazorpayService {
 
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.crossOrigin = 'anonymous'; // Add crossOrigin attribute
       script.onload = () => {
         this.isLoaded = true;
         resolve(window.Razorpay);
       };
       script.onerror = () => {
+        console.warn('Razorpay script failed to load - this is normal in development');
         reject(new Error('Failed to load Razorpay script'));
       };
       document.head.appendChild(script);
