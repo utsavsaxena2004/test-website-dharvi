@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Package, Users, ShoppingCart, Settings, ArrowLeft, Image, Clock, Eye, EyeOff, X, Phone, Mail, MapPin, User, Truck, Tag } from 'lucide-react';
 import CouponManagement from '../components/admin/CouponManagement';
+import GalleryManagement from '../components/admin/GalleryManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -2098,7 +2099,7 @@ const Admin = () => {
         )}
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-8 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
             <TabsTrigger 
               value="products" 
               className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
@@ -2140,6 +2141,13 @@ const Admin = () => {
             >
               <Tag className="w-4 h-4" />
               Coupons
+            </TabsTrigger>
+            <TabsTrigger 
+              value="gallery" 
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+            >
+              <Image className="w-4 h-4" />
+              Gallery
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
@@ -2771,6 +2779,10 @@ const Admin = () => {
 
           <TabsContent value="coupons" className="space-y-6 mt-8">
             <CouponManagement />
+          </TabsContent>
+
+          <TabsContent value="gallery" className="space-y-6 mt-8">
+            <GalleryManagement />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6 mt-8">
