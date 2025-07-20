@@ -4,8 +4,8 @@ import { supabaseService } from './supabaseService';
 class RazorpayService {
   constructor() {
     // Using test keys for now - replace with live keys for production
-    this.keyId = 'rzp_test_9WzaAz4VXtlBbb';
-    this.keySecret = 'rzp_test_9WzaAz4VXtlBbb';
+    this.keyId = 'rzp_live_wgFZDVL2uCQlLu';
+    this.keySecret = 'WLhFiat4BQ6M5Qk0BlZ6Mg8Q';
     this.isLoaded = false;
     this.loadPromise = null;
   }
