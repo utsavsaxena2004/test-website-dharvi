@@ -190,8 +190,8 @@ class RazorpayService {
       // Update order status and payment status to completed
       const updatedOrder = await supabaseService.updateOrderStatus(
         orderData.id, 
-        'completed', 
-        'completed'
+        'confirmed',  // Order status: use 'confirmed' instead of 'completed'
+        'completed'   // Payment status: 'completed' is valid
       );
 
       console.log('Order status updated to completed:', updatedOrder);
