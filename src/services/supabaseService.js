@@ -733,6 +733,93 @@ class SupabaseService {
     
     console.log('File deleted successfully');
   }
+
+  // Master Products
+  async getMasterProducts() {
+    console.log('Fetching master products...');
+    const { data, error } = await supabase
+      .from('master_products')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching master products:', error);
+      throw error;
+    }
+    
+    console.log('Master products fetched:', data);
+    return data || [];
+  }
+
+  async createMasterProduct(masterProductData) {
+    console.log('Creating master product:', masterProductData);
+    const { data, error } = await supabase
+      .from('master_products')
+      .insert([masterProductData])
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error creating master product:', error);
+      throw error;
+    }
+    
+    console.log('Master product created:', data);
+    return data;
+  }
+
+  async updateMasterProduct(id, masterProductData) {
+    console.log('Updating master product:', id, masterProductData);
+    const { data, error } = await supabase
+      .from('master_products')
+      .update(masterProductData)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error updating master product:', error);
+      throw error;
+    }
+    
+    console.log('Master product updated:', data);
+    return data;
+  }
+
+  async deleteMasterProduct(id) {
+    console.log('Deleting master product:', id);
+    const { error } = await supabase
+      .from('master_products')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting master product:', error);
+      throw error;
+    }
+    
+    console.log('Master product deleted');
+  }
+
+  async getFeaturedMasterProduct() {
+    console.log('Fetching featured master product...');
+    const { data, error } = await supabase
+      .from('master_products')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching featured master product:', error);
+      throw error;
+    }
+    
+    console.log('Featured master product fetched:', data);
+    return data;
+  }
 }
 
 export const supabaseService = new SupabaseService();

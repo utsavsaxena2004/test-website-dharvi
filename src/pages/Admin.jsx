@@ -22,12 +22,15 @@ const Admin = () => {
   const [categories, setCategories] = useState([]);
   const [orders, setOrders] = useState([]);
   const [customRequests, setCustomRequests] = useState([]);
+  const [masterProducts, setMasterProducts] = useState([]);
   const [settings, setSettings] = useState({});
   const [loading, setLoading] = useState(true);
   const [showProductForm, setShowProductForm] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [showMasterProductForm, setShowMasterProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [editingMasterProduct, setEditingMasterProduct] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [activeTab, setActiveTab] = useState('products');
@@ -52,12 +55,13 @@ const Admin = () => {
       
       console.log('Loading admin data...');
       
-      // Load products, categories, settings, and custom requests
-      const [productsData, categoriesData, settingsData, customRequestsData] = await Promise.all([
+      // Load products, categories, settings, custom requests, and master products
+      const [productsData, categoriesData, settingsData, customRequestsData, masterProductsData] = await Promise.all([
         supabaseService.getProducts({ includeInactive: true }),
         supabaseService.getCategories(true),
         supabaseService.getSettings(),
-        supabaseService.getCustomRequests()
+        supabaseService.getCustomRequests(),
+        supabaseService.getMasterProducts()
       ]);
       
       console.log('Loaded products:', productsData);
@@ -69,6 +73,7 @@ const Admin = () => {
       setCategories(categoriesData);
       setSettings(settingsData);
       setCustomRequests(customRequestsData);
+      setMasterProducts(masterProductsData);
       
       // Try to load orders separately with error handling
       try {
@@ -188,6 +193,25 @@ const Admin = () => {
         description: error.message,
         variant: "destructive"
       });
+    }
+  };
+
+  const handleDeleteMasterProduct = async (id) => {
+    if (window.confirm('Are you sure you want to delete this master product?')) {
+      try {
+        await supabaseService.deleteMasterProduct(id);
+        setMasterProducts(masterProducts.filter(product => product.id !== id));
+        toast({
+          title: "Master product deleted successfully",
+          description: "The master product has been removed.",
+        });
+      } catch (error) {
+        toast({
+          title: "Error deleting master product",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -1113,6 +1137,228 @@ const Admin = () => {
     );
   };
 
+  const MasterProductForm = ({ product, onClose, onSave }) => {
+    const [formData, setFormData] = useState(product || {
+      name: '',
+      title: '',
+      description: '',
+      tag: '',
+      price: '',
+      colors: [],
+      special_points: [],
+      image_urls: [],
+      is_active: true
+    });
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setIsLoading(true);
+
+      try {
+        const processedData = {
+          ...formData,
+          price: parseFloat(formData.price),
+          colors: typeof formData.colors === 'string' 
+            ? formData.colors.split(',').map(c => c.trim()).filter(c => c) 
+            : formData.colors,
+          special_points: typeof formData.special_points === 'string' 
+            ? formData.special_points.split(',').map(p => p.trim()).filter(p => p) 
+            : formData.special_points
+        };
+
+        let result;
+        if (product) {
+          result = await supabaseService.updateMasterProduct(product.id, processedData);
+        } else {
+          result = await supabaseService.createMasterProduct(processedData);
+        }
+
+        onSave?.(result);
+        toast({
+          title: product ? "Master product updated successfully" : "Master product created successfully"
+        });
+        onClose();
+      } catch (error) {
+        toast({
+          title: "Error saving master product",
+          description: error.message,
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      >
+        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <CardHeader className="border-b border-rose-100">
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-xl font-serif text-gray-900">
+                  {product ? 'Edit Master Product' : 'Add Master Product'}
+                </CardTitle>
+                <CardDescription>
+                  Manage featured showcase products
+                </CardDescription>
+              </div>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Product Name *
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    required
+                    placeholder="e.g., Maharani Signature Saree"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tag
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.tag}
+                    onChange={(e) => setFormData({...formData, tag: e.target.value})}
+                    placeholder="e.g., Limited Edition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title *
+                </label>
+                <Input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  required
+                  placeholder="e.g., A Timeless Masterpiece"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description *
+                </label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  required
+                  rows={4}
+                  placeholder="Detailed product description..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price *
+                </label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  required
+                  placeholder="0.00"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Available Colors
+                </label>
+                <Input
+                  type="text"
+                  value={Array.isArray(formData.colors) ? formData.colors.join(', ') : formData.colors}
+                  onChange={(e) => setFormData({...formData, colors: e.target.value})}
+                  placeholder="Royal Crimson, Sapphire Blue, Emerald Green"
+                />
+                <p className="text-xs text-gray-500 mt-1">Separate multiple colors with commas</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Special Points
+                </label>
+                <Textarea
+                  value={Array.isArray(formData.special_points) ? formData.special_points.join(', ') : formData.special_points}
+                  onChange={(e) => setFormData({...formData, special_points: e.target.value})}
+                  rows={3}
+                  placeholder="Hand-embroidered with 24k gold thread, Adorned with Swarovski crystals, Pure mulberry silk"
+                />
+                <p className="text-xs text-gray-500 mt-1">Separate multiple points with commas</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Images
+                </label>
+                <ImageUpload
+                  onUpload={(urls) => setFormData({...formData, image_urls: [...formData.image_urls, ...urls]})}
+                  multiple={true}
+                  className="w-full"
+                />
+                {formData.image_urls && formData.image_urls.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2 mt-2">
+                    {formData.image_urls.map((url, index) => (
+                      <div key={index} className="relative">
+                        <img src={url} alt={`Product ${index + 1}`} className="w-full h-20 object-cover rounded" />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute -top-2 -right-2 w-6 h-6 p-0"
+                          onClick={() => {
+                            const newUrls = formData.image_urls.filter((_, i) => i !== index);
+                            setFormData({...formData, image_urls: newUrls});
+                          }}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="bg-[#6f0e06] hover:bg-[#5a0b05] text-white"
+                >
+                  {isLoading ? 'Saving...' : (product ? 'Update Product' : 'Create Product')}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  };
+
   const SettingsForm = () => {
     const { formData, setFormData, clearFormData } = useFormPersistence(
       'site_settings',
@@ -1622,7 +1868,7 @@ const Admin = () => {
         )}
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-6 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
             <TabsTrigger 
               value="products" 
               className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
@@ -1643,6 +1889,13 @@ const Admin = () => {
             >
               <ShoppingCart className="w-4 h-4" />
               Orders
+            </TabsTrigger>
+            <TabsTrigger 
+              value="master-products" 
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
+            >
+              <Image className="w-4 h-4" />
+              Master Products
             </TabsTrigger>
             <TabsTrigger 
               value="custom-requests" 
@@ -1780,6 +2033,20 @@ const Admin = () => {
                 }}
                 onSave={() => {
                   setEditingCategory(null);
+                }}
+              />
+            )}
+
+            {showMasterProductForm && (
+              <MasterProductForm
+                product={editingMasterProduct}
+                onClose={() => {
+                  setShowMasterProductForm(false);
+                  setEditingMasterProduct(null);
+                }}
+                onSave={() => {
+                  setEditingMasterProduct(null);
+                  loadData();
                 }}
               />
             )}
@@ -1944,6 +2211,100 @@ const Admin = () => {
               setSelectedOrder(null);
             }}
           />
+
+          <TabsContent value="master-products" className="space-y-6 mt-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-serif text-gray-900">Master Products</h2>
+                <p className="text-gray-600 mt-1">Manage featured showcase products</p>
+              </div>
+              <Button 
+                onClick={() => setShowMasterProductForm(true)}
+                className="bg-[#6f0e06] hover:bg-[#5a0b05] text-white font-medium px-6 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Master Product
+              </Button>
+            </div>
+
+            <div className="grid gap-6">
+              {masterProducts.length === 0 ? (
+                <Card className="border-rose-100 bg-white/70 backdrop-blur-sm">
+                  <CardContent className="p-8 text-center">
+                    <Package className="w-12 h-12 text-rose-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No Master Products</h3>
+                    <p className="text-gray-600 mb-4">Create your first master product to showcase in the featured section</p>
+                    <Button 
+                      onClick={() => setShowMasterProductForm(true)}
+                      className="bg-[#6f0e06] hover:bg-[#5a0b05] text-white"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Master Product
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {masterProducts.map((product) => (
+                    <Card key={product.id} className="border-rose-100 bg-white/70 backdrop-blur-sm hover:shadow-lg transition-all duration-200">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex gap-4">
+                            {product.image_urls && product.image_urls.length > 0 && (
+                              <img 
+                                src={product.image_urls[0]} 
+                                alt={product.name}
+                                className="w-16 h-16 object-cover rounded-lg border-2 border-rose-100"
+                              />
+                            )}
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
+                                {product.tag && (
+                                  <Badge variant="secondary" className="bg-rose-100 text-rose-700 text-xs">
+                                    {product.tag}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">{product.title}</p>
+                              <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
+                              <div className="flex items-center gap-4 mt-2">
+                                <span className="text-lg font-bold text-[#6f0e06]">₹{product.price}</span>
+                                {product.colors && product.colors.length > 0 && (
+                                  <span className="text-sm text-gray-500">{product.colors.length} colors</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setEditingMasterProduct(product);
+                                setShowMasterProductForm(true);
+                              }}
+                              className="border-rose-200 text-rose-600 hover:bg-rose-50"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteMasterProduct(product.id)}
+                              className="border-red-200 text-red-600 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
 
           <TabsContent value="custom-requests" className="space-y-6 mt-8">
             <div className="flex justify-between items-center">

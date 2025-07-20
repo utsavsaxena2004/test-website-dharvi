@@ -225,6 +225,51 @@ export type Database = {
           },
         ]
       }
+      master_products: {
+        Row: {
+          colors: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          image_urls: string[] | null
+          is_active: boolean | null
+          name: string
+          price: number
+          special_points: string[] | null
+          tag: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          colors?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          name: string
+          price: number
+          special_points?: string[] | null
+          tag?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          colors?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          special_points?: string[] | null
+          tag?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           color: string | null

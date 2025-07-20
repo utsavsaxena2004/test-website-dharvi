@@ -1,29 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const featuredProduct = {
-  name: "Maharani Signature Saree",
-  tagline: "A Timeless Masterpiece",
-  description: "Our signature hand-embroidered saree represents the pinnacle of artisanal craftsmanship. Each piece takes over 600 hours to create, with intricate zardozi work featuring real gold thread and embellished with Swarovski crystals.",
-  price: "₹ 75,999",
-  originalPrice: "₹ 89,999",
-  discount: "15% OFF",
-  rating: 4.9,
-  reviews: 124,
-  colors: [
-    { id: 1, name: "Royal Crimson", value: "#6f0e06", image: "https://images.unsplash.com/photo-1610189031585-fd499562e6c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" },
-    { id: 2, name: "Sapphire Blue", value: "#1a56ba", image: "https://images.unsplash.com/photo-1583391733956-3750c46fc212?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmFuYXJhc2klMjBzYXJlZXxlbnwwfDB8MHx8fDA%3D" },
-    { id: 3, name: "Emerald Green", value: "#0F766E", image: "https://images.unsplash.com/photo-1610957183072-9207ea9b4b98?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmFuYXJhc2klMjBzYXJlZXxlbnwwfDB8MHx8fDA%3D" },
-    { id: 4, name: "Royal Gold", value: "#B45309", image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z29sZCUyMHNhcmVlfGVufDB8MHwwfHx8MA%3D%3D" },
-  ],
-  features: [
-    "Hand-embroidered with 24k gold thread zardozi work",
-    "Adorned with Swarovski crystals and semi-precious stones",
-    "Pure mulberry silk with 100% natural dyes",
-    "Comes with Certificate of Authenticity",
-    "Free worldwide shipping and styling consultation"
-  ]
-};
+import { Heart } from 'lucide-react';
+import { useWishlist } from '../contexts/WishlistContext';
+import { useToast } from '../hooks/use-toast';
+import { supabaseService } from '../services/supabaseService';
 
 // Enhanced SVG Motifs and Patterns
 const PatternBorder = ({ className }) => (
@@ -131,7 +111,6 @@ const DecorativeDivider = () => (
   </div>
 );
 
-// Add this new component after the existing ones but before FeaturedProductShowcase
 const PremiumBadge = () => (
   <motion.div
     className="absolute top-6 right-6 z-30"
@@ -181,30 +160,101 @@ const PremiumBadge = () => (
 );
 
 const FeaturedProductShowcase = () => {
-  const [selectedColor, setSelectedColor] = useState(featuredProduct.colors[0]);
-  const [isHovering, setIsHovering] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
-  
-  // Parallax effects based on scroll
-  const headerY = 0; // No scroll effect, so y is 0
-  const orb1Y = 0; // No scroll effect, so y is 0
-  const orb2Y = 0; // No scroll effect, so y is 0
-  const patternOpacity = 1; // No scroll effect, so opacity is 1
-  
-  // Handle mouse movement for 3D effect
-  const handleMouseMove = (e) => {
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+  const { addToWishlist, isInWishlist } = useWishlist();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const loadFeaturedProduct = async () => {
+      try {
+        setLoading(true);
+        const masterProduct = await supabaseService.getFeaturedMasterProduct();
+        if (masterProduct) {
+          setProduct(masterProduct);
+        }
+      } catch (error) {
+        console.error('Error loading featured product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeaturedProduct();
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: ((e.clientX - rect.left) / rect.width) * 100,
+          y: ((e.clientY - rect.top) / rect.height) * 100,
+        });
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove);
+      return () => container.removeEventListener('mousemove', handleMouseMove);
+    }
+  }, []);
+
+  const handleAddToWishlist = async () => {
+    if (!product) return;
     
-    // Calculate distance from center (normalized between -1 and 1)
-    const moveX = (e.clientX - centerX) / (rect.width / 2);
-    const moveY = (e.clientY - centerY) / (rect.height / 2);
-    
-    // Update motion values
-    // x.set(moveX * 10); // Removed useMotionValue
-    // y.set(moveY * 10); // Removed useMotionValue
+    try {
+      const success = await addToWishlist({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image_urls: product.image_urls
+      });
+      
+      if (success) {
+        toast({
+          title: "Added to Wishlist",
+          description: `${product.name} has been added to your wishlist.`
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to wishlist.",
+        variant: "destructive"
+      });
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading featured product...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
+        <div className="text-center">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Featured Product</h3>
+          <p className="text-gray-600">Please add a master product from the admin panel.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentImage = product.image_urls?.[selectedColorIndex] || product.image_urls?.[0] || '';
+  const currentColor = product.colors?.[selectedColorIndex] || product.colors?.[0] || 'Default';
   
   return (
     <motion.section 
@@ -213,9 +263,8 @@ const FeaturedProductShowcase = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Enhanced background elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-rose-50/30 to-white opacity-50"></div>
@@ -223,7 +272,7 @@ const FeaturedProductShowcase = () => {
       {/* Add a subtle grain texture overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')] opacity-10" />
       
-      <motion.div style={{ opacity: patternOpacity }} className="absolute inset-0">
+      <div className="absolute inset-0">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-pink/20 to-transparent"></div>
         <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-pink/20 to-transparent"></div>
         
@@ -235,7 +284,7 @@ const FeaturedProductShowcase = () => {
           </pattern>
           <rect x="0" y="0" width="100%" height="100%" fill="url(#ethnicPattern)" />
         </svg>
-      </motion.div>
+      </div>
       
       {/* Add radial gradient for spotlight effect */}
       <div className="absolute inset-0 bg-radial-gradient opacity-40" />
@@ -246,16 +295,12 @@ const FeaturedProductShowcase = () => {
       {/* Add the premium badge */}
       <PremiumBadge />
       
-      <motion.div style={{ y: orb1Y }}>
-        <motion.div className="absolute right-0 top-1/4 -rotate-90 opacity-10">
-          <PatternBorder className="w-64 h-6" />
-        </motion.div>
+      <motion.div className="absolute right-0 top-1/4 -rotate-90 opacity-10">
+        <PatternBorder className="w-64 h-6" />
       </motion.div>
       
-      <motion.div style={{ y: orb2Y }}>
-        <motion.div className="absolute left-0 bottom-1/4 rotate-90 opacity-10">
-          <PatternBorder className="w-64 h-6" />
-        </motion.div>
+      <motion.div className="absolute left-0 bottom-1/4 rotate-90 opacity-10">
+        <PatternBorder className="w-64 h-6" />
       </motion.div>
       
       <FloatingElement top="20%" left="10%" delay={1} duration={15}>
@@ -268,7 +313,6 @@ const FeaturedProductShowcase = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div 
-          style={{ y: headerY }}
           className="text-center max-w-3xl mx-auto mb-16 relative"
         >
           <motion.div
@@ -372,28 +416,8 @@ const FeaturedProductShowcase = () => {
                     transition={{ duration: 0.4 }}
                     className="inline-block px-3 py-1 bg-pink/10 text-pink text-xs rounded-full font-medium"
                   >
-                    Signature Collection
+                    {product.tag || 'Signature Collection'}
                   </motion.span>
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.2 }}
-                    className="ml-3"
-                  >
-                    {[1, 2, 3, 4, 5].map((star, index) => (
-                      <motion.span 
-                        key={star} 
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 * index, duration: 0.3 }}
-                        className="text-amber-400 text-sm inline-block"
-                      >
-                        ★
-                      </motion.span>
-                    ))}
-                    <span className="text-gray-500 text-xs ml-1">({featuredProduct.reviews} reviews)</span>
-                  </motion.div>
                 </div>
                 
                 <motion.h3 
@@ -403,7 +427,7 @@ const FeaturedProductShowcase = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                  {featuredProduct.name}
+                  {product.name}
                 </motion.h3>
                 
                 <motion.p 
@@ -413,7 +437,7 @@ const FeaturedProductShowcase = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  {featuredProduct.tagline}
+                  {product.title}
                 </motion.p>
                 
                 <DecorativeDivider />
@@ -425,100 +449,91 @@ const FeaturedProductShowcase = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
-                  {featuredProduct.description}
+                  {product.description}
                 </motion.p>
                 
-                <motion.div 
-                  className="mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                >
-                  <h4 className="text-sm uppercase tracking-wider text-gray-500 mb-3">Available Colors</h4>
-                  <div className="flex space-x-3">
-                    {featuredProduct.colors.map((color, index) => (
-                      <motion.button
-                        key={color.id}
-                        onClick={() => setSelectedColor(color)}
-                        className={`relative w-8 h-8 rounded-full p-0.5`}
-                        style={{ backgroundColor: color.value }}
-                        aria-label={color.name}
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.95 }}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * index, duration: 0.3 }}
-                      >
-                        {selectedColor.id === color.id && (
-                          <motion.div
-                            layoutId="colorRing"
-                            className="absolute inset-0 rounded-full ring-2 ring-offset-2 ring-white"
-                            transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 20 }}
-                          >
-                            <motion.div 
-                              className="absolute -inset-1 rounded-full opacity-30"
-                              animate={{ 
-                                boxShadow: ["0 0 0px rgba(186, 26, 93, 0)", "0 0 10px rgba(186, 26, 93, 0.5)", "0 0 0px rgba(186, 26, 93, 0)"] 
-                              }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                              style={{ backgroundColor: color.value }}
-                            />
-                          </motion.div>
-                        )}
-                      </motion.button>
-                    ))}
-                  </div>
-                  <motion.p 
-                    className="text-sm mt-2 text-gray-600"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
+                {product.colors && product.colors.length > 0 && (
+                  <motion.div 
+                    className="mb-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
                   >
-                    Selected: <span className="font-medium">{selectedColor.name}</span>
-                  </motion.p>
-                </motion.div>
-                
-                <motion.ul 
-                  className="space-y-2 mb-8"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    show: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.1,
-                        delayChildren: 0.3
-                      }
-                    }
-                  }}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true }}
-                >
-                  {featuredProduct.features.map((feature, index) => (
-                    <motion.li 
-                      key={index}
-                      variants={{
-                        hidden: { opacity: 0, x: -20 },
-                        show: { opacity: 1, x: 0 }
-                      }}
-                      className="flex items-start"
+                    <h4 className="text-sm uppercase tracking-wider text-gray-500 mb-3">Available Colors</h4>
+                    <div className="flex space-x-3">
+                      {product.colors.map((color, index) => (
+                        <motion.button
+                          key={index}
+                          onClick={() => setSelectedColorIndex(index)}
+                          className={`relative w-8 h-8 rounded-full p-0.5 bg-gray-200 ${selectedColorIndex === index ? 'ring-2 ring-pink ring-offset-2' : ''}`}
+                          aria-label={color}
+                          whileHover={{ scale: 1.15 }}
+                          whileTap={{ scale: 0.95 }}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 * index, duration: 0.3 }}
+                        >
+                          <div 
+                            className="w-full h-full rounded-full"
+                            style={{ backgroundColor: index === 0 ? '#6f0e06' : index === 1 ? '#1a56ba' : index === 2 ? '#0F766E' : '#B45309' }}
+                          />
+                        </motion.button>
+                      ))}
+                    </div>
+                    <motion.p 
+                      className="text-sm mt-2 text-gray-600"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.8, duration: 0.5 }}
                     >
-                      <motion.div 
-                        className="mt-0.5 mr-2 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.1 * index }}
+                      Selected: <span className="font-medium">{currentColor}</span>
+                    </motion.p>
+                  </motion.div>
+                )}
+                
+                {product.special_points && product.special_points.length > 0 && (
+                  <motion.ul 
+                    className="space-y-2 mb-8"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: {
+                        opacity: 1,
+                        transition: {
+                          staggerChildren: 0.1,
+                          delayChildren: 0.3
+                        }
+                      }
+                    }}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                  >
+                    {product.special_points.map((feature, index) => (
+                      <motion.li 
+                        key={index}
+                        variants={{
+                          hidden: { opacity: 0, x: -20 },
+                          show: { opacity: 1, x: 0 }
+                        }}
+                        className="flex items-start"
                       >
-                        <svg className="w-3 h-3 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </motion.div>
-                      <span className="text-gray-700">{feature}</span>
-                    </motion.li>
-                  ))}
-                </motion.ul>
+                        <motion.div 
+                          className="mt-0.5 mr-2 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
+                          initial={{ scale: 0 }}
+                          whileInView={{ scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.3, delay: 0.1 * index }}
+                        >
+                          <svg className="w-3 h-3 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </motion.div>
+                        <span className="text-gray-700">{feature}</span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                )}
                 
                 <motion.div 
                   className="flex items-end mb-6"
@@ -532,22 +547,7 @@ const FeaturedProductShowcase = () => {
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    {featuredProduct.price}
-                  </motion.span>
-                  <span className="ml-2 text-gray-500 line-through">{featuredProduct.originalPrice}</span>
-                  <motion.span 
-                    className="ml-2 text-xs px-2 py-1 bg-amber-100 text-amber-800 rounded-full font-medium"
-                    initial={{ opacity: 0, scale: 0.5, rotate: -5 }}
-                    whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: 1,
-                      type: "spring",
-                      stiffness: 300
-                    }}
-                  >
-                    {featuredProduct.discount}
+                    ₹{product.price}
                   </motion.span>
                 </motion.div>
                 
@@ -559,6 +559,7 @@ const FeaturedProductShowcase = () => {
                   transition={{ duration: 0.5, delay: 0.9 }}
                 >
                   <motion.button
+                    onClick={handleAddToWishlist}
                     whileHover={{ 
                       scale: 1.05, 
                       boxShadow: "0 10px 15px -3px rgba(186, 26, 93, 0.2)" 
@@ -572,30 +573,8 @@ const FeaturedProductShowcase = () => {
                       whileHover={{ x: "100%" }}
                       transition={{ duration: 1, repeat: Infinity, repeatType: "loop" }}
                     />
-                    <span className="relative z-10">Add to Cart</span>
-                    <svg className="w-5 h-5 ml-2 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                  </motion.button>
-                  
-                  <motion.button
-                    whileHover={{ 
-                      scale: 1.05, 
-                      backgroundColor: "rgba(186, 26, 93, 0.08)" 
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-6 py-3 border border-pink text-pink rounded-md flex items-center justify-center transition-colors duration-300"
-                  >
-                    <span>Shop The Look</span>
-                    <motion.svg 
-                      className="w-5 h-5 ml-2" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor"
-                      whileHover={{ scale: 1.2 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </motion.svg>
+                    <Heart className="w-5 h-5 mr-2 relative z-10" />
+                    <span className="relative z-10">Add to Wishlist</span>
                   </motion.button>
                 </motion.div>
               </div>
@@ -625,7 +604,7 @@ const FeaturedProductShowcase = () => {
                 {/* Main product image with transition effects */}
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={selectedColor.id}
+                    key={selectedColorIndex}
                     initial={{ opacity: 0, scale: 1.1 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
@@ -634,8 +613,8 @@ const FeaturedProductShowcase = () => {
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
                     <img 
-                      src={selectedColor.image} 
-                      alt={`${featuredProduct.name} in ${selectedColor.name}`} 
+                      src={currentImage} 
+                      alt={`${product.name} in ${currentColor}`} 
                       className="w-full h-full object-cover"
                     />
                     
@@ -665,8 +644,8 @@ const FeaturedProductShowcase = () => {
                       whileHover={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <p className="text-white font-medium text-lg">{featuredProduct.name}</p>
-                      <p className="text-white/80 text-sm">{selectedColor.name}</p>
+                      <p className="text-white font-medium text-lg">{product.name}</p>
+                      <p className="text-white/80 text-sm">{currentColor}</p>
                     </motion.div>
                   </div>
                 </motion.div>
@@ -690,23 +669,6 @@ const FeaturedProductShowcase = () => {
                   <span className="text-xs font-medium block mt-1 text-center">Premium</span>
                 </motion.div>
                 
-                <motion.div 
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                  className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm py-1 px-3 rounded-full text-xs font-medium shadow-lg z-30"
-                >
-                  <motion.span
-                    animate={{ 
-                      color: ["#6f0e06", "#f472b6", "#6f0e06"] 
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
-                    Free Shipping
-                  </motion.span>
-                </motion.div>
-                
                 {/* Decorative Corner Elements */}
                 <div className="absolute top-0 left-0 w-20 h-20 overflow-hidden z-20">
                   <div className="absolute top-0 left-0 w-5 h-full bg-gradient-to-r from-[#6f0e06]/40 to-transparent"></div>
@@ -720,37 +682,32 @@ const FeaturedProductShowcase = () => {
             </div>
             
             {/* Enhanced Thumbnail Navigation */}
-            <div className="flex justify-center mt-6 space-x-3">
-              {featuredProduct.colors.map((color, index) => (
-                <motion.button
-                  key={color.id}
-                  whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    delay: 0.2 + (index * 0.1), 
-                    duration: 0.4,
-                    y: { type: "spring", stiffness: 300, damping: 20 }
-                  }}
-                  onClick={() => setSelectedColor(color)}
-                  className={`relative rounded-md overflow-hidden w-16 h-16 ${selectedColor.id === color.id ? 'ring-2 ring-[#6f0e06]' : 'ring-1 ring-gray-200'}`}
-                >
-                  <motion.div
-                    animate={selectedColor.id === color.id ? {
-                      boxShadow: ["0 0 0 0px rgba(186, 26, 93, 0.3)", "0 0 0 4px rgba(186, 26, 93, 0)", "0 0 0 0px rgba(186, 26, 93, 0.3)"]
-                    } : {}}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                    className="absolute inset-0"
-                  />
-                  <img 
-                    src={color.image} 
-                    alt={color.name} 
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                </motion.button>
-              ))}
-            </div>
+            {product.image_urls && product.image_urls.length > 1 && (
+              <div className="flex justify-center mt-6 space-x-3">
+                {product.image_urls.map((imageUrl, index) => (
+                  <motion.button
+                    key={index}
+                    whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      delay: 0.2 + (index * 0.1), 
+                      duration: 0.4,
+                      y: { type: "spring", stiffness: 300, damping: 20 }
+                    }}
+                    onClick={() => setSelectedColorIndex(index)}
+                    className={`relative rounded-md overflow-hidden w-16 h-16 ${selectedColorIndex === index ? 'ring-2 ring-[#6f0e06]' : 'ring-1 ring-gray-200'}`}
+                  >
+                    <img 
+                      src={imageUrl} 
+                      alt={`View ${index + 1}`} 
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -763,7 +720,7 @@ const FeaturedProductShowcase = () => {
         >
           <div className="inline-block relative">
             <motion.a 
-              href="/collections/signature" 
+              href="/signature-collection" 
               className="inline-flex items-center px-8 py-3 border-2 border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group relative overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
@@ -785,12 +742,6 @@ const FeaturedProductShowcase = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
               </motion.svg>
             </motion.a>
-            <motion.div
-              className="absolute -top-1 -bottom-1 -left-1 -right-1 border border-[#6f0e06]/30 rounded-md"
-              initial={{ scale: 0.8, opacity: 0 }}
-              whileHover={{ scale: 1.05, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            />
           </div>
         </motion.div>
       </div>
