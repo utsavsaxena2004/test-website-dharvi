@@ -456,6 +456,61 @@ class SupabaseService {
     return data;
   }
 
+  async getUserOrders(userId) {
+    console.log('Fetching user orders for user:', userId);
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          products (
+            id,
+            name,
+            image_urls
+          )
+        )
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching user orders:', error);
+      throw error;
+    }
+    
+    console.log('User orders fetched:', data);
+    return data || [];
+  }
+
+  async getOrderDetails(orderId) {
+    console.log('Fetching order details for order:', orderId);
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          products (
+            id,
+            name,
+            price,
+            image_urls
+          )
+        )
+      `)
+      .eq('id', orderId)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching order details:', error);
+      throw error;
+    }
+    
+    console.log('Order details fetched:', data);
+    return data;
+  }
+
   // Custom designs
   async getCustomDesigns(userId = null) {
     console.log('Fetching custom designs for user:', userId);
