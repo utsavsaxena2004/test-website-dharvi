@@ -46,7 +46,7 @@ const OrderDetails = () => {
       setError(null);
       
       if (user && orderId) {
-        const orderDetails = await supabaseService.getOrderById(orderId);
+        const orderDetails = await supabaseService.getOrderDetails(orderId);
         if (orderDetails.user_id !== user.id) {
           setError('Order not found or access denied');
           return;
