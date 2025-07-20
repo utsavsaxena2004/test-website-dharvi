@@ -685,7 +685,7 @@ const Admin = () => {
                 {order.notes && (
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h3 className="font-semibold text-gray-900 mb-2">Order Notes</h3>
-                    <p className="text-gray-700 text-sm">{order.notes}</p>
+                    <div className="text-gray-700 text-sm break-words whitespace-pre-wrap">{order.notes}</div>
                   </div>
                 )}
               </div>

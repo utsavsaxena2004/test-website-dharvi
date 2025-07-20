@@ -245,7 +245,7 @@ const Orders = () => {
                     {order.notes && (
                       <div className="bg-blue-50 rounded-lg p-4 mb-4">
                         <h4 className="font-medium text-blue-900 mb-2">Order Notes</h4>
-                        <p className="text-sm text-blue-700">{order.notes}</p>
+                        <div className="text-sm text-blue-700 break-words whitespace-pre-wrap">{order.notes}</div>
                       </div>
                     )}
 

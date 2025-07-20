@@ -27,6 +27,7 @@ const DynamicNavbar = () => {
   const [openDropdown, setOpenDropdown] = useState(null); // Track open dropdown
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const { user, profile, logout } = useAuth();
   const { cartSummary } = useCart();
   const { wishlistSummary } = useWishlist();
@@ -165,11 +166,39 @@ const DynamicNavbar = () => {
         <div className="w-1/3 flex justify-end items-center gap-6">
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] hover:text-amber-600 transition duration-300">
-                {profile?.full_name || user.email}
-              </span>
+              <div 
+                className="relative"
+                onMouseEnter={() => setShowUserDropdown(true)}
+                onMouseLeave={() => setShowUserDropdown(false)}
+              >
+                <span className="text-sm font-medium text-gray-700 hidden lg:block truncate max-w-[150px] hover:text-amber-600 transition duration-300 cursor-pointer">
+                  {profile?.full_name || user.email}
+                </span>
+                
+                {/* User Dropdown */}
+                {showUserDropdown && (
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <Link
+                      to="/orders"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
+                      onClick={() => setShowUserDropdown(false)}
+                    >
+                      My Orders
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setShowUserDropdown(false);
+                        logout();
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-200"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
               <button
-                className="relative group"
+                className="relative group lg:hidden"
                 onClick={logout}
                 title="Logout"
                 aria-label="Logout"
