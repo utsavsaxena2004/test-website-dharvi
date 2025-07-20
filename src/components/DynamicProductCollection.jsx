@@ -95,7 +95,7 @@ const DynamicProductCollection = ({
           <div className="animate-pulse">
             <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
             <div className="h-4 bg-gray-300 rounded w-96 mx-auto mb-16"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-x-6 lg:gap-x-8 gap-y-8 sm:gap-y-12 lg:gap-y-16">
               {Array.from({ length: showCount }).map((_, i) => (
                 <div key={i}>
                   <div className="h-80 bg-gray-300 rounded mb-4"></div>
@@ -158,7 +158,7 @@ const DynamicProductCollection = ({
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-x-6 lg:gap-x-8 gap-y-8 sm:gap-y-12 lg:gap-y-16"
         >
           {products.map((product, index) => (
             <motion.div

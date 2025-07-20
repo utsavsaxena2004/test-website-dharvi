@@ -948,9 +948,9 @@ const DynamicCategoryPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className={`grid gap-8 ${
+              className={`grid gap-4 sm:gap-6 lg:gap-8 ${
                 viewMode === 'grid' 
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
+                  ? 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4' 
                   : 'grid-cols-1'
               }`}
             >

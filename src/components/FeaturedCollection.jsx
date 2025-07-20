@@ -44,7 +44,7 @@ const FeaturedCollection = () => {
           <div className="animate-pulse">
             <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
             <div className="h-4 bg-gray-300 rounded w-96 mx-auto mb-16"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-x-8 lg:gap-y-16">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-x-8 lg:gap-y-16">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i}>
                   <div className="h-60 sm:h-72 md:h-80 bg-gray-300 rounded mb-4"></div>
@@ -74,7 +74,7 @@ const FeaturedCollection = () => {
           <p className="text-gray-600 max-w-2xl mx-auto">Discover our handpicked selection of traditional wear, where timeless heritage meets contemporary elegance</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-x-8 lg:gap-y-16">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-x-8 lg:gap-y-16">
           {products.map((product, index) => (
             <motion.div
               key={product.id}

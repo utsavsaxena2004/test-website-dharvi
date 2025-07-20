@@ -98,7 +98,7 @@ const AboutDharika = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 1 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent"
           >
             Welcome to Dharika.
           </motion.h2>
@@ -131,7 +131,7 @@ const AboutDharika = () => {
                   <h3 className="text-2xl font-bold text-foreground">Our Story</h3>
                 </div>
                 
-                <div className="space-y-4 text-lg leading-relaxed">
+                <div className="space-y-4 text-sm sm:text-base lg:text-lg leading-relaxed">
                   <p className="text-foreground/90">
                     Hi, I'm <span className="font-bold text-primary bg-primary/10 px-2 py-1 rounded-lg">Siya</span> — the 18-year-old behind this chaos, colour, and community.
                   </p>
@@ -166,8 +166,8 @@ const AboutDharika = () => {
                   <h3 className="text-2xl font-bold text-foreground">Our Mission</h3>
                 </div>
                 
-                <div className="space-y-4 text-lg leading-relaxed">
-                  <p className="text-xl font-bold text-primary">
+                <div className="space-y-4 text-sm sm:text-base lg:text-lg leading-relaxed">
+                  <p className="text-lg sm:text-xl font-bold text-primary">
                     More than a brand, Dharika is a shared space.
                   </p>
                   
@@ -212,10 +212,10 @@ const AboutDharika = () => {
               >
                 <Heart className="w-12 h-12 mx-auto mb-6" />
               </motion.div>
-              <p className="text-2xl md:text-3xl font-bold mb-2">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-2">
                 If you've made it this far, welcome.
               </p>
-              <p className="text-xl md:text-2xl font-medium opacity-90">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium opacity-90">
                 You're part of the family already. 💛
               </p>
             </div>

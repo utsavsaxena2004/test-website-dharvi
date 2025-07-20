@@ -186,15 +186,15 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, y: 20 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto overflow-x-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-4 sm:p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-2xl font-serif text-gray-900">Share Your Wishlist</h3>
-              <p className="text-gray-600 mt-1">{wishlistSummary.itemCount} items • ₹{wishlistSummary.totalValue.toLocaleString()} total value</p>
+            <div className="min-w-0 flex-1 pr-2">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-serif text-gray-900 truncate">Share Your Wishlist</h3>
+              <p className="text-sm sm:text-base text-gray-600 mt-1 truncate">{wishlistSummary.itemCount} items • ₹{wishlistSummary.totalValue.toLocaleString()} total value</p>
             </div>
             <button
               onClick={onClose}
@@ -207,11 +207,11 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Share mode selection */}
           <div className="mb-6">
-            <h4 className="font-medium text-gray-900 mb-3">Sharing Options</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-3">Sharing Options</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -224,9 +224,9 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
               >
                 <div className="flex items-center mb-2">
                   <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'public' ? 'bg-[#6f0e06]' : 'bg-gray-300'}`} />
-                  <span className="font-medium">Public</span>
+                  <span className="text-sm sm:text-base font-medium">Public</span>
                 </div>
-                <p className="text-sm text-gray-600">Anyone with the link can view</p>
+                <p className="text-xs sm:text-sm text-gray-600">Anyone with the link can view</p>
               </motion.button>
 
               <motion.button
@@ -241,9 +241,9 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
               >
                 <div className="flex items-center mb-2">
                   <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'private' ? 'bg-[#6f0e06]' : 'bg-gray-300'}`} />
-                  <span className="font-medium">Private</span>
+                  <span className="text-sm sm:text-base font-medium">Private</span>
                 </div>
-                <p className="text-sm text-gray-600">Only invited people can view</p>
+                <p className="text-xs sm:text-sm text-gray-600">Only invited people can view</p>
               </motion.button>
 
               <motion.button
@@ -258,9 +258,9 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
               >
                 <div className="flex items-center mb-2">
                   <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'collaborators' ? 'bg-[#6f0e06]' : 'bg-gray-300'}`} />
-                  <span className="font-medium">Collaborate</span>
+                  <span className="text-sm sm:text-base font-medium">Collaborate</span>
                 </div>
-                <p className="text-sm text-gray-600">Others can add/remove items</p>
+                <p className="text-xs sm:text-sm text-gray-600">Others can add/remove items</p>
               </motion.button>
             </div>
           </div>
@@ -295,13 +295,13 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
 
           {/* Shareable link */}
           <div className="mb-6">
-            <h4 className="font-medium text-gray-900 mb-3">Shareable Link</h4>
-            <div className="flex">
+            <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-3">Shareable Link</h4>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
               <input
                 type="text"
                 readOnly
                 value={isGeneratingLink ? 'Generating link...' : shareableLink}
-                className="flex-1 bg-gray-50 border border-gray-300 rounded-l-lg px-3 py-3 text-sm focus:outline-none"
+                className="flex-1 bg-gray-50 border border-gray-300 rounded-lg sm:rounded-l-lg sm:rounded-r-none px-3 py-3 text-xs sm:text-sm focus:outline-none overflow-hidden"
                 placeholder="Generating your unique link..."
               />
               <motion.button
@@ -309,7 +309,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCopyLink}
                 disabled={isGeneratingLink}
-                className="bg-[#6f0e06] text-white px-4 py-3 text-sm rounded-r-lg hover:bg-[#9a1549] transition-colors disabled:opacity-50"
+                className="bg-[#6f0e06] text-white px-4 py-3 text-xs sm:text-sm rounded-lg sm:rounded-l-none sm:rounded-r-lg hover:bg-[#9a1549] transition-colors disabled:opacity-50 whitespace-nowrap"
               >
                 {copyStatus || 'Copy'}
               </motion.button>
@@ -367,8 +367,8 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
 
           {/* Social sharing */}
           <div className="mb-6">
-            <h4 className="font-medium text-gray-900 mb-3">Share on Social Media</h4>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+            <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-3">Share on Social Media</h4>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
               {[
                 { name: 'WhatsApp', icon: 'whatsapp', color: 'bg-green-500', platform: 'whatsapp' },
                 { name: 'Facebook', icon: 'facebook', color: 'bg-blue-600', platform: 'facebook' },
@@ -382,10 +382,10 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleShare(social.platform)}
-                  className={`${social.color} text-white p-3 rounded-xl flex flex-col items-center justify-center transition-all hover:shadow-lg`}
+                  className={`${social.color} text-white p-2 sm:p-3 rounded-xl flex flex-col items-center justify-center transition-all hover:shadow-lg min-h-[3rem] sm:min-h-[4rem]`}
                 >
-                  <SocialIcon platform={social.platform} />
-                  <span className="text-xs mt-1 hidden md:block">{social.name}</span>
+                  <SocialIcon platform={social.platform} size="small" />
+                  <span className="text-xs mt-1 hidden sm:block">{social.name}</span>
                 </motion.button>
               ))}
             </div>
@@ -417,8 +417,9 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
 };
 
 // Social media icons component
-const SocialIcon = ({ platform }) => {
-  const iconProps = { width: 20, height: 20, fill: 'currentColor', viewBox: '0 0 24 24' };
+const SocialIcon = ({ platform, size = "default" }) => {
+  const iconSize = size === "small" ? 16 : 20;
+  const iconProps = { width: iconSize, height: iconSize, fill: 'currentColor', viewBox: '0 0 24 24' };
   
   switch (platform) {
     case 'whatsapp':
