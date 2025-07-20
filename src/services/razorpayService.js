@@ -51,6 +51,7 @@ class RazorpayService {
           name: 'Dharika Fashion',
           description: paymentData.description || 'Purchase from Dharika Fashion',
           image: '/logo.png', // Your logo URL
+          
           handler: async (response) => {
             try {
               // Payment successful
