@@ -184,7 +184,16 @@ const Checkout = () => {
         notes: `Customer: ${shippingData.full_name}, Email: ${shippingData.email}`
       };
 
-      const order = await supabaseService.createOrder(orderData);
+      // Prepare order items from cart items
+      const orderItems = cartItems.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.products?.price || item.master_products?.price || 0,
+        size: item.size,
+        color: item.color
+      }));
+
+      const order = await supabaseService.createOrder(orderData, orderItems);
       return order;
     } catch (error) {
       console.error('Error creating order:', error);

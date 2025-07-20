@@ -439,7 +439,7 @@ class SupabaseService {
     return data || [];
   }
 
-  async createOrder(orderData) {
+  async createOrder(orderData, orderItems = []) {
     console.log('Creating order:', orderData);
     const { data, error } = await supabase
       .from('orders')
@@ -453,6 +453,28 @@ class SupabaseService {
     }
     
     console.log('Order created:', data);
+    
+    // Create order items if provided
+    if (orderItems && orderItems.length > 0) {
+      console.log('Creating order items:', orderItems);
+      const itemsWithOrderId = orderItems.map(item => ({
+        ...item,
+        order_id: data.id
+      }));
+      
+      const { data: orderItemsData, error: itemsError } = await supabase
+        .from('order_items')
+        .insert(itemsWithOrderId)
+        .select();
+      
+      if (itemsError) {
+        console.error('Error creating order items:', itemsError);
+        // Don't throw error here, order was already created
+      } else {
+        console.log('Order items created:', orderItemsData);
+      }
+    }
+    
     return data;
   }
 
