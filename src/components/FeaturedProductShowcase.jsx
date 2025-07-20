@@ -606,50 +606,51 @@ const FeaturedProductShowcase = () => {
                 )}
                 
                 {currentProduct.special_points && currentProduct.special_points.length > 0 && (
-                  <>
-                    {console.log('Special points data:', currentProduct.special_points)}
-                    {console.log('Number of special points:', currentProduct.special_points.length)}
-                    <motion.ul 
-                      className="space-y-3 mb-8"
-                      variants={{
-                        hidden: { opacity: 0 },
-                        show: {
-                          opacity: 1,
-                          transition: {
-                            staggerChildren: 0.1,
-                            delayChildren: 0.3
-                          }
+                  <motion.ul 
+                    className="space-y-3 mb-8"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: {
+                        opacity: 1,
+                        transition: {
+                          staggerChildren: 0.1,
+                          delayChildren: 0.3
                         }
-                      }}
+                      }
                     }}
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true }}
                   >
-                    {currentProduct.special_points.map((feature, index) => (
-                      <motion.li 
-                        key={index}
-                        variants={{
-                          hidden: { opacity: 0, x: -20 },
-                          show: { opacity: 1, x: 0 }
-                        }}
-                        className="flex items-start space-x-3"
-                      >
-                        <motion.div 
-                          className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
-                          initial={{ scale: 0 }}
-                          whileInView={{ scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.3, delay: 0.1 * index }}
+                    {currentProduct.special_points.map((feature, index) => {
+                      console.log(`Special point ${index + 1}:`, feature);
+                      return (
+                        <motion.li 
+                          key={index}
+                          variants={{
+                            hidden: { opacity: 0, x: -20 },
+                            show: { opacity: 1, x: 0 }
+                          }}
+                          className="flex items-start space-x-3"
                         >
-                          <svg className="w-3 h-3 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </motion.div>
-                        <span className="text-gray-700 leading-relaxed text-sm">{feature} (Point #{index + 1})</span>
-                      </motion.li>
-                    ))}
-                    </>
+                          <motion.div 
+                            className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-pink/10 flex items-center justify-center"
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.3, delay: 0.1 * index }}
+                          >
+                            <svg className="w-3 h-3 text-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </motion.div>
+                          <span className="text-gray-700 leading-relaxed text-sm">
+                            Point #{index + 1}: {feature}
+                          </span>
+                        </motion.li>
+                      );
+                    })}
+                  </motion.ul>
                 )}
                 
                 <motion.div 
