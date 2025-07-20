@@ -642,7 +642,7 @@ const FeaturedProductShowcase = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                           </svg>
                         </motion.div>
-                        <span className="text-gray-700 break-words">{truncateText(feature, 8)}</span>
+                        <span className="text-gray-700 break-words">{feature}</span>
                       </motion.li>
                     ))}
                   </motion.ul>
