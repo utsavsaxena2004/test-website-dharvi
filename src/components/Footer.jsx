@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '../hooks/useSiteSettings';
+import SupportModal from './SupportModal';
 import { 
   MapPinIcon, 
   PhoneIcon, 
@@ -20,6 +21,8 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('');
   const newsletterRef = useRef(null);
   const { siteSettings, getFooterContent } = useSiteSettings();
   
@@ -39,9 +42,9 @@ const Footer = () => {
     support: [
       { name: 'Contact Us', href: '/contact' },
       { name: 'Size Guide', href: '/size-guide' },
-      { name: 'Shipping Info', href: '/shipping' },
-      { name: 'Returns & Exchanges', href: '/returns' },
-      { name: 'Care Instructions', href: '/care' },
+      { name: 'Shipping Info', href: '#', modalType: 'shipping' },
+      { name: 'Returns & Exchanges', href: '#', modalType: 'returns' },
+      { name: 'Care Instructions', href: '#', modalType: 'care' },
     ],
     legal: [
       { name: 'Privacy Policy', href: '/privacy' },
@@ -114,6 +117,14 @@ const Footer = () => {
     }
   };
 
+  const handleLinkClick = (e, link) => {
+    if (link.modalType) {
+      e.preventDefault();
+      setModalType(link.modalType);
+      setModalOpen(true);
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -153,7 +164,13 @@ const Footer = () => {
   );
 
   return (
-    <footer className="relative bg-gradient-to-b from-rose-50 via-white to-amber-50 text-gray-800 border-t border-gray-200/50 overflow-hidden">
+    <>
+      <SupportModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        modalType={modalType} 
+      />
+      <footer className="relative bg-gradient-to-b from-rose-50 via-white to-amber-50 text-gray-800 border-t border-gray-200/50 overflow-hidden">
       {/* Decorative background elements */}
       <DecorativePattern />
       
@@ -345,6 +362,7 @@ const Footer = () => {
                     >
                       <Link
                         to={link.href}
+                        onClick={(e) => handleLinkClick(e, link)}
                         className="text-gray-600 hover:text-[#6f0e06] transition-colors duration-300 text-sm relative group"
                         onMouseEnter={() => setIsHovered(`${category}-${index}`)}
                         onMouseLeave={() => setIsHovered(null)}
@@ -436,6 +454,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+    </>
   );
 };
 
