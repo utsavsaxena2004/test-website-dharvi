@@ -402,32 +402,32 @@ const Checkout = () => {
       </div>
 
       {/* Progress Steps */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex items-center justify-center space-x-4 sm:space-x-8 mb-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6">
+        <div className="flex items-center justify-center space-x-2 sm:space-x-4 lg:space-x-8 mb-6 sm:mb-8 overflow-x-auto">
           {[
             { number: 1, title: 'Shipping', icon: Truck },
             { number: 2, title: 'Payment', icon: CreditCard },
             { number: 3, title: 'Success', icon: Check }
           ].map((stepItem, index) => (
-            <div key={stepItem.number} className="flex items-center">
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+            <div key={stepItem.number} className="flex items-center flex-shrink-0">
+              <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 ${
                 step >= stepItem.number
                   ? 'bg-[#6f0e06] border-[#6f0e06] text-white'
                   : 'border-gray-300 text-gray-400'
               }`}>
                 {step > stepItem.number ? (
-                  <Check className="w-5 h-5" />
+                  <Check className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                 ) : (
-                  <stepItem.icon className="w-5 h-5" />
+                  <stepItem.icon className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                 )}
               </div>
-              <span className={`ml-2 text-xs sm:text-sm font-medium ${
+              <span className={`ml-1 sm:ml-2 text-xs sm:text-sm font-medium whitespace-nowrap ${
                 step >= stepItem.number ? 'text-[#6f0e06]' : 'text-gray-400'
               }`}>
                 {stepItem.title}
               </span>
               {index < 2 && (
-                <div className={`w-8 sm:w-16 h-px mx-2 sm:mx-4 ${
+                <div className={`w-4 sm:w-8 lg:w-16 h-px mx-1 sm:mx-2 lg:mx-4 ${
                   step > stepItem.number ? 'bg-[#6f0e06]' : 'bg-gray-300'
                 }`} />
               )}
