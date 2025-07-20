@@ -742,32 +742,40 @@ const Checkout = () => {
                     <div className="mt-8 pt-6 border-t border-gray-200">
                       <h3 className="font-semibold text-gray-900 mb-4">Items Ordered ({cartItems.length})</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {cartItems.map((item) => (
-                          <div key={item.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                            <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-                              {item.products?.image_urls?.[0] ? (
-                                <img 
-                                  src={item.products.image_urls[0]} 
-                                  alt={item.products.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-gray-300 rounded-lg" />
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900 text-sm">{item.products?.name}</h4>
-                              <div className="text-xs text-gray-600 space-y-1">
-                                <p>Quantity: {item.quantity}</p>
-                                {item.size && <p>Size: {item.size}</p>}
-                                {item.color && <p>Color: {item.color}</p>}
+                        {cartItems.map((item) => {
+                          // Get product data from either products or master_products
+                          const productData = item.products || item.master_products;
+                          const productImage = productData?.image_urls?.[0];
+                          const productName = productData?.name;
+                          const productPrice = productData?.price;
+                          
+                          return (
+                            <div key={item.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                              <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                                {productImage ? (
+                                  <img 
+                                    src={productImage} 
+                                    alt={productName}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-gray-300 rounded-lg" />
+                                )}
                               </div>
-                              <p className="text-sm font-medium text-[#6f0e06] mt-1">
-                                {formatPrice(item.products?.price * item.quantity)}
-                              </p>
+                              <div className="flex-1">
+                                <h4 className="font-medium text-gray-900 text-sm">{productName}</h4>
+                                <div className="text-xs text-gray-600 space-y-1">
+                                  <p>Quantity: {item.quantity}</p>
+                                  {item.size && <p>Size: {item.size}</p>}
+                                  {item.color && <p>Color: {item.color}</p>}
+                                </div>
+                                <p className="text-sm font-medium text-[#6f0e06] mt-1">
+                                  {formatPrice(productPrice * item.quantity)}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                     
@@ -817,32 +825,40 @@ const Checkout = () => {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center space-x-3 pb-3 border-b border-gray-100">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        {item.products?.image_urls?.[0] ? (
-                          <img 
-                            src={item.products.image_urls[0]} 
-                            alt={item.products.name}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-200 rounded-lg" />
-                        )}
+                  {cartItems.map((item) => {
+                    // Get product data from either products or master_products
+                    const productData = item.products || item.master_products;
+                    const productImage = productData?.image_urls?.[0];
+                    const productName = productData?.name;
+                    const productPrice = productData?.price;
+                    
+                    return (
+                      <div key={item.id} className="flex items-center space-x-3 pb-3 border-b border-gray-100">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                          {productImage ? (
+                            <img 
+                              src={productImage} 
+                              alt={productName}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 rounded-lg" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-sm">{productName}</h4>
+                          <p className="text-xs text-gray-600">
+                            Qty: {item.quantity}
+                            {item.size && ` • Size: ${item.size}`}
+                            {item.color && ` • Color: ${item.color}`}
+                          </p>
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {formatPrice(productPrice * item.quantity)}
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900 text-sm">{item.products?.name}</h4>
-                        <p className="text-xs text-gray-600">
-                          Qty: {item.quantity}
-                          {item.size && ` • Size: ${item.size}`}
-                          {item.color && ` • Color: ${item.color}`}
-                        </p>
-                      </div>
-                      <div className="text-sm font-medium text-gray-900">
-                        {formatPrice(item.products?.price * item.quantity)}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {step < 3 && (
