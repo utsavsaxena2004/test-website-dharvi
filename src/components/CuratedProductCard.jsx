@@ -105,7 +105,7 @@ const CuratedProductCard = ({
         onClick={handleCardClick}
       >
         {/* Product Image */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] sm:aspect-[3/4] overflow-hidden">
           <motion.img
             src={product.image_urls?.[0] || product.image || '/placeholder-image.jpg'}
             alt={product.name}
@@ -149,23 +149,23 @@ const CuratedProductCard = ({
         </div>
         
         {/* Product Info */}
-        <div className="p-4">
+        <div className="p-2 sm:p-3 md:p-4">
           {/* Product Name */}
-          <h3 className="font-medium text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-[#6f0e06] transition-colors duration-200">
+          <h3 className="font-medium text-gray-900 text-xs sm:text-sm mb-1 line-clamp-2 group-hover:text-[#6f0e06] transition-colors duration-200">
             {product.name}
           </h3>
           
           {/* Description */}
           {product.description && (
-            <p className="text-xs text-gray-500 mb-2 line-clamp-1">
+            <p className="text-xs text-gray-500 mb-1 sm:mb-2 line-clamp-1">
               {product.description}
             </p>
           )}
           
           {/* Price */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-[#6f0e06]">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+              <span className="text-sm sm:text-lg font-bold text-[#6f0e06]">
                 ₹{product.price ? Number(product.price).toLocaleString('en-IN') : '0'}
               </span>
               {product.original_price && product.original_price > product.price && (
@@ -177,7 +177,7 @@ const CuratedProductCard = ({
           </div>
           
           {/* Colors and Sizes */}
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-2 sm:mb-3">
             <div className="flex items-center gap-1">
               <span>Colors:</span>
               <span className="font-medium">{product.colors?.length || 1}</span>
@@ -189,14 +189,14 @@ const CuratedProductCard = ({
           </div>
           
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Add to Cart Button */}
             <motion.button
               onClick={handleAddToCart}
               disabled={isOutOfStock || isLoading}
               whileHover={!isOutOfStock ? { scale: 1.02 } : {}}
               whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
-              className={`flex-1 py-2 text-xs font-medium rounded transition-colors duration-200 flex items-center justify-center gap-1 ${
+              className={`flex-1 py-1.5 sm:py-2 text-xs font-medium rounded transition-colors duration-200 flex items-center justify-center gap-1 ${
                 isOutOfStock 
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                   : isLoading
@@ -210,14 +210,16 @@ const CuratedProductCard = ({
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span>Adding...</span>
+                  <span className="hidden sm:inline">Adding...</span>
+                  <span className="sm:hidden">Add...</span>
                 </>
               ) : isOutOfStock ? (
-                <span>Out of Stock</span>
+                <span className="text-xs">Out of Stock</span>
               ) : (
                 <>
                   <ShoppingCartIcon className="w-3 h-3" />
-                  <span>Add to Cart</span>
+                  <span className="hidden sm:inline">Add to Cart</span>
+                  <span className="sm:hidden">Add</span>
                 </>
               )}
             </motion.button>
@@ -228,7 +230,7 @@ const CuratedProductCard = ({
               disabled={isWishlistLoading}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className={`p-2 rounded transition-colors duration-200 ${
+              className={`p-1.5 sm:p-2 rounded transition-colors duration-200 ${
                 isWishlistLoading 
                   ? 'text-gray-400 cursor-wait' 
                   : isProductInWishlist 
@@ -237,14 +239,14 @@ const CuratedProductCard = ({
               }`}
             >
               {isWishlistLoading ? (
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : isProductInWishlist ? (
-                <HeartSolidIcon className="w-4 h-4" />
+                <HeartSolidIcon className="w-3 h-3 sm:w-4 sm:h-4" />
               ) : (
-                <HeartIcon className="w-4 h-4" />
+                <HeartIcon className="w-3 h-3 sm:w-4 sm:h-4" />
               )}
             </motion.button>
           </div>

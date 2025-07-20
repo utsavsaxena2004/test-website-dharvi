@@ -196,7 +196,7 @@ const ProductCard = ({
         onClick={handleCardClick}
       >
         {/* Product image and overlay */}
-        <div className="relative h-60 sm:h-72 md:h-80 lg:h-80 overflow-hidden">
+        <div className="relative h-48 sm:h-60 md:h-72 lg:h-80 overflow-hidden">
           <motion.div
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.6 }}
@@ -224,7 +224,7 @@ const ProductCard = ({
           
           {/* Quick action button */}
           {showQuickView && (
-            <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 flex justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <div className="absolute bottom-2 sm:bottom-4 left-2 right-2 flex justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
               <motion.button 
                 onClick={(e) => {
                   e.stopPropagation();
@@ -234,8 +234,9 @@ const ProductCard = ({
                 whileTap={{ scale: 0.95 }}
                 className="bg-white text-[#6f0e06] py-1.5 px-3 sm:py-2 sm:px-4 rounded-full text-xs sm:text-sm font-medium shadow-lg hover:bg-[#6f0e06] hover:text-white transition-colors duration-300 flex items-center space-x-1"
               >
-                <span>Quick View</span>
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <span className="hidden sm:inline">Quick View</span>
+                <span className="sm:hidden">View</span>
+                <svg className="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
@@ -276,9 +277,9 @@ const ProductCard = ({
         </div>
         
         {/* Product info */}
-        <div className="p-3 sm:p-4">
-          <div className="flex justify-between items-center mb-1">
-            <h3 className="text-sm sm:text-base md:text-lg font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300 line-clamp-1">
+        <div className="p-2 sm:p-3 md:p-4">
+          <div className="flex justify-between items-start mb-1">
+            <h3 className="text-xs sm:text-sm md:text-base font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300 line-clamp-2 flex-1 mr-2">
               {product.name}
             </h3>
             <motion.button
@@ -308,36 +309,36 @@ const ProductCard = ({
           </div>
           
           {/* Price */}
-          <div className="flex items-center space-x-2 mb-2">
-            <span className="text-lg sm:text-xl font-bold text-[#6f0e06]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-2">
+            <span className="text-sm sm:text-lg md:text-xl font-bold text-[#6f0e06]">
               ₹{product.price ? product.price.toLocaleString('en-IN') : '0'}
             </span>
             {product.original_price && product.original_price > product.price && (
-              <>
-                <span className="text-sm text-gray-500 line-through">
+              <div className="flex items-center space-x-1 mt-0.5 sm:mt-0">
+                <span className="text-xs sm:text-sm text-gray-500 line-through">
                   ₹{product.original_price.toLocaleString('en-IN')}
                 </span>
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded-full font-medium">
                   {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% OFF
                 </span>
-              </>
+              </div>
             )}
           </div>
 
           {/* Colors */}
           {product.colors && product.colors.length > 0 && (
-            <div className="flex items-center space-x-2 mt-2">
-              <span className="text-xs text-gray-500">Colors:</span>
-              <div className="flex space-x-1">
-                {product.colors.slice(0, 4).map((color, index) => (
+            <div className="flex items-center space-x-1 sm:space-x-2 mt-1">
+              <span className="text-xs text-gray-500 flex-shrink-0">Colors:</span>
+              <div className="flex space-x-1 overflow-x-auto">
+                {product.colors.slice(0, 3).map((color, index) => (
                   <div
                     key={index}
-                    className="w-4 h-4 rounded-full border border-gray-300"
+                    className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-300 flex-shrink-0"
                     style={{ backgroundColor: color.toLowerCase() }}
                   />
                 ))}
-                {product.colors.length > 4 && (
-                  <span className="text-xs text-gray-500">+{product.colors.length - 4}</span>
+                {product.colors.length > 3 && (
+                  <span className="text-xs text-gray-500 flex-shrink-0">+{product.colors.length - 3}</span>
                 )}
               </div>
             </div>
@@ -345,26 +346,26 @@ const ProductCard = ({
 
           {/* Sizes */}
           {product.sizes && product.sizes.length > 0 && (
-            <div className="flex items-center space-x-2 mt-2">
-              <span className="text-xs text-gray-500">Sizes:</span>
-              <div className="flex space-x-1">
-                {product.sizes.slice(0, 3).map((size, index) => (
+            <div className="flex items-center space-x-1 sm:space-x-2 mt-1">
+              <span className="text-xs text-gray-500 flex-shrink-0">Sizes:</span>
+              <div className="flex space-x-1 overflow-x-auto">
+                {product.sizes.slice(0, 2).map((size, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded"
+                    className="px-1.5 py-0.5 text-xs bg-gray-100 text-gray-700 rounded flex-shrink-0"
                   >
                     {size}
                   </span>
                 ))}
-                {product.sizes.length > 3 && (
-                  <span className="text-xs text-gray-500">+{product.sizes.length - 3}</span>
+                {product.sizes.length > 2 && (
+                  <span className="text-xs text-gray-500 flex-shrink-0">+{product.sizes.length - 2}</span>
                 )}
               </div>
             </div>
           )}
           
           {/* Subtle divider */}
-          <div className="w-full h-px bg-gray-100 my-3"></div>
+          <div className="w-full h-px bg-gray-100 my-2 sm:my-3"></div>
           
           {/* Add to cart button */}
           {showAddToCart && (
@@ -373,7 +374,7 @@ const ProductCard = ({
               whileTap={{ scale: 0.98 }}
               onClick={handleAddToCart}
               disabled={product.stock_quantity === 0 || isLoading}
-              className={`w-full py-2 mt-1 text-sm font-medium rounded transition-colors duration-300 flex items-center justify-center space-x-1 ${
+              className={`w-full py-1.5 sm:py-2 mt-1 text-xs sm:text-sm font-medium rounded transition-colors duration-300 flex items-center justify-center space-x-1 ${
                 product.stock_quantity === 0 
                   ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
                   : isLoading
@@ -383,18 +384,20 @@ const ProductCard = ({
             >
               {isLoading ? (
                 <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span>Adding...</span>
+                  <span className="hidden sm:inline">Adding...</span>
+                  <span className="sm:hidden">Add...</span>
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                   </svg>
-                  <span>{product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                  <span className="hidden sm:inline">{product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                  <span className="sm:hidden">{product.stock_quantity === 0 ? 'Out of Stock' : 'Add'}</span>
                 </>
               )}
             </motion.button>
