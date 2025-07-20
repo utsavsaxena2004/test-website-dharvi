@@ -276,7 +276,7 @@ const SupportModal = ({ isOpen, onClose, modalType }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="relative bg-card rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] overflow-hidden border border-border"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] overflow-hidden border border-border"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-primary to-accent p-6 text-white sticky top-0 z-10">
