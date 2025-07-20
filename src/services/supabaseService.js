@@ -441,6 +441,8 @@ class SupabaseService {
 
   async createOrder(orderData, orderItems = []) {
     console.log('Creating order:', orderData);
+    console.log('Order items to create:', orderItems);
+    
     const { data, error } = await supabase
       .from('orders')
       .insert([orderData])
@@ -456,11 +458,13 @@ class SupabaseService {
     
     // Create order items if provided
     if (orderItems && orderItems.length > 0) {
-      console.log('Creating order items:', orderItems);
+      console.log('Creating order items, count:', orderItems.length);
       const itemsWithOrderId = orderItems.map(item => ({
         ...item,
         order_id: data.id
       }));
+      
+      console.log('Order items with order_id:', itemsWithOrderId);
       
       const { data: orderItemsData, error: itemsError } = await supabase
         .from('order_items')
@@ -471,8 +475,10 @@ class SupabaseService {
         console.error('Error creating order items:', itemsError);
         // Don't throw error here, order was already created
       } else {
-        console.log('Order items created:', orderItemsData);
+        console.log('Order items created successfully:', orderItemsData);
       }
+    } else {
+      console.log('No order items provided or empty array');
     }
     
     return data;
