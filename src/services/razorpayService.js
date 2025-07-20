@@ -89,7 +89,11 @@ class RazorpayService {
           
           handler: async (response) => {
             try {
-              // Payment successful
+              // Payment successful - update order with Razorpay order ID
+              if (paymentData.notes?.order_id) {
+                await this.updateOrderWithRazorpayId(paymentData.notes.order_id, orderData.order_id);
+              }
+              
               resolve({
                 success: true,
                 paymentId: response.razorpay_payment_id,
@@ -153,6 +157,27 @@ class RazorpayService {
     } catch (error) {
       console.error('Error processing payment:', error);
       throw error;
+    }
+  }
+
+  // Update order with Razorpay order ID
+  async updateOrderWithRazorpayId(orderId, razorpayOrderId) {
+    try {
+      console.log(`Updating order ${orderId} with Razorpay order ID: ${razorpayOrderId}`);
+      
+      const updateData = {
+        notes: JSON.stringify({ 
+          razorpay_order_id: razorpayOrderId,
+          order_created_at: new Date().toISOString()
+        }),
+        updated_at: new Date().toISOString()
+      };
+
+      await supabaseService.updateOrder(orderId, updateData);
+      console.log('Order updated with Razorpay order ID successfully');
+    } catch (error) {
+      console.error('Error updating order with Razorpay ID:', error);
+      // Don't throw error as payment might still succeed
     }
   }
 

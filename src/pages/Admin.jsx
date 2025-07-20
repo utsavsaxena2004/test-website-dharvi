@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabaseService } from '../services/supabaseService';
+import { supabase } from '../integrations/supabase/client';
 import { useToast } from '../hooks/use-toast.jsx';
 import { useAuth } from '../contexts/AuthContext';
 import { useFormPersistence } from '../hooks/useFormPersistence.jsx';
@@ -364,6 +365,35 @@ const Admin = () => {
   const handleViewOrderDetails = (order) => {
     setSelectedOrder(order);
     setShowOrderModal(true);
+  };
+
+  const handleSyncPayments = async () => {
+    try {
+      setLoading(true);
+      toast({ title: "Syncing payments with Razorpay...", description: "This may take a few moments" });
+      
+      const { data } = await supabase.functions.invoke('sync-all-payments');
+      
+      if (data.success) {
+        toast({
+          title: "Payment sync completed",
+          description: `Updated ${data.updatedCount} orders`
+        });
+        // Reload data to show updated statuses
+        await loadData();
+      } else {
+        throw new Error(data.error || 'Failed to sync payments');
+      }
+    } catch (error) {
+      console.error('Error syncing payments:', error);
+      toast({
+        title: "Error syncing payments",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const OrderDetailsModal = ({ order, isOpen, onClose }) => {
@@ -2333,6 +2363,25 @@ const Admin = () => {
                 <h2 className="text-2xl font-serif text-gray-900">Orders Management</h2>
                 <p className="text-gray-600 mt-1">View and manage customer orders with detailed analytics</p>
               </div>
+              <Button
+                onClick={handleSyncPayments}
+                disabled={loading}
+                className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Sync Payments
+                  </>
+                )}
+              </Button>
             </div>
             
             {/* Order Analytics Cards */}
@@ -2358,7 +2407,7 @@ const Admin = () => {
                       <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                       <p className="text-2xl font-bold text-gray-900">
                         ₹{orders
-                          .filter(order => order.status === 'delivered' && (order.payment_status === 'completed' || order.payment_status === 'confirmed'))
+                          .filter(order => (order.status === 'delivered' || order.status === 'confirmed') && (order.payment_status === 'completed' || order.payment_status === 'confirmed'))
                           .reduce((sum, order) => sum + (order.total_amount || 0), 0)
                           .toLocaleString('en-IN')}
                       </p>
