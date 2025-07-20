@@ -645,7 +645,7 @@ const FeaturedProductShowcase = () => {
                             </svg>
                           </motion.div>
                           <span className="text-gray-700 leading-relaxed text-sm">
-                            Point #{index + 1}: {feature}
+                            {feature}
                           </span>
                         </motion.li>
                       );
