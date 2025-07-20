@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Package, Truck, Clock } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { CheckCircle, Package, Truck, Clock, Receipt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const orderDetails = location.state?.orderDetails;
 
   useEffect(() => {
-    // Auto-redirect to orders page after 10 seconds
+    // Auto-redirect to orders page after 15 seconds
     const timer = setTimeout(() => {
       navigate('/orders');
-    }, 10000);
+    }, 15000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
@@ -40,6 +42,33 @@ const PaymentSuccess = () => {
         </CardHeader>
         
         <CardContent className="space-y-6">
+          {orderDetails && (
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2 mb-3">
+                <Receipt className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold">Order Details</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Order ID:</span>
+                  <p className="font-medium">{orderDetails.id?.slice(0, 8) || 'Processing...'}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Amount:</span>
+                  <p className="font-medium">₹{orderDetails.total_amount?.toLocaleString('en-IN') || '0'}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Payment:</span>
+                  <p className="font-medium text-green-600">Completed</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Status:</span>
+                  <p className="font-medium text-green-600">Confirmed</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
               <Package className="h-4 w-4" />
@@ -78,7 +107,7 @@ const PaymentSuccess = () => {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Redirecting to orders page in 10 seconds...
+            Redirecting to orders page in 15 seconds...
           </p>
         </CardContent>
       </Card>

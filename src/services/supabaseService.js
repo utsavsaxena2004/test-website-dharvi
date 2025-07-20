@@ -500,11 +500,21 @@ class SupabaseService {
     return data;
   }
 
-  async updateOrderStatus(orderId, status) {
-    console.log('Updating order status:', orderId, status);
+  async updateOrderStatus(orderId, status, paymentStatus = null) {
+    console.log('Updating order status:', orderId, status, paymentStatus);
+    
+    const updateData = { 
+      status,
+      updated_at: new Date().toISOString()
+    };
+    
+    if (paymentStatus) {
+      updateData.payment_status = paymentStatus;
+    }
+    
     const { data, error } = await supabase
       .from('orders')
-      .update({ status })
+      .update(updateData)
       .eq('id', orderId)
       .select()
       .single();
@@ -515,6 +525,27 @@ class SupabaseService {
     }
     
     console.log('Order status updated:', data);
+    return data;
+  }
+
+  async updateOrder(orderId, updateData) {
+    console.log('Updating order:', orderId, updateData);
+    const { data, error } = await supabase
+      .from('orders')
+      .update({
+        ...updateData,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', orderId)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error updating order:', error);
+      throw error;
+    }
+    
+    console.log('Order updated:', data);
     return data;
   }
 

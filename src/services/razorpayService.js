@@ -3,8 +3,9 @@ import { supabaseService } from './supabaseService';
 
 class RazorpayService {
   constructor() {
-    this.keyId = 'rzp_live_wgFZDVL2uCQlLu';
-    this.keySecret = 'WLhFiat4BQ6M5Qk0BlZ6Mg8Q';
+    // Using test keys for now - replace with live keys for production
+    this.keyId = 'rzp_test_9WzaAz4VXtlBbb';
+    this.keySecret = 'rzp_test_9WzaAz4VXtlBbb';
     this.isLoaded = false;
     this.loadPromise = null;
   }
@@ -91,23 +92,25 @@ class RazorpayService {
   // Complete order after successful payment
   async completeOrder(orderData, paymentResponse) {
     try {
-      // Update order in database with payment information
+      // Update order status and payment status
       const updatedOrder = await supabaseService.updateOrderStatus(
         orderData.id, 
-        'confirmed'
+        'completed', // Changed from 'confirmed' to 'completed'
+        'completed'  // Set payment_status to completed
       );
 
-      // Update payment details in the order
-      const orderUpdateData = {
+      // Update payment details in the order notes
+      const paymentNotes = JSON.stringify({
+        razorpay_payment_id: paymentResponse.paymentId,
+        razorpay_signature: paymentResponse.signature,
+        payment_completed_at: new Date().toISOString()
+      });
+
+      // Update the order with payment details
+      await supabaseService.updateOrder(orderData.id, {
         payment_method: 'razorpay',
-        payment_status: 'completed',
-        status: 'confirmed',
-        notes: JSON.stringify({
-          razorpay_payment_id: paymentResponse.paymentId,
-          razorpay_signature: paymentResponse.signature,
-          payment_completed_at: new Date().toISOString()
-        })
-      };
+        notes: paymentNotes
+      });
 
       // Clear user's cart after successful payment
       if (orderData.userId) {

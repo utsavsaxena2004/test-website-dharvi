@@ -294,8 +294,15 @@ const Checkout = () => {
           description: "Your order has been placed successfully.",
         });
 
-        // Navigate to success page
-        navigate('/payment-success');
+        // Navigate to success page with order details
+        navigate('/payment-success', { 
+          state: { 
+            orderDetails: { 
+              ...order, 
+              payment: paymentResult 
+            } 
+          } 
+        });
       }
     } catch (error) {
       console.error('Payment error:', error);
