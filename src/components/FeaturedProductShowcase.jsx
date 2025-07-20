@@ -920,7 +920,7 @@ const FeaturedProductShowcase = () => {
           <div className="inline-block relative">
             <motion.div>
               <Link 
-                to="/signature-collection"
+                to="/curated-collection"
                 className="inline-flex items-center px-8 py-3 border-2 border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group relative overflow-hidden"
               >
               <motion.div
