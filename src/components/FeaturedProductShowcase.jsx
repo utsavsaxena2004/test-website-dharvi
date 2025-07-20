@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, ShoppingCart, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../hooks/use-toast';
@@ -162,12 +162,15 @@ const PremiumBadge = () => (
 );
 
 const FeaturedProductShowcase = () => {
-  const [product, setProduct] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
+  const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
   const containerRef = useRef(null);
+  const intervalRef = useRef(null);
   const { addToWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useCart();
   const { toast } = useToast();
@@ -180,23 +183,72 @@ const FeaturedProductShowcase = () => {
     return words.slice(0, maxWords).join(' ') + '...';
   };
 
+  const currentProduct = allProducts[currentProductIndex];
+
   useEffect(() => {
-    const loadFeaturedProduct = async () => {
+    const loadMasterProducts = async () => {
       try {
         setLoading(true);
-        const masterProduct = await supabaseService.getFeaturedMasterProduct();
-        if (masterProduct) {
-          setProduct(masterProduct);
+        const masterProducts = await supabaseService.getMasterProducts();
+        if (masterProducts && masterProducts.length > 0) {
+          setAllProducts(masterProducts);
+          
+          // Check if there's a specific product to show from URL
+          const featuredId = searchParams.get('featured');
+          if (featuredId) {
+            const productIndex = masterProducts.findIndex(p => p.id === featuredId);
+            if (productIndex !== -1) {
+              setCurrentProductIndex(productIndex);
+            }
+          }
         }
       } catch (error) {
-        console.error('Error loading featured product:', error);
+        console.error('Error loading master products:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadFeaturedProduct();
-  }, []);
+    loadMasterProducts();
+  }, [searchParams]);
+
+  // Auto-cycle through products every 30 seconds if more than 1 product
+  useEffect(() => {
+    if (allProducts.length > 1) {
+      intervalRef.current = setInterval(() => {
+        setCurrentProductIndex((prevIndex) => 
+          prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
+        );
+        setSelectedColorIndex(0); // Reset color selection when changing products
+      }, 30000); // 30 seconds
+
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+      };
+    }
+  }, [allProducts.length]);
+
+  // Clear interval when user hovers (pause auto-cycle)
+  useEffect(() => {
+    if (isHovered && intervalRef.current) {
+      clearInterval(intervalRef.current);
+    } else if (!isHovered && allProducts.length > 1) {
+      intervalRef.current = setInterval(() => {
+        setCurrentProductIndex((prevIndex) => 
+          prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
+        );
+        setSelectedColorIndex(0);
+      }, 30000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isHovered, allProducts.length]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -217,20 +269,20 @@ const FeaturedProductShowcase = () => {
   }, []);
 
   const handleAddToWishlist = async () => {
-    if (!product) return;
+    if (!currentProduct) return;
     
     try {
       const success = await addToWishlist({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image_urls: product.image_urls
+        id: currentProduct.id,
+        name: currentProduct.name,
+        price: currentProduct.price,
+        image_urls: currentProduct.image_urls
       });
       
       if (success) {
         toast({
           title: "Added to Wishlist",
-          description: `${product.name} has been added to your wishlist.`
+          description: `${currentProduct.name} has been added to your wishlist.`
         });
       }
     } catch (error) {
@@ -243,21 +295,21 @@ const FeaturedProductShowcase = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!product) return;
+    if (!currentProduct) return;
     
     try {
       const success = await addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image_urls: product.image_urls,
-        colors: product.colors
+        id: currentProduct.id,
+        name: currentProduct.name,
+        price: currentProduct.price,
+        image_urls: currentProduct.image_urls,
+        colors: currentProduct.colors
       }, 1, null, currentColor);
       
       if (success) {
         toast({
           title: "Added to Cart",
-          description: `${product.name} has been added to your cart.`
+          description: `${currentProduct.name} has been added to your cart.`
         });
       }
     } catch (error) {
@@ -275,30 +327,47 @@ const FeaturedProductShowcase = () => {
     window.location.href = '/cart';
   };
 
+  const handleDotClick = (index) => {
+    setCurrentProductIndex(index);
+    setSelectedColorIndex(0);
+    // Reset the auto-cycle timer
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      if (allProducts.length > 1) {
+        intervalRef.current = setInterval(() => {
+          setCurrentProductIndex((prevIndex) => 
+            prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
+          );
+          setSelectedColorIndex(0);
+        }, 30000);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading featured product...</p>
+          <p className="text-gray-600">Loading featured products...</p>
         </div>
       </div>
     );
   }
 
-  if (!product) {
+  if (!allProducts.length || !currentProduct) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
         <div className="text-center">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Featured Product</h3>
-          <p className="text-gray-600">Please add a master product from the admin panel.</p>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Featured Products</h3>
+          <p className="text-gray-600">Please add master products from the admin panel.</p>
         </div>
       </div>
     );
   }
 
-  const currentImage = product.image_urls?.[selectedColorIndex] || product.image_urls?.[0] || '';
-  const currentColor = product.colors?.[selectedColorIndex] || product.colors?.[0] || 'Default';
+  const currentImage = currentProduct.image_urls?.[selectedColorIndex] || currentProduct.image_urls?.[0] || '';
+  const currentColor = currentProduct.colors?.[selectedColorIndex] || currentProduct.colors?.[0] || 'Default';
   
   return (
     <motion.section 
@@ -460,7 +529,7 @@ const FeaturedProductShowcase = () => {
                     transition={{ duration: 0.4 }}
                     className="inline-block px-3 py-1 bg-pink/10 text-pink text-xs rounded-full font-medium"
                   >
-                    {product.tag || 'Signature Collection'}
+                    {currentProduct.tag || 'Signature Collection'}
                   </motion.span>
                 </div>
                 
@@ -471,7 +540,7 @@ const FeaturedProductShowcase = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                  {product.name}
+                  {currentProduct.name}
                 </motion.h3>
                 
                 <motion.p 
@@ -481,7 +550,7 @@ const FeaturedProductShowcase = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  {product.title}
+                  {currentProduct.title}
                 </motion.p>
                 
                 <DecorativeDivider />
@@ -493,10 +562,10 @@ const FeaturedProductShowcase = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
-                  {truncateText(product.description, 30)}
+                  {truncateText(currentProduct.description, 30)}
                 </motion.p>
                 
-                {product.colors && product.colors.length > 0 && (
+                {currentProduct.colors && currentProduct.colors.length > 0 && (
                   <motion.div 
                     className="mb-6"
                     initial={{ opacity: 0, y: 20 }}
@@ -506,7 +575,7 @@ const FeaturedProductShowcase = () => {
                   >
                     <h4 className="text-sm uppercase tracking-wider text-gray-500 mb-3">Available Colors</h4>
                     <div className="flex space-x-3">
-                      {product.colors.map((color, index) => (
+                      {currentProduct.colors.map((color, index) => (
                         <motion.button
                           key={index}
                           onClick={() => setSelectedColorIndex(index)}
@@ -536,7 +605,7 @@ const FeaturedProductShowcase = () => {
                   </motion.div>
                 )}
                 
-                {product.special_points && product.special_points.length > 0 && (
+                {currentProduct.special_points && currentProduct.special_points.length > 0 && (
                   <motion.ul 
                     className="space-y-2 mb-8"
                     variants={{
@@ -553,7 +622,7 @@ const FeaturedProductShowcase = () => {
                     whileInView="show"
                     viewport={{ once: true }}
                   >
-                    {product.special_points.map((feature, index) => (
+                    {currentProduct.special_points.map((feature, index) => (
                       <motion.li 
                         key={index}
                         variants={{
@@ -591,7 +660,7 @@ const FeaturedProductShowcase = () => {
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    ₹{product.price}
+                    ₹{currentProduct.price}
                   </motion.span>
                 </motion.div>
                 
@@ -642,12 +711,12 @@ const FeaturedProductShowcase = () => {
                     }}
                     whileTap={{ scale: 0.9 }}
                     className={`p-3 rounded-full border-2 transition-colors duration-300 ${
-                      isInWishlist(product.id) 
+                      isInWishlist(currentProduct.id)
                         ? 'bg-pink text-white border-pink' 
                         : 'bg-white text-pink border-pink hover:bg-pink hover:text-white'
                     }`}
                   >
-                    <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 ${isInWishlist(currentProduct.id) ? 'fill-current' : ''}`} />
                   </motion.button>
                 </motion.div>
               </div>
@@ -687,7 +756,7 @@ const FeaturedProductShowcase = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
                     <img 
                       src={currentImage} 
-                      alt={`${product.name} in ${currentColor}`} 
+                      alt={`${currentProduct.name} in ${currentColor}`}
                       className="w-full h-full object-cover"
                     />
                     
@@ -717,7 +786,7 @@ const FeaturedProductShowcase = () => {
                       whileHover={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <p className="text-white font-medium text-lg">{product.name}</p>
+                      <p className="text-white font-medium text-lg">{currentProduct.name}</p>
                       <p className="text-white/80 text-sm">{currentColor}</p>
                     </motion.div>
                   </div>
@@ -755,9 +824,9 @@ const FeaturedProductShowcase = () => {
             </div>
             
             {/* Enhanced Thumbnail Navigation */}
-            {product.image_urls && product.image_urls.length > 1 && (
+            {currentProduct.image_urls && currentProduct.image_urls.length > 1 && (
               <div className="flex justify-center mt-6 space-x-3">
-                {product.image_urls.map((imageUrl, index) => (
+                {currentProduct.image_urls.map((imageUrl, index) => (
                   <motion.button
                     key={index}
                     whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
@@ -784,12 +853,40 @@ const FeaturedProductShowcase = () => {
           </div>
         </div>
 
+        {/* Dot Indicators for Product Navigation */}
+        {allProducts.length > 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="mt-16 flex justify-center space-x-3"
+          >
+            {allProducts.map((_, index) => (
+              <motion.button
+                key={index}
+                onClick={() => handleDotClick(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentProductIndex 
+                    ? 'bg-[#6f0e06] w-8' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 * index, duration: 0.3 }}
+              />
+            ))}
+          </motion.div>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="mt-20 text-center"
+          className="mt-8 text-center"
         >
           <div className="inline-block relative">
             <motion.div>
