@@ -107,7 +107,7 @@ const Orders = () => {
               <Button
                 variant="ghost"
                 onClick={() => navigate('/')}
-                className="text-gray-600 hover:text-[#ba1a5d]"
+                className="text-gray-600 hover:text-[#6f0e06]"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
@@ -126,7 +126,7 @@ const Orders = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ba1a5d]"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6f0e06]"></div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -134,7 +134,7 @@ const Orders = () => {
               <Package className="w-12 h-12 mx-auto mb-2" />
               <p>{error}</p>
             </div>
-            <Button onClick={fetchOrders} className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white">
+            <Button onClick={fetchOrders} className="bg-[#6f0e06] hover:bg-[#9a1549] text-white">
               Try Again
             </Button>
           </div>
@@ -145,7 +145,7 @@ const Orders = () => {
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Orders Yet</h3>
               <p>You haven't placed any orders yet. Start shopping to see your orders here.</p>
             </div>
-            <Button onClick={() => navigate('/')} className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white">
+            <Button onClick={() => navigate('/')} className="bg-[#6f0e06] hover:bg-[#9a1549] text-white">
               Start Shopping
             </Button>
           </div>
@@ -159,7 +159,7 @@ const Orders = () => {
                 transition={{ duration: 0.3 }}
               >
                 <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+                  <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle className="flex items-center">

@@ -350,9 +350,9 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ba1a5d] via-purple-500 to-amber-500"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#6f0e06] via-purple-500 to-amber-500"></div>
             <div className="absolute top-1 right-1 w-3 h-3 bg-amber-400 rounded-full opacity-70"></div>
-            <div className="absolute top-1 right-6 w-2 h-2 bg-[#ba1a5d] rounded-full opacity-70"></div>
+            <div className="absolute top-1 right-6 w-2 h-2 bg-[#6f0e06] rounded-full opacity-70"></div>
             
             {/* Close button */}
             <motion.button 
@@ -409,7 +409,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.3 }}
-                      className="absolute top-3 left-3 bg-[#ba1a5d] text-white text-xs px-2 py-1 rounded font-medium z-20"
+                      className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-20"
                     >
                       {product.badge}
                     </motion.div>
@@ -440,8 +440,8 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                         onClick={() => setCurrentImageIndex(index)}
                         className={`w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${
                           index === currentImageIndex 
-                            ? 'border-[#ba1a5d] shadow-md' 
-                            : 'border-gray-200 hover:border-[#ba1a5d]/50'
+                            ? 'border-[#6f0e06] shadow-md' 
+                            : 'border-gray-200 hover:border-[#6f0e06]/50'
                         }`}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -470,7 +470,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                         whileHover={{ 
                           scale: 1.05, 
                           backgroundColor: "#FEF3F2",
-                          color: "#ba1a5d" 
+                          color: "#6f0e06" 
                         }}
                       >
                         {tag}
@@ -501,7 +501,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
-                      className="text-[#ba1a5d] font-medium text-lg mt-1"
+                      className="text-[#6f0e06] font-medium text-lg mt-1"
                     >
                       {formatPrice(product.price)}
                     </motion.p>
@@ -591,7 +591,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                       onClick={() => setActiveTab('description')}
                       className={`px-4 py-2 text-sm font-medium ${
                         activeTab === 'description' 
-                          ? 'text-[#ba1a5d] border-b-2 border-[#ba1a5d]' 
+                          ? 'text-[#6f0e06] border-b-2 border-[#6f0e06]' 
                           : 'text-gray-600 hover:text-gray-900'
                       }`}
                     >
@@ -603,7 +603,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                       onClick={() => setActiveTab('specifications')}
                       className={`px-4 py-2 text-sm font-medium ${
                         activeTab === 'specifications' 
-                          ? 'text-[#ba1a5d] border-b-2 border-[#ba1a5d]' 
+                          ? 'text-[#6f0e06] border-b-2 border-[#6f0e06]' 
                           : 'text-gray-600 hover:text-gray-900'
                       }`}
                     >
@@ -696,7 +696,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                           onClick={() => setSelectedColor(color)}
                           className={`w-8 h-8 rounded-full border-2 transition-all ${
                             selectedColor === color 
-                              ? 'border-gray-900 ring-2 ring-[#ba1a5d]/30' 
+                              ? 'border-gray-900 ring-2 ring-[#6f0e06]/30' 
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                           style={{ backgroundColor: color }}
@@ -729,9 +729,9 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                     <div className="flex justify-between items-center mb-2 mt-4">
                       <h3 className="text-sm font-medium text-gray-900">Size</h3>
                       <motion.button 
-                        whileHover={{ scale: 1.05, color: "#ba1a5d" }}
+                        whileHover={{ scale: 1.05, color: "#6f0e06" }}
                         whileTap={{ scale: 0.95 }}
-                        className="text-xs text-[#ba1a5d] hover:text-[#9a1549]"
+                        className="text-xs text-[#6f0e06] hover:text-[#9a1549]"
                       >
                         Size Guide
                       </motion.button>
@@ -748,8 +748,8 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                           onClick={() => setSelectedSize(size)}
                           className={`py-2 text-sm font-medium rounded border transition-all ${
                             selectedSize === size
-                              ? 'bg-[#ba1a5d] text-white border-[#ba1a5d]'
-                              : 'bg-white text-gray-900 border-gray-300 hover:border-[#ba1a5d]/50'
+                              ? 'bg-[#6f0e06] text-white border-[#6f0e06]'
+                              : 'bg-white text-gray-900 border-gray-300 hover:border-[#6f0e06]/50'
                           }`}
                         >
                           {size}
@@ -776,7 +776,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                       className={`px-3 py-1 ${
                         quantity <= 1 
                           ? 'text-gray-300 cursor-not-allowed' 
-                          : 'text-gray-600 hover:text-[#ba1a5d]'
+                          : 'text-gray-600 hover:text-[#6f0e06]'
                       }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -803,7 +803,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                       className={`px-3 py-1 ${
                         quantity >= stockLeft 
                           ? 'text-gray-300 cursor-not-allowed' 
-                          : 'text-gray-600 hover:text-[#ba1a5d]'
+                          : 'text-gray-600 hover:text-[#6f0e06]'
                       }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -831,7 +831,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                     className={`relative w-full py-3 rounded-md shadow overflow-hidden group ${
                       stockLeft === 0 || isLoading
                         ? 'bg-gray-400 cursor-not-allowed' 
-                        : 'bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] hover:from-[#9a1549] hover:to-[#7a1139]'
+                        : 'bg-gradient-to-r from-[#6f0e06] to-[#9a1549] hover:from-[#9a1549] hover:to-[#7a1139]'
                     } text-white`}
                   >
                     <div className="flex items-center justify-center">

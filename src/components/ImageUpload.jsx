@@ -163,7 +163,7 @@ const ImageUpload = ({
       <div
         className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
           dragActive
-            ? 'border-[#ba1a5d] bg-rose-50'
+            ? 'border-[#6f0e06] bg-rose-50'
             : 'border-gray-300 hover:border-gray-400'
         } ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
         onDrop={handleDrop}
@@ -187,7 +187,7 @@ const ImageUpload = ({
         <div className="flex flex-col items-center space-y-2">
           {uploading ? (
             <>
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ba1a5d]"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6f0e06]"></div>
               <p className="text-gray-600">Uploading...</p>
             </>
           ) : (

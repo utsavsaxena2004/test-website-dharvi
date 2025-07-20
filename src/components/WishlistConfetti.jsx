@@ -15,7 +15,7 @@ const WishlistConfetti = ({ trigger, duration = 3000 }) => {
         size: 5 + Math.random() * 15,
         rotation: Math.random() * 360,
         color: [
-          '#ba1a5d', // Pink
+          '#6f0e06', // Pink
           '#f472b6', // Lighter pink
           '#fecdd3', // Very light pink
           '#ffe4e6', // Almost white pink

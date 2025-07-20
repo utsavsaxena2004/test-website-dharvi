@@ -10,7 +10,7 @@ const products = [
     name: 'Royal Banarasi Silk',
     price: '₹ 12,999',
     image: 'https://images.unsplash.com/photo-1610189031585-fd499562e6c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
-    colors: ['#ba1a5d', '#e63946', '#1d3557', '#f1faee'],
+    colors: ['#6f0e06', '#e63946', '#1d3557', '#f1faee'],
     tags: ['silk', 'wedding', 'premium'],
     badge: 'Premium',
     discount: '10% Off'

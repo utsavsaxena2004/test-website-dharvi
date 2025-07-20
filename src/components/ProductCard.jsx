@@ -223,7 +223,7 @@ const ProductCard = ({
                 }}
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
-                className="bg-white text-[#ba1a5d] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#ba1a5d] hover:text-white transition-colors duration-300 flex items-center space-x-1"
+                className="bg-white text-[#6f0e06] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#6f0e06] hover:text-white transition-colors duration-300 flex items-center space-x-1"
               >
                 <span>Quick View</span>
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -236,13 +236,13 @@ const ProductCard = ({
           
           {/* Badges */}
           {product.featured && (
-            <div className="absolute top-3 left-3 bg-[#ba1a5d] text-white text-xs px-2 py-1 rounded font-medium z-10">
+            <div className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-10">
               Featured
             </div>
           )}
           
           {product.badge && (
-            <div className="absolute top-3 left-3 bg-[#ba1a5d] text-white text-xs px-2 py-1 rounded font-medium z-10">
+            <div className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-10">
               {product.badge}
             </div>
           )}
@@ -269,7 +269,7 @@ const ProductCard = ({
         {/* Product info */}
         <div className="p-4">
           <div className="flex justify-between items-center mb-1">
-            <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#ba1a5d] transition-colors duration-300 line-clamp-1">
+            <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300 line-clamp-1">
               {product.name}
             </h3>
             <motion.button
@@ -282,7 +282,7 @@ const ProductCard = ({
                   ? 'text-gray-400 cursor-wait' 
                   : isProductInWishlist 
                   ? 'text-red-500 hover:text-red-600' 
-                  : 'text-gray-400 hover:text-[#ba1a5d]'
+                  : 'text-gray-400 hover:text-[#6f0e06]'
               }`}
             >
               {isWishlistLoading ? (
@@ -300,7 +300,7 @@ const ProductCard = ({
           
           {/* Price */}
           <div className="flex items-center space-x-2 mb-2">
-            <span className="text-xl font-bold text-[#ba1a5d]">
+            <span className="text-xl font-bold text-[#6f0e06]">
               ₹{product.price ? product.price.toLocaleString('en-IN') : '0'}
             </span>
             {product.original_price && product.original_price > product.price && (
@@ -369,7 +369,7 @@ const ProductCard = ({
                   ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
                   : isLoading
                   ? 'text-gray-600 bg-gray-200 cursor-wait'
-                  : 'text-gray-600 hover:text-[#ba1a5d] bg-gray-50 hover:bg-gray-100'
+                  : 'text-gray-600 hover:text-[#6f0e06] bg-gray-50 hover:bg-gray-100'
               }`}
             >
               {isLoading ? (

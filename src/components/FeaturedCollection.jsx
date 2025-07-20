@@ -92,7 +92,7 @@ const FeaturedCollection = () => {
           ))}
         </div>
 
-        <motion.div 
+        {/* <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -105,7 +105,7 @@ const FeaturedCollection = () => {
           >
             VIEW ALL COLLECTIONS
           </a>
-        </motion.div>
+        </motion.div> */}
       </div>
 
       {/* Quick View Modal */}

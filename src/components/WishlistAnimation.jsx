@@ -3,14 +3,14 @@ import React from 'react';
 
 // Enhanced decorative SVG components
 export const HeartPattern = ({ style }) => (
-  <svg width="120" height="120" viewBox="0 0 120 120" className="absolute text-[#ba1a5d] opacity-5" style={style}>
+  <svg width="120" height="120" viewBox="0 0 120 120" className="absolute text-[#6f0e06] opacity-5" style={style}>
     <path d="M60,20 C55,10 40,0 25,0 C5,0 0,20 0,30 C0,60 25,80 60,100 C95,80 120,60 120,30 C120,20 115,0 95,0 C80,0 65,10 60,20 Z" fill="currentColor" />
   </svg>
 );
 
 export const FloatingHeart = ({ delay, scale, x, y }) => (
   <motion.div
-    className="absolute text-[#ba1a5d] opacity-20"
+    className="absolute text-[#6f0e06] opacity-20"
     initial={{ scale: 0 }}
     animate={{ 
       y: [y, y - 40, y],
@@ -59,10 +59,10 @@ export const SparkleEffect = ({ top, left, delay }) => (
 
 export const DecorationBorder = () => (
   <div className="absolute inset-0 rounded-xl opacity-10 pointer-events-none">
-    <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-[#ba1a5d] rounded-tl-xl"></div>
-    <div className="absolute top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-[#ba1a5d] rounded-tr-xl"></div>
-    <div className="absolute bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-[#ba1a5d] rounded-bl-xl"></div>
-    <div className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-[#ba1a5d] rounded-br-xl"></div>
+    <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-[#6f0e06] rounded-tl-xl"></div>
+    <div className="absolute top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-[#6f0e06] rounded-tr-xl"></div>
+    <div className="absolute bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-[#6f0e06] rounded-bl-xl"></div>
+    <div className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-[#6f0e06] rounded-br-xl"></div>
   </div>
 );
 
@@ -133,7 +133,7 @@ export const PaislayPattern = ({ top, left, size = 100, rotation = 0, opacity = 
     animate={{ opacity, rotate: rotation }}
     transition={{ duration: 1 }}
   >
-    <svg viewBox="0 0 100 100" className="w-full h-full text-[#ba1a5d]">
+    <svg viewBox="0 0 100 100" className="w-full h-full text-[#6f0e06]">
       <path
         fill="currentColor"
         d="M50,15 C40,15 30,25 25,35 C20,45 20,60 35,70 C45,77 60,75 65,60 C68,50 65,40 55,35 C50,32 45,35 45,40 C45,43 48,45 50,43 C52,41 51,39 49,39 C48,39 47,40 47,41 C47,42 48,42 49,41.5 C50,41 50,42 49,43 C48,44 46,43 46,41 C46,38 48,37 51,38 C55,41 58,48 55,55 C53,65 40,68 32,60 C22,52 25,40 30,33 C35,25 42,18 50,18 C75,18 80,45 75,60 C70,75 55,85 40,80 C25,75 15,60 20,40 C25,20 40,5 60,10 C80,15 90,35 85,55 C80,75 60,85 40,80"
@@ -142,7 +142,7 @@ export const PaislayPattern = ({ top, left, size = 100, rotation = 0, opacity = 
   </motion.div>
 );
 
-export const WishlistDecorativeBorder = ({ color = "#ba1a5d" }) => (
+export const WishlistDecorativeBorder = ({ color = "#6f0e06" }) => (
   <div className="absolute inset-0 pointer-events-none overflow-hidden">
     {/* Top left */}
     <motion.div

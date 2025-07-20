@@ -314,7 +314,7 @@ const Checkout = () => {
               <Button
                 variant="ghost"
                 onClick={() => navigate('/cart')}
-                className="text-gray-600 hover:text-[#ba1a5d]"
+                className="text-gray-600 hover:text-[#6f0e06]"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Cart
@@ -341,7 +341,7 @@ const Checkout = () => {
             <div key={stepItem.number} className="flex items-center">
               <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                 step >= stepItem.number
-                  ? 'bg-[#ba1a5d] border-[#ba1a5d] text-white'
+                  ? 'bg-[#6f0e06] border-[#6f0e06] text-white'
                   : 'border-gray-300 text-gray-400'
               }`}>
                 {step > stepItem.number ? (
@@ -351,13 +351,13 @@ const Checkout = () => {
                 )}
               </div>
               <span className={`ml-2 text-sm font-medium ${
-                step >= stepItem.number ? 'text-[#ba1a5d]' : 'text-gray-400'
+                step >= stepItem.number ? 'text-[#6f0e06]' : 'text-gray-400'
               }`}>
                 {stepItem.title}
               </span>
               {index < 2 && (
                 <div className={`w-16 h-px mx-4 ${
-                  step > stepItem.number ? 'bg-[#ba1a5d]' : 'bg-gray-300'
+                  step > stepItem.number ? 'bg-[#6f0e06]' : 'bg-gray-300'
                 }`} />
               )}
             </div>
@@ -370,7 +370,7 @@ const Checkout = () => {
             {step === 1 && (
               <div className="animate-fade-in">
                 <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+                  <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
                     <CardTitle className="flex items-center">
                       <MapPin className="w-5 h-5 mr-2" />
                       Shipping Information
@@ -392,7 +392,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Enter your full name"
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div>
@@ -407,7 +407,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Enter your email"
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div>
@@ -421,7 +421,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Enter your phone number"
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div>
@@ -434,7 +434,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Enter postal code"
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -447,7 +447,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Street address, apartment, suite, etc."
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -459,7 +459,7 @@ const Checkout = () => {
                           value={shippingData.address_line2}
                           onChange={handleShippingChange}
                           placeholder="Apartment, suite, etc. (optional)"
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div>
@@ -472,7 +472,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Enter city"
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                       <div>
@@ -485,7 +485,7 @@ const Checkout = () => {
                           onChange={handleShippingChange}
                           placeholder="Enter state"
                           required
-                          className="border-rose-200 focus:border-[#ba1a5d]"
+                          className="border-rose-200 focus:border-[#6f0e06]"
                         />
                       </div>
                     </div>
@@ -493,7 +493,7 @@ const Checkout = () => {
                     <div className="mt-6 flex justify-end">
                       <Button
                         onClick={handleContinueToPayment}
-                        className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white px-8 py-3"
+                        className="bg-[#6f0e06] hover:bg-[#9a1549] text-white px-8 py-3"
                       >
                         Continue to Payment
                       </Button>
@@ -506,7 +506,7 @@ const Checkout = () => {
             {step === 2 && (
               <div className="animate-fade-in">
                 <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+                  <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
                     <CardTitle className="flex items-center">
                       <CreditCard className="w-5 h-5 mr-2" />
                       Payment Method
@@ -520,7 +520,7 @@ const Checkout = () => {
                       <div className="border border-rose-200 rounded-lg p-4 bg-gradient-to-r from-rose-50 to-pink-50">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
-                            <div className="w-12 h-8 bg-[#ba1a5d] rounded flex items-center justify-center">
+                            <div className="w-12 h-8 bg-[#6f0e06] rounded flex items-center justify-center">
                               <span className="text-white text-xs font-bold">RZP</span>
                             </div>
                             <div>
@@ -563,7 +563,7 @@ const Checkout = () => {
                       <Button
                         onClick={handlePayment}
                         disabled={loading}
-                        className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white px-8 py-3"
+                        className="bg-[#6f0e06] hover:bg-[#9a1549] text-white px-8 py-3"
                       >
                         {loading ? 'Processing...' : `Pay ${formatPrice(cartSummary.total)}`}
                       </Button>
@@ -711,7 +711,7 @@ const Checkout = () => {
                                 {item.size && <p>Size: {item.size}</p>}
                                 {item.color && <p>Color: {item.color}</p>}
                               </div>
-                              <p className="text-sm font-medium text-[#ba1a5d] mt-1">
+                              <p className="text-sm font-medium text-[#6f0e06] mt-1">
                                 {formatPrice(item.products?.price * item.quantity)}
                               </p>
                             </div>
@@ -724,7 +724,7 @@ const Checkout = () => {
                     <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-gray-200">
                       <Button
                         onClick={() => navigate('/orders')}
-                        className="flex-1 bg-[#ba1a5d] hover:bg-[#9a1549] text-white py-3"
+                        className="flex-1 bg-[#6f0e06] hover:bg-[#9a1549] text-white py-3"
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         Track Your Order
@@ -758,7 +758,7 @@ const Checkout = () => {
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
             <Card className="border-rose-200 bg-white/70 backdrop-blur-sm sticky top-6">
-              <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+              <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
                 <CardTitle className="flex items-center">
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   Order Summary
@@ -810,7 +810,7 @@ const Checkout = () => {
                   <div className="pt-2 border-t border-gray-200">
                     <div className="flex justify-between">
                       <span className="font-medium text-gray-900">Total</span>
-                      <span className="font-bold text-lg text-[#ba1a5d]">
+                      <span className="font-bold text-lg text-[#6f0e06]">
                         {formatPrice(cartSummary.total)}
                       </span>
                     </div>

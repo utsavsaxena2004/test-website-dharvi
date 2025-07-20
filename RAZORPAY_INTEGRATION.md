@@ -75,7 +75,7 @@ Key Secret: o6JKWT31nQMeck5P6JxiS0Wn
   name: 'Dharika Fashion',
   description: 'Purchase from Dharika Fashion',
   theme: {
-    color: '#ba1a5d'
+    color: '#6f0e06'
   }
 }
 ```

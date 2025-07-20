@@ -169,7 +169,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.5 + Math.random() }}
-                className="absolute text-[#ba1a5d] pointer-events-none"
+                className="absolute text-[#6f0e06] pointer-events-none"
               >
                 <svg width={30 + Math.random() * 20} height={30 + Math.random() * 20} viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
@@ -218,12 +218,12 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 onClick={() => setShareMode('public')}
                 className={`p-4 border-2 rounded-xl text-left transition-all ${
                   shareMode === 'public' 
-                    ? 'border-[#ba1a5d] bg-[#ba1a5d]/5' 
+                    ? 'border-[#6f0e06] bg-[#6f0e06]/5' 
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <div className="flex items-center mb-2">
-                  <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'public' ? 'bg-[#ba1a5d]' : 'bg-gray-300'}`} />
+                  <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'public' ? 'bg-[#6f0e06]' : 'bg-gray-300'}`} />
                   <span className="font-medium">Public</span>
                 </div>
                 <p className="text-sm text-gray-600">Anyone with the link can view</p>
@@ -235,12 +235,12 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 onClick={() => setShareMode('private')}
                 className={`p-4 border-2 rounded-xl text-left transition-all ${
                   shareMode === 'private' 
-                    ? 'border-[#ba1a5d] bg-[#ba1a5d]/5' 
+                    ? 'border-[#6f0e06] bg-[#6f0e06]/5' 
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <div className="flex items-center mb-2">
-                  <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'private' ? 'bg-[#ba1a5d]' : 'bg-gray-300'}`} />
+                  <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'private' ? 'bg-[#6f0e06]' : 'bg-gray-300'}`} />
                   <span className="font-medium">Private</span>
                 </div>
                 <p className="text-sm text-gray-600">Only invited people can view</p>
@@ -252,12 +252,12 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 onClick={() => setShareMode('collaborators')}
                 className={`p-4 border-2 rounded-xl text-left transition-all ${
                   shareMode === 'collaborators' 
-                    ? 'border-[#ba1a5d] bg-[#ba1a5d]/5' 
+                    ? 'border-[#6f0e06] bg-[#6f0e06]/5' 
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <div className="flex items-center mb-2">
-                  <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'collaborators' ? 'bg-[#ba1a5d]' : 'bg-gray-300'}`} />
+                  <div className={`w-3 h-3 rounded-full mr-2 ${shareMode === 'collaborators' ? 'bg-[#6f0e06]' : 'bg-gray-300'}`} />
                   <span className="font-medium">Collaborate</span>
                 </div>
                 <p className="text-sm text-gray-600">Others can add/remove items</p>
@@ -272,7 +272,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
               <select 
                 value={linkExpiry} 
                 onChange={(e) => setLinkExpiry(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent"
               >
                 <option value="never">Never expires</option>
                 <option value="7days">7 days</option>
@@ -287,7 +287,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 id="allowEditing"
                 checked={allowEditing}
                 onChange={(e) => setAllowEditing(e.target.checked)}
-                className="mr-2 rounded border-gray-300 text-[#ba1a5d] focus:ring-[#ba1a5d]"
+                className="mr-2 rounded border-gray-300 text-[#6f0e06] focus:ring-[#6f0e06]"
               />
               <label htmlFor="allowEditing" className="text-sm text-gray-700">Allow viewers to edit</label>
             </div>
@@ -309,7 +309,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCopyLink}
                 disabled={isGeneratingLink}
-                className="bg-[#ba1a5d] text-white px-4 py-3 text-sm rounded-r-lg hover:bg-[#9a1549] transition-colors disabled:opacity-50"
+                className="bg-[#6f0e06] text-white px-4 py-3 text-sm rounded-r-lg hover:bg-[#9a1549] transition-colors disabled:opacity-50"
               >
                 {copyStatus || 'Copy'}
               </motion.button>
@@ -327,7 +327,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                   onChange={(e) => setEmailInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addEmailToInvites()}
                   placeholder="Enter email address"
-                  className="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+                  className="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent"
                 />
                 <button
                   onClick={addEmailToInvites}
@@ -341,11 +341,11 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                 <div className="mb-3">
                   <div className="flex flex-wrap gap-2">
                     {inviteEmails.map((email, index) => (
-                      <span key={index} className="inline-flex items-center bg-[#ba1a5d]/10 text-[#ba1a5d] px-3 py-1 rounded-full text-sm">
+                      <span key={index} className="inline-flex items-center bg-[#6f0e06]/10 text-[#6f0e06] px-3 py-1 rounded-full text-sm">
                         {email}
                         <button
                           onClick={() => removeEmailFromInvites(email)}
-                          className="ml-2 text-[#ba1a5d] hover:text-[#9a1549]"
+                          className="ml-2 text-[#6f0e06] hover:text-[#9a1549]"
                         >
                           ×
                         </button>
@@ -356,7 +356,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={sendInvitations}
-                    className="mt-3 bg-[#ba1a5d] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#9a1549] transition-colors"
+                    className="mt-3 bg-[#6f0e06] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#9a1549] transition-colors"
                   >
                     Send Invitations ({inviteEmails.length})
                   </motion.button>
@@ -405,7 +405,7 @@ const WishlistShare = ({ isOpen, onClose, position = 'fixed' }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleShare('email')}
-              className="flex-1 min-w-0 bg-[#ba1a5d]/10 text-[#ba1a5d] px-4 py-3 rounded-lg text-sm hover:bg-[#ba1a5d]/20 transition-colors"
+              className="flex-1 min-w-0 bg-[#6f0e06]/10 text-[#6f0e06] px-4 py-3 rounded-lg text-sm hover:bg-[#6f0e06]/20 transition-colors"
             >
               ✉️ Send via Email
             </motion.button>

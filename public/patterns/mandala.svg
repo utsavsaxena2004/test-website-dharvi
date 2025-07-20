@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
   <defs>
     <pattern id="mandalaPattern" patternUnits="userSpaceOnUse" width="240" height="240">
-      <g transform="translate(120, 120)" stroke="#ba1a5d" fill="none" opacity="0.15">
+      <g transform="translate(120, 120)" stroke="#6f0e06" fill="none" opacity="0.15">
         <circle cx="0" cy="0" r="100" stroke-width="0.5" />
         <circle cx="0" cy="0" r="80" stroke-width="0.5" />
         <circle cx="0" cy="0" r="60" stroke-width="0.5" />

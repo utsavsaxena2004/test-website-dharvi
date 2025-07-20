@@ -70,7 +70,7 @@ class RazorpayService {
           },
           notes: paymentData.notes || {},
           theme: {
-            color: '#ba1a5d'
+            color: '#6f0e06'
           },
           modal: {
             ondismiss: () => {

@@ -28,7 +28,7 @@ const CategoryIllustrations = {
   sarees: {
     name: 'Traditional Paisley',
     colors: {
-      primary: '#ba1a5d',
+      primary: '#6f0e06',
       secondary: '#e6c392',
       accent: '#f3e8ff',
       gradient: 'from-rose-50 via-pink-50 to-orange-50'
@@ -37,9 +37,9 @@ const CategoryIllustrations = {
       <svg viewBox="0 0 800 400" className={className}>
         <defs>
           <linearGradient id="paisleyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ba1a5d" stopOpacity="0.8"/>
+            <stop offset="0%" stopColor="#6f0e06" stopOpacity="0.8"/>
             <stop offset="50%" stopColor="#e6c392" stopOpacity="0.6"/>
-            <stop offset="100%" stopColor="#ba1a5d" stopOpacity="0.4"/>
+            <stop offset="100%" stopColor="#6f0e06" stopOpacity="0.4"/>
           </linearGradient>
           <pattern id="paisleyPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
             <path d="M30,10 Q50,0 60,20 T70,40 Q50,70 30,50 T10,30 Q20,20 30,10" fill="url(#paisleyGradient)" opacity="0.3"/>
@@ -54,9 +54,9 @@ const CategoryIllustrations = {
           <path d="M60,20 Q120,0 140,60 T160,120 Q100,180 60,140 T20,80 Q40,40 60,20" 
                 fill="url(#paisleyGradient)" opacity="0.7"/>
           <path d="M70,30 Q110,15 125,65 T140,115 Q105,155 70,125 T35,75 Q50,45 70,30" 
-                fill="none" stroke="#ba1a5d" strokeWidth="2" opacity="0.8"/>
+                fill="none" stroke="#6f0e06" strokeWidth="2" opacity="0.8"/>
           <circle cx="80" cy="70" r="8" fill="#e6c392" opacity="0.9"/>
-          <circle cx="100" cy="90" r="5" fill="#ba1a5d" opacity="0.7"/>
+          <circle cx="100" cy="90" r="5" fill="#6f0e06" opacity="0.7"/>
           <circle cx="120" cy="110" r="6" fill="#e6c392" opacity="0.8"/>
         </g>
         
@@ -65,21 +65,21 @@ const CategoryIllustrations = {
           <path d="M40,10 Q80,0 100,40 T120,80 Q80,120 40,100 T0,60 Q20,20 40,10" 
                 fill="url(#paisleyGradient)" opacity="0.5"/>
           <path d="M50,20 Q70,15 80,35 T90,55 Q75,75 50,65 T25,45 Q35,25 50,20" 
-                fill="none" stroke="#ba1a5d" strokeWidth="1.5" opacity="0.6"/>
+                fill="none" stroke="#6f0e06" strokeWidth="1.5" opacity="0.6"/>
         </g>
         
         {/* Floating Elements */}
         <g transform="translate(600, 150)">
           <circle cx="0" cy="0" r="12" fill="#e6c392" opacity="0.6"/>
-          <circle cx="30" cy="-20" r="8" fill="#ba1a5d" opacity="0.5"/>
+          <circle cx="30" cy="-20" r="8" fill="#6f0e06" opacity="0.5"/>
           <circle cx="60" cy="10" r="10" fill="#e6c392" opacity="0.7"/>
-          <path d="M-10,0 Q10,-20 30,0 Q10,20 -10,0" fill="none" stroke="#ba1a5d" strokeWidth="1" opacity="0.4"/>
+          <path d="M-10,0 Q10,-20 30,0 Q10,20 -10,0" fill="none" stroke="#6f0e06" strokeWidth="1" opacity="0.4"/>
         </g>
         
         {/* Traditional Border */}
         <g transform="translate(0, 350)">
           <path d="M0,25 Q100,0 200,25 Q300,50 400,25 Q500,0 600,25 Q700,50 800,25" 
-                fill="none" stroke="#ba1a5d" strokeWidth="2" opacity="0.3"/>
+                fill="none" stroke="#6f0e06" strokeWidth="2" opacity="0.3"/>
           <path d="M0,35 Q100,10 200,35 Q300,60 400,35 Q500,10 600,35 Q700,60 800,35" 
                 fill="none" stroke="#e6c392" strokeWidth="1" opacity="0.4"/>
         </g>
@@ -321,7 +321,7 @@ const CategoryIllustrations = {
   default: {
     name: 'Traditional Elegance',
     colors: {
-      primary: '#ba1a5d',
+      primary: '#6f0e06',
       secondary: '#e6c392',
       accent: '#f3e8ff',
       gradient: 'from-rose-50 via-pink-50 to-purple-50'
@@ -330,20 +330,20 @@ const CategoryIllustrations = {
       <svg viewBox="0 0 800 400" className={className}>
         <defs>
           <radialGradient id="defaultGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ba1a5d" stopOpacity="0.8"/>
+            <stop offset="0%" stopColor="#6f0e06" stopOpacity="0.8"/>
             <stop offset="50%" stopColor="#e6c392" stopOpacity="0.6"/>
-            <stop offset="100%" stopColor="#ba1a5d" stopOpacity="0.4"/>
+            <stop offset="100%" stopColor="#6f0e06" stopOpacity="0.4"/>
           </radialGradient>
         </defs>
         
         {/* Central Decorative Element */}
         <g transform="translate(400, 200)">
           <circle cx="0" cy="0" r="100" fill="url(#defaultGradient)" opacity="0.5"/>
-          <circle cx="0" cy="0" r="80" fill="none" stroke="#ba1a5d" strokeWidth="2" opacity="0.6"/>
+          <circle cx="0" cy="0" r="80" fill="none" stroke="#6f0e06" strokeWidth="2" opacity="0.6"/>
           <circle cx="0" cy="0" r="60" fill="none" stroke="#e6c392" strokeWidth="1.5" opacity="0.7"/>
-          <circle cx="0" cy="0" r="40" fill="none" stroke="#ba1a5d" strokeWidth="1" opacity="0.5"/>
+          <circle cx="0" cy="0" r="40" fill="none" stroke="#6f0e06" strokeWidth="1" opacity="0.5"/>
           <circle cx="0" cy="0" r="20" fill="#e6c392" opacity="0.8"/>
-          <circle cx="0" cy="0" r="10" fill="#ba1a5d" opacity="0.9"/>
+          <circle cx="0" cy="0" r="10" fill="#6f0e06" opacity="0.9"/>
         </g>
         
         {/* Side Elements */}
@@ -360,7 +360,7 @@ const CategoryIllustrations = {
         {/* Decorative Border */}
         <g transform="translate(0, 50)">
           <path d="M0,0 Q100,20 200,0 Q300,20 400,0 Q500,20 600,0 Q700,20 800,0" 
-                fill="none" stroke="#ba1a5d" strokeWidth="2" opacity="0.4"/>
+                fill="none" stroke="#6f0e06" strokeWidth="2" opacity="0.4"/>
         </g>
         
         <g transform="translate(0, 350)">
@@ -516,7 +516,7 @@ const DynamicCategoryPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#ba1a5d] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#6f0e06] mx-auto mb-4"></div>
           <p className="text-gray-600 text-lg">Loading category...</p>
         </div>
       </div>
@@ -531,7 +531,7 @@ const DynamicCategoryPage = () => {
           <p className="text-gray-600 mb-8">The category you're looking for doesn't exist.</p>
           <Link 
             to="/"
-            className="inline-flex items-center px-6 py-3 border-2 border-[#ba1a5d] text-[#ba1a5d] rounded-md hover:bg-[#ba1a5d] hover:text-white transition-all duration-300"
+            className="inline-flex items-center px-6 py-3 border-2 border-[#6f0e06] text-[#6f0e06] rounded-md hover:bg-[#6f0e06] hover:text-white transition-all duration-300"
           >
             Back to Home
           </Link>
@@ -724,9 +724,9 @@ const DynamicCategoryPage = () => {
           transition={{ duration: 0.6 }}
           className="flex items-center space-x-2 text-sm text-gray-600"
         >
-          <Link to="/" className="hover:text-[#ba1a5d] transition-colors">Home</Link>
+          <Link to="/" className="hover:text-[#6f0e06] transition-colors">Home</Link>
           <span>/</span>
-          <Link to="/categories" className="hover:text-[#ba1a5d] transition-colors">Categories</Link>
+          <Link to="/categories" className="hover:text-[#6f0e06] transition-colors">Categories</Link>
           <span>/</span>
           <span className="text-gray-900 font-medium">{category.name}</span>
         </motion.nav>
@@ -750,7 +750,7 @@ const DynamicCategoryPage = () => {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent transition-all duration-300"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent transition-all duration-300"
               />
             </div>
             
@@ -761,8 +761,8 @@ const DynamicCategoryPage = () => {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-all duration-300 ${
                   showFilters 
-                    ? 'bg-[#ba1a5d] text-white border-[#ba1a5d]' 
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-[#ba1a5d]'
+                    ? 'bg-[#6f0e06] text-white border-[#6f0e06]' 
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-[#6f0e06]'
                 }`}
               >
                 <FunnelIcon className="w-4 h-4" />
@@ -775,7 +775,7 @@ const DynamicCategoryPage = () => {
                   onClick={() => setViewMode('grid')}
                   className={`p-2 transition-colors duration-300 ${
                     viewMode === 'grid' 
-                      ? 'bg-[#ba1a5d] text-white' 
+                      ? 'bg-[#6f0e06] text-white' 
                       : 'bg-white text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -785,7 +785,7 @@ const DynamicCategoryPage = () => {
                   onClick={() => setViewMode('list')}
                   className={`p-2 transition-colors duration-300 ${
                     viewMode === 'list' 
-                      ? 'bg-[#ba1a5d] text-white' 
+                      ? 'bg-[#6f0e06] text-white' 
                       : 'bg-white text-gray-600 hover:bg-gray-50'
                   }`}
                 >
@@ -797,7 +797,7 @@ const DynamicCategoryPage = () => {
               <select 
                 value={sortBy} 
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent transition-all duration-300"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent transition-all duration-300"
               >
                 <option value="name">Sort by Name</option>
                 <option value="price-low">Price: Low to High</option>
@@ -825,7 +825,7 @@ const DynamicCategoryPage = () => {
                     <select 
                       value={filterBy} 
                       onChange={(e) => setFilterBy(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent"
                     >
                       <option value="all">All Products</option>
                       <option value="featured">Featured</option>
@@ -842,14 +842,14 @@ const DynamicCategoryPage = () => {
                         placeholder="Min"
                         value={priceRange.min}
                         onChange={(e) => setPriceRange({...priceRange, min: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent"
                       />
                       <input
                         type="number"
                         placeholder="Max"
                         value={priceRange.max}
                         onChange={(e) => setPriceRange({...priceRange, max: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -865,7 +865,7 @@ const DynamicCategoryPage = () => {
                         setFilterBy('all');
                         setSortBy('name');
                       }}
-                      className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-[#ba1a5d] transition-colors duration-300"
+                      className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-[#6f0e06] transition-colors duration-300"
                     >
                       <XMarkIcon className="w-4 h-4" />
                       <span>Clear All</span>
@@ -906,7 +906,7 @@ const DynamicCategoryPage = () => {
                   setSelectedSizes([]);
                   setFilterBy('all');
                 }}
-                className="px-6 py-3 bg-[#ba1a5d] text-white rounded-lg hover:bg-[#9a1549] transition-colors duration-300"
+                className="px-6 py-3 bg-[#6f0e06] text-white rounded-lg hover:bg-[#9a1549] transition-colors duration-300"
               >
                 Clear All Filters
               </button>
@@ -984,7 +984,7 @@ const DynamicCategoryPage = () => {
                           <h3 className="text-xl font-serif text-gray-900 mb-2">{product.name}</h3>
                           <p className="text-gray-600 mb-4 line-clamp-3">{product.description}</p>
                           <div className="flex items-center space-x-4 mb-4">
-                            <span className="text-2xl font-bold text-[#ba1a5d]">
+                            <span className="text-2xl font-bold text-[#6f0e06]">
                               ₹{product.price?.toLocaleString()}
                             </span>
                             {product.original_price && (
@@ -998,7 +998,7 @@ const DynamicCategoryPage = () => {
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => openQuickView(product)}
-                              className="flex items-center space-x-1 text-gray-600 hover:text-[#ba1a5d] transition-colors duration-300"
+                              className="flex items-center space-x-1 text-gray-600 hover:text-[#6f0e06] transition-colors duration-300"
                             >
                               <EyeIcon className="w-4 h-4" />
                               <span>Quick View</span>
@@ -1006,7 +1006,7 @@ const DynamicCategoryPage = () => {
                           </div>
                           <button
                             onClick={(e) => addToCart(product, e)}
-                            className="flex items-center space-x-2 px-4 py-2 bg-[#ba1a5d] text-white rounded-lg hover:bg-[#9a1549] transition-colors duration-300"
+                            className="flex items-center space-x-2 px-4 py-2 bg-[#6f0e06] text-white rounded-lg hover:bg-[#9a1549] transition-colors duration-300"
                           >
                             <ShoppingBagIcon className="w-4 h-4" />
                             <span>Add to Cart</span>

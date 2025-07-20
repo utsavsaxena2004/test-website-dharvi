@@ -58,16 +58,16 @@ const AppContent = () => {
                   <Categories />
                   
                   {/* Dynamic Category Sections - automatically displays all categories */}
-                  <div className="hidden lg:block">
+                  {/* <div className="hidden lg:block">
                     <DynamicCategorySections showCount={6} />
-                  </div>
+                  </div> */}
+                  {/* Featured Products */}
+                  <FeaturedCollection />
 
                   <FeaturedProductShowcase />
                   
                   <CustomDesignShowcase />
                   
-                  {/* Featured Products */}
-                  <FeaturedCollection />
                 </>
               </PageTransition>
             } />

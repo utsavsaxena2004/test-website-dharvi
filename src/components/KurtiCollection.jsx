@@ -50,14 +50,14 @@ const products = [
 // Decorative elements
 const decorativeElement = () => (
   <div className="flex items-center justify-center space-x-3 mb-4">
-    <div className="w-8 h-8 rounded-full border-2 border-[#ba1a5d] flex items-center justify-center">
-      <div className="w-3 h-3 bg-[#ba1a5d] rounded-full"></div>
+    <div className="w-8 h-8 rounded-full border-2 border-[#6f0e06] flex items-center justify-center">
+      <div className="w-3 h-3 bg-[#6f0e06] rounded-full"></div>
     </div>
-    <div className="w-12 h-px bg-[#ba1a5d]"></div>
-    <div className="w-4 h-4 border-2 border-[#ba1a5d] transform rotate-45"></div>
-    <div className="w-12 h-px bg-[#ba1a5d]"></div>
-    <div className="w-8 h-8 rounded-full border-2 border-[#ba1a5d] flex items-center justify-center">
-      <div className="w-3 h-3 bg-[#ba1a5d] rounded-full"></div>
+    <div className="w-12 h-px bg-[#6f0e06]"></div>
+    <div className="w-4 h-4 border-2 border-[#6f0e06] transform rotate-45"></div>
+    <div className="w-12 h-px bg-[#6f0e06]"></div>
+    <div className="w-8 h-8 rounded-full border-2 border-[#6f0e06] flex items-center justify-center">
+      <div className="w-3 h-3 bg-[#6f0e06] rounded-full"></div>
     </div>
   </div>
 );
@@ -87,13 +87,13 @@ const DiamondPattern = () => (
 
 const borderPattern = (
   <div className="flex items-center justify-center w-full">
-    <div className="h-px bg-[#ba1a5d]/30 w-full"></div>
+    <div className="h-px bg-[#6f0e06]/30 w-full"></div>
     <div className="px-4">
-      <svg width="60" height="20" viewBox="0 0 60 20" className="text-[#ba1a5d] opacity-30">
+      <svg width="60" height="20" viewBox="0 0 60 20" className="text-[#6f0e06] opacity-30">
         <path d="M0,10 L60,10 M15,5 L30,10 L15,15 M30,5 L45,10 L30,15" stroke="currentColor" fill="none" strokeWidth="0.8" />
       </svg>
     </div>
-    <div className="h-px bg-[#ba1a5d]/30 w-full"></div>
+    <div className="h-px bg-[#6f0e06]/30 w-full"></div>
   </div>
 );
 
@@ -174,8 +174,8 @@ const KurtiCollection = () => {
               className="mb-3"
             >
               <div className="flex items-center space-x-3 mb-2">
-                <span className="h-px w-8 bg-[#ba1a5d]"></span>
-                <span className="text-[#ba1a5d] font-medium text-sm uppercase tracking-wide">Contemporary Style</span>
+                <span className="h-px w-8 bg-[#6f0e06]"></span>
+                <span className="text-[#6f0e06] font-medium text-sm uppercase tracking-wide">Contemporary Style</span>
               </div>
             </motion.div>
             
@@ -192,7 +192,7 @@ const KurtiCollection = () => {
                 whileInView={{ width: '100%' }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="absolute bottom-0 left-0 h-[2px] bg-[#ba1a5d]"
+                className="absolute bottom-0 left-0 h-[2px] bg-[#6f0e06]"
               />
             </motion.h2>
             
@@ -202,13 +202,13 @@ const KurtiCollection = () => {
             
             {/* Decorative dots */}
             <div className="flex items-center space-x-1 mt-4">
-              <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-              <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-              <div className="w-12 h-0.5 bg-[#ba1a5d]"></div>
-              <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-              <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
+              <div className="w-1 h-1 rounded-full bg-[#6f0e06] opacity-70"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#6f0e06] opacity-80"></div>
+              <div className="w-2 h-2 rounded-full bg-[#6f0e06] opacity-90"></div>
+              <div className="w-12 h-0.5 bg-[#6f0e06]"></div>
+              <div className="w-2 h-2 rounded-full bg-[#6f0e06] opacity-90"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#6f0e06] opacity-80"></div>
+              <div className="w-1 h-1 rounded-full bg-[#6f0e06] opacity-70"></div>
             </div>
           </div>
           
@@ -221,12 +221,12 @@ const KurtiCollection = () => {
           >
             <div className="flex items-center space-x-4">
               <button className="p-3 rounded-full bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <svg className="w-6 h-6 text-[#ba1a5d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[#6f0e06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                 </svg>
               </button>
               <button className="p-3 rounded-full bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <svg className="w-6 h-6 text-[#ba1a5d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[#6f0e06]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
                 </svg>
               </button>
@@ -276,7 +276,7 @@ const KurtiCollection = () => {
             href="/collections/kurtis" 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center px-8 py-3 border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300 rounded-md group"
+            className="inline-flex items-center px-8 py-3 border border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group"
           >
             <span>View Full Collection</span>
             <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

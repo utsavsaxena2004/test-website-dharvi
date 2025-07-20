@@ -76,9 +76,9 @@ const WishlistStats = ({ items }) => {
           />
           <defs>
             <linearGradient id="statsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ba1a5d" />
+              <stop offset="0%" stopColor="#6f0e06" />
               <stop offset="50%" stopColor="#f472b6" />
-              <stop offset="100%" stopColor="#ba1a5d" />
+              <stop offset="100%" stopColor="#6f0e06" />
             </linearGradient>
           </defs>
         </svg>
@@ -86,7 +86,7 @@ const WishlistStats = ({ items }) => {
 
       <div className="relative z-10">
         <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#ba1a5d]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-[#6f0e06]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
           Your Wishlist Insights
@@ -98,7 +98,7 @@ const WishlistStats = ({ items }) => {
             className="bg-gradient-to-br from-pink-50 to-white p-4 rounded-lg shadow-sm"
           >
             <p className="text-sm text-gray-600 mb-1">Potential Savings</p>
-            <p className="text-2xl font-medium text-[#ba1a5d]">
+            <p className="text-2xl font-medium text-[#6f0e06]">
               ₹ <AnimatedCounter end={totalSaved} />
             </p>
             <p className="text-xs text-gray-500 mt-1">Based on current discounts</p>
@@ -109,7 +109,7 @@ const WishlistStats = ({ items }) => {
             className="bg-gradient-to-br from-pink-50 to-white p-4 rounded-lg shadow-sm"
           >
             <p className="text-sm text-gray-600 mb-1">Average Item Price</p>
-            <p className="text-2xl font-medium text-[#ba1a5d]">
+            <p className="text-2xl font-medium text-[#6f0e06]">
               ₹ <AnimatedCounter end={averagePrice} />
             </p>
             <p className="text-xs text-gray-500 mt-1">Across your collection</p>
@@ -120,7 +120,7 @@ const WishlistStats = ({ items }) => {
             className="bg-gradient-to-br from-pink-50 to-white p-4 rounded-lg shadow-sm"
           >
             <p className="text-sm text-gray-600 mb-1">Favorite Category</p>
-            <p className="text-2xl font-medium text-[#ba1a5d]">{mostPopularCategory}</p>
+            <p className="text-2xl font-medium text-[#6f0e06]">{mostPopularCategory}</p>
             <p className="text-xs text-gray-500 mt-1">Your most loved style</p>
           </motion.div>
         </div>

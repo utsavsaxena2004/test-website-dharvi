@@ -567,7 +567,7 @@ const FeaturedProductShowcase = () => {
                     className="relative px-8 py-3 bg-pink text-white rounded-md flex items-center justify-center overflow-hidden group"
                   >
                     <motion.span
-                      className="absolute inset-0 bg-gradient-to-r from-[#ba1a5d] via-pink-600 to-[#ba1a5d] opacity-0 group-hover:opacity-100"
+                      className="absolute inset-0 bg-gradient-to-r from-[#6f0e06] via-pink-600 to-[#6f0e06] opacity-0 group-hover:opacity-100"
                       initial={{ x: "-100%" }}
                       whileHover={{ x: "100%" }}
                       transition={{ duration: 1, repeat: Infinity, repeatType: "loop" }}
@@ -699,7 +699,7 @@ const FeaturedProductShowcase = () => {
                 >
                   <motion.span
                     animate={{ 
-                      color: ["#ba1a5d", "#f472b6", "#ba1a5d"] 
+                      color: ["#6f0e06", "#f472b6", "#6f0e06"] 
                     }}
                     transition={{ duration: 3, repeat: Infinity }}
                   >
@@ -709,12 +709,12 @@ const FeaturedProductShowcase = () => {
                 
                 {/* Decorative Corner Elements */}
                 <div className="absolute top-0 left-0 w-20 h-20 overflow-hidden z-20">
-                  <div className="absolute top-0 left-0 w-5 h-full bg-gradient-to-r from-[#ba1a5d]/40 to-transparent"></div>
-                  <div className="absolute top-0 left-0 h-5 w-full bg-gradient-to-b from-[#ba1a5d]/40 to-transparent"></div>
+                  <div className="absolute top-0 left-0 w-5 h-full bg-gradient-to-r from-[#6f0e06]/40 to-transparent"></div>
+                  <div className="absolute top-0 left-0 h-5 w-full bg-gradient-to-b from-[#6f0e06]/40 to-transparent"></div>
                 </div>
                 <div className="absolute bottom-0 right-0 w-20 h-20 overflow-hidden z-20">
-                  <div className="absolute bottom-0 right-0 w-5 h-full bg-gradient-to-l from-[#ba1a5d]/40 to-transparent"></div>
-                  <div className="absolute bottom-0 right-0 h-5 w-full bg-gradient-to-t from-[#ba1a5d]/40 to-transparent"></div>
+                  <div className="absolute bottom-0 right-0 w-5 h-full bg-gradient-to-l from-[#6f0e06]/40 to-transparent"></div>
+                  <div className="absolute bottom-0 right-0 h-5 w-full bg-gradient-to-t from-[#6f0e06]/40 to-transparent"></div>
                 </div>
               </motion.div>
             </div>
@@ -734,7 +734,7 @@ const FeaturedProductShowcase = () => {
                     y: { type: "spring", stiffness: 300, damping: 20 }
                   }}
                   onClick={() => setSelectedColor(color)}
-                  className={`relative rounded-md overflow-hidden w-16 h-16 ${selectedColor.id === color.id ? 'ring-2 ring-[#ba1a5d]' : 'ring-1 ring-gray-200'}`}
+                  className={`relative rounded-md overflow-hidden w-16 h-16 ${selectedColor.id === color.id ? 'ring-2 ring-[#6f0e06]' : 'ring-1 ring-gray-200'}`}
                 >
                   <motion.div
                     animate={selectedColor.id === color.id ? {
@@ -764,12 +764,12 @@ const FeaturedProductShowcase = () => {
           <div className="inline-block relative">
             <motion.a 
               href="/collections/signature" 
-              className="inline-flex items-center px-8 py-3 border-2 border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300 rounded-md group relative overflow-hidden"
+              className="inline-flex items-center px-8 py-3 border-2 border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group relative overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
               <motion.div
-                className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#ba1a5d]/0 via-[#ba1a5d]/30 to-[#ba1a5d]/0"
+                className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#6f0e06]/0 via-[#6f0e06]/30 to-[#6f0e06]/0"
                 initial={{ x: "-100%" }}
                 whileHover={{ x: "100%" }}
                 transition={{ duration: 0.6 }}
@@ -786,7 +786,7 @@ const FeaturedProductShowcase = () => {
               </motion.svg>
             </motion.a>
             <motion.div
-              className="absolute -top-1 -bottom-1 -left-1 -right-1 border border-[#ba1a5d]/30 rounded-md"
+              className="absolute -top-1 -bottom-1 -left-1 -right-1 border border-[#6f0e06]/30 rounded-md"
               initial={{ scale: 0.8, opacity: 0 }}
               whileHover={{ scale: 1.05, opacity: 1 }}
               transition={{ duration: 0.3 }}

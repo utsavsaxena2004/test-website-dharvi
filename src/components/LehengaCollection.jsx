@@ -44,7 +44,7 @@ const products = [
 
 // Decorative elements
 const MandalaPattern = () => (
-  <svg width="120" height="120" viewBox="0 0 120 120" className="absolute opacity-10 text-[#ba1a5d]">
+  <svg width="120" height="120" viewBox="0 0 120 120" className="absolute opacity-10 text-[#6f0e06]">
     <circle cx="60" cy="60" r="50" fill="none" stroke="currentColor" strokeWidth="0.5" />
     <circle cx="60" cy="60" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" />
     <circle cx="60" cy="60" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
@@ -55,18 +55,18 @@ const MandalaPattern = () => (
 
 const BorderPattern = () => (
   <div className="flex items-center justify-center w-full opacity-40">
-    <div className="h-px bg-gradient-to-r from-transparent via-[#ba1a5d] to-transparent w-full"></div>
+    <div className="h-px bg-gradient-to-r from-transparent via-[#6f0e06] to-transparent w-full"></div>
     <div className="flex-shrink-0 mx-4">
-      <svg width="60" height="20" viewBox="0 0 60 20" className="text-[#ba1a5d]">
+      <svg width="60" height="20" viewBox="0 0 60 20" className="text-[#6f0e06]">
         <path d="M0,10 L60,10 M15,5 L30,10 L15,15 M30,5 L45,10 L30,15" stroke="currentColor" fill="none" strokeWidth="0.8" />
       </svg>
     </div>
-    <div className="h-px bg-gradient-to-r from-transparent via-[#ba1a5d] to-transparent w-full"></div>
+    <div className="h-px bg-gradient-to-r from-transparent via-[#6f0e06] to-transparent w-full"></div>
   </div>
 );
 
 const FlowerPattern = () => (
-  <svg width="80" height="80" viewBox="0 0 80 80" className="absolute opacity-15 text-[#ba1a5d]">
+  <svg width="80" height="80" viewBox="0 0 80 80" className="absolute opacity-15 text-[#6f0e06]">
     <path d="M40,10 Q50,20 40,30 Q30,20 40,10 Z" fill="none" stroke="currentColor" strokeWidth="0.5" />
     <path d="M10,40 Q20,50 30,40 Q20,30 10,40 Z" fill="none" stroke="currentColor" strokeWidth="0.5" />
     <path d="M40,70 Q50,60 40,50 Q30,60 40,70 Z" fill="none" stroke="currentColor" strokeWidth="0.5" />
@@ -80,7 +80,7 @@ const FlowerPattern = () => (
 );
 
 const DecorativeLine = () => (
-  <svg width="100" height="10" className="text-[#ba1a5d] opacity-30">
+  <svg width="100" height="10" className="text-[#6f0e06] opacity-30">
     <path d="M0,5 C20,2 40,8 60,5 C80,2 100,8 100,5" stroke="currentColor" fill="none" strokeWidth="0.5" />
   </svg>
 );
@@ -159,8 +159,8 @@ const LehengaCollection = () => {
       </div>
       
       {/* Decorative corners */}
-      <div className="absolute top-5 right-5 w-20 h-20 border-t border-r border-[#ba1a5d]/20 rounded-tr-lg"></div>
-      <div className="absolute bottom-5 left-5 w-20 h-20 border-b border-l border-[#ba1a5d]/20 rounded-bl-lg"></div>
+      <div className="absolute top-5 right-5 w-20 h-20 border-t border-r border-[#6f0e06]/20 rounded-tr-lg"></div>
+      <div className="absolute bottom-5 left-5 w-20 h-20 border-b border-l border-[#6f0e06]/20 rounded-bl-lg"></div>
       
       {/* Main Content */}
       <motion.div
@@ -180,15 +180,15 @@ const LehengaCollection = () => {
               className="flex flex-col items-start"
             >
               <div className="flex items-center space-x-3 mb-2">
-                <span className="h-px w-8 bg-[#ba1a5d]"></span>
-                <span className="text-[#ba1a5d] font-medium text-sm uppercase tracking-wide">Royal Heritage</span>
+                <span className="h-px w-8 bg-[#6f0e06]"></span>
+                <span className="text-[#6f0e06] font-medium text-sm uppercase tracking-wide">Royal Heritage</span>
               </div>
               
               <motion.a 
                 href="/collections/lehengas" 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center px-6 py-2.5 mt-4 text-sm border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300 rounded-md group"
+                className="inline-flex items-center px-6 py-2.5 mt-4 text-sm border border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group"
               >
                 <span>Browse All Lehengas</span>
                 <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,18 +212,18 @@ const LehengaCollection = () => {
                 whileInView={{ width: '100%' }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="absolute bottom-0 right-0 h-[2px] bg-[#ba1a5d]"
+                className="absolute bottom-0 right-0 h-[2px] bg-[#6f0e06]"
               />
             </motion.h2>
             <p className="text-gray-600 mt-2 max-w-xl ml-auto">Celebrate your special moments with our handcrafted bridal lehengas</p>
             
             {/* Decorative dots */}
             <div className="flex items-center justify-end space-x-1.5 mt-3">
-              <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-              <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-              <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
+              <div className="w-1 h-1 rounded-full bg-[#6f0e06] opacity-70"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#6f0e06] opacity-80"></div>
+              <div className="w-2 h-2 rounded-full bg-[#6f0e06] opacity-90"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#6f0e06] opacity-80"></div>
+              <div className="w-1 h-1 rounded-full bg-[#6f0e06] opacity-70"></div>
             </div>
           </div>
         </div>
@@ -274,7 +274,7 @@ const LehengaCollection = () => {
                     onClick={() => openQuickView(product)}
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-[#ba1a5d] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#ba1a5d] hover:text-white transition-colors duration-300 flex items-center space-x-1"
+                    className="bg-white text-[#6f0e06] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#6f0e06] hover:text-white transition-colors duration-300 flex items-center space-x-1"
                   >
                     <span>Quick View</span>
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -286,7 +286,7 @@ const LehengaCollection = () => {
                 
                 {/* Badges */}
                 {product.badge && (
-                  <div className="absolute top-3 left-3 bg-[#ba1a5d] text-white text-xs px-2 py-1 rounded font-medium z-10">
+                  <div className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-10">
                     {product.badge}
                   </div>
                 )}
@@ -301,13 +301,13 @@ const LehengaCollection = () => {
               {/* Product info */}
               <div className="p-4">
                 <div className="flex justify-between items-center mb-1">
-                  <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#ba1a5d] transition-colors duration-300">
+                  <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300">
                     {product.name}
                   </h3>
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-gray-400 hover:text-[#ba1a5d] transition-colors duration-300"
+                    className="text-gray-400 hover:text-[#6f0e06] transition-colors duration-300"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -316,7 +316,7 @@ const LehengaCollection = () => {
                 </div>
                 
                 <div className="flex justify-between items-center mt-2">
-                  <p className="text-[#ba1a5d] font-medium">{product.price}</p>
+                  <p className="text-[#6f0e06] font-medium">{product.price}</p>
                   <div className="flex items-center space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <svg key={star} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -334,7 +334,7 @@ const LehengaCollection = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={(e) => addToCart(product, e)}
-                  className="w-full py-2 mt-1 text-sm font-medium text-gray-600 hover:text-[#ba1a5d] bg-gray-50 hover:bg-gray-100 rounded transition-colors duration-300 flex items-center justify-center space-x-1"
+                  className="w-full py-2 mt-1 text-sm font-medium text-gray-600 hover:text-[#6f0e06] bg-gray-50 hover:bg-gray-100 rounded transition-colors duration-300 flex items-center justify-center space-x-1"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -361,7 +361,7 @@ const LehengaCollection = () => {
               href="/collections/lehengas"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative inline-flex items-center px-8 py-3 border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300 rounded-md group"
+              className="relative inline-flex items-center px-8 py-3 border border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group"
             >
               <span className="relative z-10">View Full Collection</span>
               <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -369,7 +369,7 @@ const LehengaCollection = () => {
               </svg>
               
               {/* Button decoration */}
-              <div className="absolute -top-1 -bottom-1 -left-1 -right-1 border border-[#ba1a5d]/30 rounded-md scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div className="absolute -top-1 -bottom-1 -left-1 -right-1 border border-[#6f0e06]/30 rounded-md scale-0 group-hover:scale-100 transition-transform duration-300"></div>
             </motion.a>
             
             {/* Decorative elements around the button */}
@@ -379,35 +379,35 @@ const LehengaCollection = () => {
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 1 }}
-                className="w-6 h-[1px] bg-[#ba1a5d] opacity-40 self-center"
+                className="w-6 h-[1px] bg-[#6f0e06] opacity-40 self-center"
               ></motion.div>
               <motion.div 
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 1.1 }}
-                className="w-3 h-3 rounded-full border border-[#ba1a5d] opacity-40"
+                className="w-3 h-3 rounded-full border border-[#6f0e06] opacity-40"
               ></motion.div>
               <motion.div 
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 1.2 }}
-                className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-40"
+                className="w-2 h-2 rounded-full bg-[#6f0e06] opacity-40"
               ></motion.div>
               <motion.div 
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 1.1 }}
-                className="w-3 h-3 rounded-full border border-[#ba1a5d] opacity-40"
+                className="w-3 h-3 rounded-full border border-[#6f0e06] opacity-40"
               ></motion.div>
               <motion.div 
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 1 }}
-                className="w-6 h-[1px] bg-[#ba1a5d] opacity-40 self-center"
+                className="w-6 h-[1px] bg-[#6f0e06] opacity-40 self-center"
               ></motion.div>
             </div>
           </motion.div>

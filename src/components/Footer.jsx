@@ -138,7 +138,7 @@ const Footer = () => {
           <path d="M60,50 Q70,45 75,55 Q80,65 70,70 Q60,75 55,65 Q50,55 60,50 Z" fill="currentColor" opacity="0.3"/>
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#paisley-pattern)" className="text-[#ba1a5d]"/>
+      <rect width="100%" height="100%" fill="url(#paisley-pattern)" className="text-[#6f0e06]"/>
     </svg>
   );
 
@@ -150,7 +150,7 @@ const Footer = () => {
       {/* Floating gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-[#ba1a5d]/10 to-amber-200/10 rounded-full blur-3xl"
+          className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-[#6f0e06]/10 to-amber-200/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -256,15 +256,15 @@ const Footer = () => {
             {/* Contact Information */}
             <div className="space-y-3 mb-6 text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start space-x-3">
-                <MapPinIcon className="w-5 h-5 text-[#ba1a5d] flex-shrink-0" />
+                <MapPinIcon className="w-5 h-5 text-[#6f0e06] flex-shrink-0" />
                 <span className="text-sm text-gray-600">Ambala, Haryana, India</span>
               </div>
               <div className="flex items-center justify-center lg:justify-start space-x-3">
-                <PhoneIcon className="w-5 h-5 text-[#ba1a5d] flex-shrink-0" />
+                <PhoneIcon className="w-5 h-5 text-[#6f0e06] flex-shrink-0" />
                 <span className="text-sm text-gray-600">+91 95180 37948</span>
               </div>
               <div className="flex items-center justify-center lg:justify-start space-x-3">
-                <EnvelopeIcon className="w-5 h-5 text-[#ba1a5d] flex-shrink-0" />
+                <EnvelopeIcon className="w-5 h-5 text-[#6f0e06] flex-shrink-0" />
                 <span className="text-sm text-gray-600">saiyam@dharika.co.in</span>
               </div>
             </div>
@@ -312,7 +312,7 @@ const Footer = () => {
                 <h4 className="text-lg font-semibold text-gray-900 uppercase tracking-wide relative">
                   {category}
                   <motion.span
-                    className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#ba1a5d] to-amber-500 rounded-full"
+                    className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#6f0e06] to-amber-500 rounded-full"
                     initial={{ width: 0 }}
                     whileInView={{ width: '60%' }}
                     viewport={{ once: true }}
@@ -330,14 +330,14 @@ const Footer = () => {
                     >
                       <Link
                         to={link.href}
-                        className="text-gray-600 hover:text-[#ba1a5d] transition-colors duration-300 text-sm relative group"
+                        className="text-gray-600 hover:text-[#6f0e06] transition-colors duration-300 text-sm relative group"
                         onMouseEnter={() => setIsHovered(`${category}-${index}`)}
                         onMouseLeave={() => setIsHovered(null)}
                       >
                         <span className="relative z-10">{link.name}</span>
                         {isHovered === `${category}-${index}` && (
                           <motion.span
-                            className="absolute -bottom-1 left-0 h-0.5 bg-[#ba1a5d] rounded-full"
+                            className="absolute -bottom-1 left-0 h-0.5 bg-[#6f0e06] rounded-full"
                             initial={{ width: 0 }}
                             animate={{ width: '100%' }}
                             transition={{ duration: 0.3 }}
@@ -374,7 +374,7 @@ const Footer = () => {
                   <motion.a
                     key={link}
                     href="#"
-                    className="text-xs text-gray-500 hover:text-[#ba1a5d] transition-colors duration-300 relative group"
+                    className="text-xs text-gray-500 hover:text-[#6f0e06] transition-colors duration-300 relative group"
                     whileHover={{ scale: 1.05 }}
                     onMouseEnter={() => setIsHovered(`bottom-${index}`)}
                     onMouseLeave={() => setIsHovered(null)}
@@ -382,7 +382,7 @@ const Footer = () => {
                     {link}
                     {isHovered === `bottom-${index}` && (
                       <motion.span
-                        className="absolute -bottom-1 left-0 h-0.5 bg-[#ba1a5d] rounded-full"
+                        className="absolute -bottom-1 left-0 h-0.5 bg-[#6f0e06] rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: '100%' }}
                         transition={{ duration: 0.2 }}
@@ -412,10 +412,10 @@ const Footer = () => {
                   ease: "easeInOut"
                 }}
               >
-                <HeartIcon className="w-4 h-4 text-[#ba1a5d] fill-current" />
+                <HeartIcon className="w-4 h-4 text-[#6f0e06] fill-current" />
               </motion.div>
               <span>by</span>
-              <a href="https://devitup.in" target="_blank" rel="noopener noreferrer" className="hover:text-[#ba1a5d] font-bold transition-colors duration-300">DevItUp</a>
+              <a href="https://devitup.in" target="_blank" rel="noopener noreferrer" className="hover:text-[#6f0e06] font-bold transition-colors duration-300">DevItUp</a>
             </motion.div>
           </motion.div>
         </div>

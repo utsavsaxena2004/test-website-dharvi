@@ -52,7 +52,7 @@ const FloatingShareButton = ({ position = 'bottom-right' }) => {
       >
         <motion.button
           onClick={openShareModal}
-          className="relative group bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          className="relative group bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
           whileHover={{ 
             scale: 1.1,
             boxShadow: "0 20px 25px -5px rgba(186, 26, 93, 0.3), 0 10px 10px -5px rgba(186, 26, 93, 0.2)"
@@ -61,7 +61,7 @@ const FloatingShareButton = ({ position = 'bottom-right' }) => {
         >
           {/* Animated background pulse */}
           <motion.div
-            className="absolute inset-0 rounded-full bg-[#ba1a5d]"
+            className="absolute inset-0 rounded-full bg-[#6f0e06]"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.7, 0.3, 0.7]
@@ -104,7 +104,7 @@ const FloatingShareButton = ({ position = 'bottom-right' }) => {
           {/* Item count badge */}
           {wishlistSummary.itemCount > 0 && (
             <motion.div
-              className="absolute -top-2 -right-2 bg-white text-[#ba1a5d] text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-[#ba1a5d]"
+              className="absolute -top-2 -right-2 bg-white text-[#6f0e06] text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-[#6f0e06]"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 1.2, type: "spring", stiffness: 200 }}

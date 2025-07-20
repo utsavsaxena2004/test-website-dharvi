@@ -116,7 +116,7 @@ const Admin = () => {
           <h2 className="text-2xl font-serif text-gray-900 mb-4">Access Restricted</h2>
           <p className="text-gray-600 mb-6">Only authorized administrators can access this panel.</p>
           <Link to="/">
-            <Button className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white">
+            <Button className="bg-[#6f0e06] hover:bg-[#9a1549] text-white">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Button>
@@ -351,7 +351,7 @@ const Admin = () => {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div className="relative bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-auto">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white p-6 rounded-t-lg">
+          <div className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white p-6 rounded-t-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-serif">Order Details</h2>
@@ -387,7 +387,7 @@ const Admin = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Total Amount:</span>
-                      <span className="font-bold text-[#ba1a5d] text-lg">₹{order.total_amount?.toLocaleString('en-IN')}</span>
+                      <span className="font-bold text-[#6f0e06] text-lg">₹{order.total_amount?.toLocaleString('en-IN')}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Payment Method:</span>
@@ -486,7 +486,7 @@ const Admin = () => {
                       <select
                         value={order.status || 'pending'}
                         onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:border-[#ba1a5d] focus:outline-none"
+                        className="w-full p-2 border border-gray-300 rounded-md focus:border-[#6f0e06] focus:outline-none"
                       >
                         {getStatusOptions().map((option) => (
                           <option key={option.value} value={option.value}>
@@ -509,7 +509,7 @@ const Admin = () => {
                   
                   {loadingDetails ? (
                     <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ba1a5d] mx-auto"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6f0e06] mx-auto"></div>
                       <p className="text-gray-600 mt-2">Loading items...</p>
                     </div>
                   ) : orderDetails && orderDetails.length > 0 ? (
@@ -532,7 +532,7 @@ const Admin = () => {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-[#ba1a5d]">₹{item.price?.toLocaleString('en-IN')}</p>
+                            <p className="font-bold text-[#6f0e06]">₹{item.price?.toLocaleString('en-IN')}</p>
                             <p className="text-sm text-gray-600">per item</p>
                           </div>
                         </div>
@@ -542,7 +542,7 @@ const Admin = () => {
                       <div className="border-t border-gray-200 pt-4">
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-semibold text-gray-900">Total:</span>
-                          <span className="text-xl font-bold text-[#ba1a5d]">
+                          <span className="text-xl font-bold text-[#6f0e06]">
                             ₹{order.total_amount?.toLocaleString('en-IN')}
                           </span>
                         </div>
@@ -579,7 +579,7 @@ const Admin = () => {
                   // You can add print functionality here
                   window.print();
                 }}
-                className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white"
+                className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
               >
                 Print Order
               </Button>
@@ -699,7 +699,7 @@ const Admin = () => {
         className="mb-6"
       >
         <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-          <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+          <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
             <CardTitle className="font-serif">{product ? 'Edit Product' : 'Add New Product'}</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -710,7 +710,7 @@ const Admin = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   required
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
                 <Input
                   type="number"
@@ -719,7 +719,7 @@ const Admin = () => {
                   value={formData.price}
                   onChange={(e) => setFormData({...formData, price: e.target.value})}
                   required
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
               </div>
               
@@ -727,12 +727,12 @@ const Admin = () => {
                 placeholder="Description"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="border-rose-200 focus:border-[#ba1a5d]"
+                className="border-rose-200 focus:border-[#6f0e06]"
               />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <select
-                  className="w-full p-3 border border-rose-200 rounded-md focus:border-[#ba1a5d] focus:outline-none"
+                  className="w-full p-3 border border-rose-200 rounded-md focus:border-[#6f0e06] focus:outline-none"
                   value={formData.category_id}
                   onChange={(e) => setFormData({...formData, category_id: e.target.value})}
                   required
@@ -748,7 +748,7 @@ const Admin = () => {
                   placeholder="Stock Quantity"
                   value={formData.stock_quantity}
                   onChange={(e) => setFormData({...formData, stock_quantity: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
               </div>
               
@@ -757,14 +757,14 @@ const Admin = () => {
                   placeholder="Colors (comma separated)"
                   value={Array.isArray(formData.colors) ? formData.colors.join(', ') : formData.colors}
                   onChange={(e) => setFormData({...formData, colors: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
                 
                 <Input
                   placeholder="Sizes (comma separated)"
                   value={Array.isArray(formData.sizes) ? formData.sizes.join(', ') : formData.sizes}
                   onChange={(e) => setFormData({...formData, sizes: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
               </div>
               
@@ -813,14 +813,14 @@ const Admin = () => {
                   placeholder="Material"
                   value={formData.material}
                   onChange={(e) => setFormData({...formData, material: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
                 
                 <Input
                   placeholder="Care Instructions"
                   value={formData.care_instructions}
                   onChange={(e) => setFormData({...formData, care_instructions: e.target.value})}
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
               </div>
               
@@ -829,7 +829,7 @@ const Admin = () => {
                   type="checkbox"
                   checked={formData.featured}
                   onChange={(e) => setFormData({...formData, featured: e.target.checked})}
-                  className="rounded border-rose-200 text-[#ba1a5d] focus:ring-[#ba1a5d]"
+                  className="rounded border-rose-200 text-[#6f0e06] focus:ring-[#6f0e06]"
                 />
                 <span className="text-gray-700">Featured Product</span>
               </label>
@@ -837,7 +837,7 @@ const Admin = () => {
               <div className="flex space-x-2 pt-4">
                 <Button 
                   type="submit" 
-                  className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white"
+                  className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
                 >
                   Save Product
                 </Button>
@@ -954,7 +954,7 @@ const Admin = () => {
         className="mb-6"
       >
         <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-          <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+          <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
             <CardTitle className="font-serif">{category ? 'Edit Category' : 'Add New Category'}</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -965,14 +965,14 @@ const Admin = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   required
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
                 <Input
                   placeholder="Slug"
                   value={formData.slug}
                   onChange={(e) => setFormData({...formData, slug: e.target.value})}
                   required
-                  className="border-rose-200 focus:border-[#ba1a5d]"
+                  className="border-rose-200 focus:border-[#6f0e06]"
                 />
               </div>
               
@@ -980,7 +980,7 @@ const Admin = () => {
                 placeholder="Description"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="border-rose-200 focus:border-[#ba1a5d]"
+                className="border-rose-200 focus:border-[#6f0e06]"
               />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1019,7 +1019,7 @@ const Admin = () => {
                     placeholder="Sort Order"
                     value={formData.sort_order}
                     onChange={(e) => setFormData({...formData, sort_order: e.target.value})}
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
               </div>
@@ -1035,7 +1035,7 @@ const Admin = () => {
                       key={template.value}
                       className={`relative p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                         formData.design_template === template.value
-                          ? 'border-[#ba1a5d] bg-rose-50'
+                          ? 'border-[#6f0e06] bg-rose-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => setFormData({...formData, design_template: template.value})}
@@ -1044,7 +1044,7 @@ const Admin = () => {
                         <div className="flex-shrink-0 mt-1">
                           <div className={`w-4 h-4 rounded-full border-2 ${
                             formData.design_template === template.value
-                              ? 'border-[#ba1a5d] bg-[#ba1a5d]'
+                              ? 'border-[#6f0e06] bg-[#6f0e06]'
                               : 'border-gray-300'
                           }`}>
                             {formData.design_template === template.value && (
@@ -1092,7 +1092,7 @@ const Admin = () => {
               <div className="flex space-x-2 pt-4">
                 <Button 
                   type="submit" 
-                  className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white"
+                  className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
                 >
                   Save Category
                 </Button>
@@ -1228,7 +1228,7 @@ const Admin = () => {
         className="mb-6"
       >
         <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-          <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+          <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
             <CardTitle className="font-serif">Site Settings</CardTitle>
             <CardDescription className="text-white/90">
               Manage your website's dynamic content and settings
@@ -1260,7 +1260,7 @@ const Admin = () => {
                   <Input
                     value={formData.site_title}
                     onChange={(e) => setFormData({...formData, site_title: e.target.value})}
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
                 <div>
@@ -1270,7 +1270,7 @@ const Admin = () => {
                   <Input
                     value={formData.site_description}
                     onChange={(e) => setFormData({...formData, site_description: e.target.value})}
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
               </div>
@@ -1285,7 +1285,7 @@ const Admin = () => {
                     type="email"
                     value={formData.contact_email}
                     onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
                 <div>
@@ -1295,7 +1295,7 @@ const Admin = () => {
                   <Input
                     value={formData.contact_phone}
                     onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
               </div>
@@ -1309,7 +1309,7 @@ const Admin = () => {
                   value={formData.social_media}
                   onChange={(e) => setFormData({...formData, social_media: e.target.value})}
                   placeholder='{"facebook": "url", "instagram": "url", "whatsapp": "url"}'
-                  className="border-rose-200 focus:border-[#ba1a5d] h-24 font-mono text-sm"
+                  className="border-rose-200 focus:border-[#6f0e06] h-24 font-mono text-sm"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Format: Object with social media URLs (facebook, instagram, whatsapp)
@@ -1325,7 +1325,7 @@ const Admin = () => {
                   value={formData.promotional_messages}
                   onChange={(e) => setFormData({...formData, promotional_messages: e.target.value})}
                   placeholder='[{"id": 1, "text": "🎁 Welcome message"}]'
-                  className="border-rose-200 focus:border-[#ba1a5d] h-32 font-mono text-sm"
+                  className="border-rose-200 focus:border-[#6f0e06] h-32 font-mono text-sm"
                 />
                 <p className="text-xs text-green-600 mt-1">
                   ✅ This field is now fully functional! Changes will be reflected on the website.
@@ -1341,7 +1341,7 @@ const Admin = () => {
                   value={formData.hero_content}
                   onChange={(e) => setFormData({...formData, hero_content: e.target.value})}
                   placeholder='[{"title": "Hero Title", "subtitle": "Hero Subtitle", "image": "image-url"}]'
-                  className="border-rose-200 focus:border-[#ba1a5d] h-32 font-mono text-sm"
+                  className="border-rose-200 focus:border-[#6f0e06] h-32 font-mono text-sm"
                 />
                 <p className="text-xs text-green-600 mt-1">
                   ✅ This field is now fully functional! Changes will be reflected on the website.
@@ -1357,7 +1357,7 @@ const Admin = () => {
                   value={formData.footer_content}
                   onChange={(e) => setFormData({...formData, footer_content: e.target.value})}
                   placeholder='{"company": "Company Name", "description": "Company description"}'
-                  className="border-rose-200 focus:border-[#ba1a5d] h-24 font-mono text-sm"
+                  className="border-rose-200 focus:border-[#6f0e06] h-24 font-mono text-sm"
                 />
                 <p className="text-xs text-green-600 mt-1">
                   ✅ This field is now fully functional! Changes will be reflected on the website.
@@ -1368,7 +1368,7 @@ const Admin = () => {
                 <Button 
                   type="submit" 
                   disabled={saving}
-                  className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white"
+                  className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
                 >
                   {saving ? 'Saving...' : 'Save All Settings'}
                 </Button>
@@ -1392,7 +1392,7 @@ const Admin = () => {
               </p>
             </div>
             <div className="text-right">
-              <p className="font-bold text-[#ba1a5d]">₹{order.total_amount?.toLocaleString('en-IN')}</p>
+              <p className="font-bold text-[#6f0e06]">₹{order.total_amount?.toLocaleString('en-IN')}</p>
               <Badge 
                 variant={order.status === 'completed' || order.status === 'delivered' ? 'default' : 'secondary'}
                 className={order.status === 'completed' || order.status === 'delivered' ? 'bg-green-500' : ''}
@@ -1412,7 +1412,7 @@ const Admin = () => {
             <Button
               onClick={() => handleViewOrderDetails(order)}
               size="sm"
-              className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white"
+              className="bg-[#6f0e06] hover:bg-[#9a1549] text-white"
             >
               <Eye className="w-4 h-4 mr-2" />
               View Details
@@ -1427,7 +1427,7 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ba1a5d] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6f0e06] mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -1495,7 +1495,7 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       {/* Decorative header background */}
-      <div className="relative bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] py-16 mb-8">
+      <div className="relative bg-gradient-to-r from-[#6f0e06] to-[#9a1549] py-16 mb-8">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute inset-0 bg-[url('/patterns/paisley.svg')] opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-6">
@@ -1523,35 +1523,35 @@ const Admin = () => {
           <TabsList className="grid w-full grid-cols-5 bg-white border border-rose-200 rounded-xl p-1 shadow-sm">
             <TabsTrigger 
               value="products" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
             >
               <Package className="w-4 h-4" />
               Products
             </TabsTrigger>
             <TabsTrigger 
               value="categories" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
             >
               <Users className="w-4 h-4" />
               Categories
             </TabsTrigger>
             <TabsTrigger 
               value="orders" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
             >
               <ShoppingCart className="w-4 h-4" />
               Orders
             </TabsTrigger>
             <TabsTrigger 
               value="custom-requests" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
             >
               <Image className="w-4 h-4" />
               Custom Requests
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="flex items-center gap-2 data-[state=active]:bg-[#ba1a5d] data-[state=active]:text-white rounded-lg transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-[#6f0e06] data-[state=active]:text-white rounded-lg transition-all duration-300"
             >
               <Settings className="w-4 h-4" />
               Settings
@@ -1566,7 +1566,7 @@ const Admin = () => {
               </div>
               <Button 
                 onClick={() => setShowProductForm(true)}
-                className="flex items-center gap-2 bg-[#ba1a5d] hover:bg-[#9a1549] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex items-center gap-2 bg-[#6f0e06] hover:bg-[#9a1549] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Plus className="w-4 h-4" />
                 Add Product
@@ -1599,7 +1599,7 @@ const Admin = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <CardTitle className="text-lg text-gray-900 font-serif">{product.name}</CardTitle>
-                          <CardDescription className="text-[#ba1a5d] font-medium">₹{product.price?.toLocaleString('en-IN')}</CardDescription>
+                          <CardDescription className="text-[#6f0e06] font-medium">₹{product.price?.toLocaleString('en-IN')}</CardDescription>
                         </div>
                         <div className="flex gap-2">
                           <Button
@@ -1636,7 +1636,7 @@ const Admin = () => {
                       <div className="flex items-center justify-between">
                         <Badge 
                           variant={product.featured ? "default" : "secondary"}
-                          className={product.featured ? "bg-[#ba1a5d] hover:bg-[#9a1549]" : ""}
+                          className={product.featured ? "bg-[#6f0e06] hover:bg-[#9a1549]" : ""}
                         >
                           {product.featured ? "Featured" : "Regular"}
                         </Badge>
@@ -1662,7 +1662,7 @@ const Admin = () => {
               </div>
               <Button 
                 onClick={() => setShowCategoryForm(true)}
-                className="flex items-center gap-2 bg-[#ba1a5d] hover:bg-[#9a1549] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex items-center gap-2 bg-[#6f0e06] hover:bg-[#9a1549] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Plus className="w-4 h-4" />
                 Add Category

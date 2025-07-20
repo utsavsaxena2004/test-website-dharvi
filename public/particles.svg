@@ -1,11 +1,11 @@
 <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1" fill="#ba1a5d" opacity="0.3"/>
-      <circle cx="10" cy="10" r="0.8" fill="#ba1a5d" opacity="0.2"/>
-      <circle cx="18" cy="18" r="1.2" fill="#ba1a5d" opacity="0.3"/>
-      <circle cx="5" cy="15" r="0.5" fill="#ba1a5d" opacity="0.2"/>
-      <circle cx="15" cy="5" r="0.7" fill="#ba1a5d" opacity="0.25"/>
+      <circle cx="2" cy="2" r="1" fill="#6f0e06" opacity="0.3"/>
+      <circle cx="10" cy="10" r="0.8" fill="#6f0e06" opacity="0.2"/>
+      <circle cx="18" cy="18" r="1.2" fill="#6f0e06" opacity="0.3"/>
+      <circle cx="5" cy="15" r="0.5" fill="#6f0e06" opacity="0.2"/>
+      <circle cx="15" cy="5" r="0.7" fill="#6f0e06" opacity="0.25"/>
     </pattern>
   </defs>
   <rect width="100" height="100" fill="url(#dotPattern)" />

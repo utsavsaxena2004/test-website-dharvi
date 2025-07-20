@@ -205,7 +205,7 @@ const Auth = () => {
           >
             <div className="mb-6">
               <motion.div
-                className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#ba1a5d] to-rose-600 rounded-full shadow-lg mb-4"
+                className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#6f0e06] to-rose-600 rounded-full shadow-lg mb-4"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -265,7 +265,7 @@ const Auth = () => {
                             required={!isLogin}
                             value={formData.fullName}
                             onChange={handleInputChange}
-                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent transition-all duration-300"
+                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent transition-all duration-300"
                             placeholder="Enter your full name"
                           />
                         </div>
@@ -289,7 +289,7 @@ const Auth = () => {
                         required
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent transition-all duration-300"
+                        className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent transition-all duration-300"
                         placeholder="Enter your email"
                       />
                     </div>
@@ -311,7 +311,7 @@ const Auth = () => {
                         required
                         value={formData.password}
                         onChange={handleInputChange}
-                        className="block w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ba1a5d] focus:border-transparent transition-all duration-300"
+                        className="block w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6f0e06] focus:border-transparent transition-all duration-300"
                         placeholder="Enter your password"
                       />
                       <button
@@ -349,7 +349,7 @@ const Auth = () => {
                   <motion.button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-gradient-to-r from-[#ba1a5d] to-rose-600 text-white py-3 px-6 rounded-xl font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group"
+                    className="w-full bg-gradient-to-r from-[#6f0e06] to-rose-600 text-white py-3 px-6 rounded-xl font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 relative overflow-hidden group"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -366,7 +366,7 @@ const Auth = () => {
                         isLogin ? 'Sign In' : 'Create Account'
                       )}
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-rose-600 to-[#ba1a5d] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-600 to-[#6f0e06] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
                 </motion.form>
               </AnimatePresence>
@@ -390,12 +390,12 @@ const Auth = () => {
                 <motion.button
                   type="button"
                   onClick={() => setIsLogin(!isLogin)}
-                  className="mt-4 text-[#ba1a5d] hover:text-rose-600 text-sm font-medium transition-colors duration-300 relative group"
+                  className="mt-4 text-[#6f0e06] hover:text-rose-600 text-sm font-medium transition-colors duration-300 relative group"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ba1a5d] group-hover:w-full transition-all duration-300" />
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#6f0e06] group-hover:w-full transition-all duration-300" />
                 </motion.button>
               </motion.div>
             </div>

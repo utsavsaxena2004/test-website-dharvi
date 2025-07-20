@@ -424,7 +424,7 @@ const WishlistPage = () => {
                             <div className="col-span-2 text-center">
                       <button
                                 onClick={() => handleAddToCart(item.products)}
-                                className="px-4 py-2 bg-[#ba1a5d] text-white rounded-md hover:bg-[#9a1549] transition-colors duration-300 text-sm"
+                                className="px-4 py-2 bg-[#6f0e06] text-white rounded-md hover:bg-[#9a1549] transition-colors duration-300 text-sm"
                               >
                                 Add to Cart
                       </button>

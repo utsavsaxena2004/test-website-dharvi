@@ -76,7 +76,7 @@ const StatePersistenceDemo = () => {
             transition={{ delay: 0.2 }}
           >
             <Card className="border-rose-200 bg-white/70 backdrop-blur-sm">
-              <CardHeader className="bg-gradient-to-r from-[#ba1a5d] to-[#9a1549] text-white rounded-t-lg">
+              <CardHeader className="bg-gradient-to-r from-[#6f0e06] to-[#9a1549] text-white rounded-t-lg">
                 <CardTitle className="font-serif">Demo Form</CardTitle>
                 <CardDescription className="text-white/90">
                   Fill out this form and try refreshing the page
@@ -92,7 +92,7 @@ const StatePersistenceDemo = () => {
                     value={demoForm.name}
                     onChange={handleInputChange}
                     placeholder="Enter your name"
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
 
@@ -106,7 +106,7 @@ const StatePersistenceDemo = () => {
                     value={demoForm.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email"
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
 
@@ -119,7 +119,7 @@ const StatePersistenceDemo = () => {
                     value={demoForm.message}
                     onChange={handleInputChange}
                     placeholder="Write your message..."
-                    className="border-rose-200 focus:border-[#ba1a5d] h-24"
+                    className="border-rose-200 focus:border-[#6f0e06] h-24"
                   />
                 </div>
 
@@ -132,7 +132,7 @@ const StatePersistenceDemo = () => {
                     value={demoForm.preferences}
                     onChange={handleInputChange}
                     placeholder="Any special preferences?"
-                    className="border-rose-200 focus:border-[#ba1a5d]"
+                    className="border-rose-200 focus:border-[#6f0e06]"
                   />
                 </div>
 
@@ -140,7 +140,7 @@ const StatePersistenceDemo = () => {
                   <Button
                     id="save-now-btn"
                     onClick={handleSaveNow}
-                    className="bg-[#ba1a5d] hover:bg-[#9a1549] text-white flex-1"
+                    className="bg-[#6f0e06] hover:bg-[#9a1549] text-white flex-1"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Save Now

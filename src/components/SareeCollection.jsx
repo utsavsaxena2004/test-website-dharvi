@@ -44,14 +44,14 @@ const products = [
 
 // Decorative elements
 const decorativeElement = () => (
-  <svg width="100" height="20" className="text-[#ba1a5d] opacity-30">
+  <svg width="100" height="20" className="text-[#6f0e06] opacity-30">
     <path d="M0,10 C20,0 40,20 60,10 C80,0 100,20 100,10" stroke="currentColor" fill="none" strokeWidth="0.5" />
     <path d="M0,10 C20,20 40,0 60,10 C80,20 100,0 100,10" stroke="currentColor" fill="none" strokeWidth="0.5" />
   </svg>
 );
 
 const paisleyPattern = (
-  <svg width="120" height="120" viewBox="0 0 120 120" className="text-[#ba1a5d] opacity-10">
+  <svg width="120" height="120" viewBox="0 0 120 120" className="text-[#6f0e06] opacity-10">
     <path d="M60,20 Q80,5 90,20 Q100,40 80,60 Q60,80 40,70 Q20,60 30,40 Q40,20 60,20" fill="none" stroke="currentColor" strokeWidth="0.8" />
     <path d="M40,40 Q50,30 60,40 Q70,50 60,60 Q50,70 40,60 Q30,50 40,40" fill="none" stroke="currentColor" strokeWidth="0.8" />
     <path d="M90,90 Q100,80 95,70 Q85,60 75,70 Q65,80 75,90 Q85,100 90,90" fill="none" stroke="currentColor" strokeWidth="0.8" />
@@ -60,7 +60,7 @@ const paisleyPattern = (
 );
 
 const lotusPattern = (
-  <svg width="100" height="100" viewBox="0 0 100 100" className="text-[#ba1a5d] opacity-15">
+  <svg width="100" height="100" viewBox="0 0 100 100" className="text-[#6f0e06] opacity-15">
     <path d="M50,10 Q60,30 50,50 Q40,30 50,10" fill="none" stroke="currentColor" strokeWidth="0.8" />
     <path d="M50,10 Q70,30 50,50 Q30,30 50,10" fill="none" stroke="currentColor" strokeWidth="0.5" />
     <path d="M10,50 Q30,60 50,50 Q30,40 10,50" fill="none" stroke="currentColor" strokeWidth="0.8" />
@@ -74,13 +74,13 @@ const lotusPattern = (
 
 const borderPattern = (
   <div className="flex items-center justify-center w-full">
-    <div className="h-px bg-[#ba1a5d]/30 w-full"></div>
+    <div className="h-px bg-[#6f0e06]/30 w-full"></div>
     <div className="px-4">
-      <svg width="60" height="20" viewBox="0 0 60 20" className="text-[#ba1a5d] opacity-30">
+      <svg width="60" height="20" viewBox="0 0 60 20" className="text-[#6f0e06] opacity-30">
         <path d="M0,10 L60,10 M15,5 L30,10 L15,15 M30,5 L45,10 L30,15" stroke="currentColor" fill="none" strokeWidth="0.8" />
       </svg>
     </div>
-    <div className="h-px bg-[#ba1a5d]/30 w-full"></div>
+    <div className="h-px bg-[#6f0e06]/30 w-full"></div>
   </div>
 );
 
@@ -155,8 +155,8 @@ const SareeCollection = () => {
       <div className="absolute bottom-10 left-10 -rotate-45 opacity-20">{decorativeElement()}</div>
       
       {/* Decorative corners */}
-      <div className="absolute top-5 left-5 w-20 h-20 border-t border-l border-[#ba1a5d]/20 rounded-tl-lg"></div>
-      <div className="absolute bottom-5 right-5 w-20 h-20 border-b border-r border-[#ba1a5d]/20 rounded-br-lg"></div>
+      <div className="absolute top-5 left-5 w-20 h-20 border-t border-l border-[#6f0e06]/20 rounded-tl-lg"></div>
+      <div className="absolute bottom-5 right-5 w-20 h-20 border-b border-r border-[#6f0e06]/20 rounded-br-lg"></div>
       
       <motion.div 
         initial={{ opacity: 0 }}
@@ -175,8 +175,8 @@ const SareeCollection = () => {
               className="mb-3"
             >
               <div className="flex items-center space-x-3 mb-2">
-                <span className="h-px w-8 bg-[#ba1a5d]"></span>
-                <span className="text-[#ba1a5d] font-medium text-sm uppercase tracking-wide">Traditional Elegance</span>
+                <span className="h-px w-8 bg-[#6f0e06]"></span>
+                <span className="text-[#6f0e06] font-medium text-sm uppercase tracking-wide">Traditional Elegance</span>
               </div>
             </motion.div>
             
@@ -193,7 +193,7 @@ const SareeCollection = () => {
                 whileInView={{ width: '100%' }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="absolute bottom-0 left-0 h-[2px] bg-[#ba1a5d]"
+                className="absolute bottom-0 left-0 h-[2px] bg-[#6f0e06]"
               />
             </motion.h2>
             
@@ -203,11 +203,11 @@ const SareeCollection = () => {
             
             {/* Decorative dots */}
             <div className="flex items-center space-x-1.5 mt-3">
-              <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-              <div className="w-2 h-2 rounded-full bg-[#ba1a5d] opacity-90"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ba1a5d] opacity-80"></div>
-              <div className="w-1 h-1 rounded-full bg-[#ba1a5d] opacity-70"></div>
+              <div className="w-1 h-1 rounded-full bg-[#6f0e06] opacity-70"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#6f0e06] opacity-80"></div>
+              <div className="w-2 h-2 rounded-full bg-[#6f0e06] opacity-90"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#6f0e06] opacity-80"></div>
+              <div className="w-1 h-1 rounded-full bg-[#6f0e06] opacity-70"></div>
             </div>
           </div>
           
@@ -222,7 +222,7 @@ const SareeCollection = () => {
               href="/collections/sarees" 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center px-6 py-2.5 text-sm border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300 rounded-md group"
+              className="inline-flex items-center px-6 py-2.5 text-sm border border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group"
             >
               <span>Browse All Sarees</span>
               <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +280,7 @@ const SareeCollection = () => {
                     onClick={() => openQuickView(product)}
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-[#ba1a5d] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#ba1a5d] hover:text-white transition-colors duration-300 flex items-center space-x-1"
+                    className="bg-white text-[#6f0e06] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#6f0e06] hover:text-white transition-colors duration-300 flex items-center space-x-1"
                   >
                     <span>Quick View</span>
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -292,7 +292,7 @@ const SareeCollection = () => {
                 
                 {/* Badges */}
                 {product.badge && (
-                  <div className="absolute top-3 left-3 bg-[#ba1a5d] text-white text-xs px-2 py-1 rounded font-medium z-10">
+                  <div className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-10">
                     {product.badge}
                   </div>
                 )}
@@ -307,13 +307,13 @@ const SareeCollection = () => {
               {/* Product info */}
               <div className="p-4">
                 <div className="flex justify-between items-center mb-1">
-                  <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#ba1a5d] transition-colors duration-300">
+                  <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300">
                     {product.name}
                   </h3>
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-gray-400 hover:text-[#ba1a5d] transition-colors duration-300"
+                    className="text-gray-400 hover:text-[#6f0e06] transition-colors duration-300"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -322,7 +322,7 @@ const SareeCollection = () => {
                 </div>
                 
                 <div className="flex justify-between items-center mt-2">
-                  <p className="text-[#ba1a5d] font-medium">{product.price}</p>
+                  <p className="text-[#6f0e06] font-medium">{product.price}</p>
                   <div className="flex items-center space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <svg key={star} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -340,7 +340,7 @@ const SareeCollection = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={(e) => addToCart(product, e)}
-                  className="w-full py-2 mt-1 text-sm font-medium text-gray-600 hover:text-[#ba1a5d] bg-gray-50 hover:bg-gray-100 rounded transition-colors duration-300 flex items-center justify-center space-x-1"
+                  className="w-full py-2 mt-1 text-sm font-medium text-gray-600 hover:text-[#6f0e06] bg-gray-50 hover:bg-gray-100 rounded transition-colors duration-300 flex items-center justify-center space-x-1"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -367,7 +367,7 @@ const SareeCollection = () => {
               href="/collections/sarees" 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center px-8 py-3 border border-[#ba1a5d] text-[#ba1a5d] hover:bg-[#ba1a5d] hover:text-white transition-all duration-300 rounded-md group"
+              className="inline-flex items-center px-8 py-3 border border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group"
             >
               <span>View Full Collection</span>
               <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
