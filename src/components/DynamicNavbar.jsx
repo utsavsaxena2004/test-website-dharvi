@@ -18,6 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { supabaseService } from '../services/supabaseService';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 
 const DynamicNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,7 @@ const DynamicNavbar = () => {
   const { user, profile, logout } = useAuth();
   const { cartSummary } = useCart();
   const { wishlistSummary } = useWishlist();
+  const { siteSettings } = useSiteSettings();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -153,8 +155,8 @@ const DynamicNavbar = () => {
               />
             </div>
             <img
-              src={mainLogo}
-              alt="Dharika Logo"
+              src={siteSettings?.site_logo || mainLogo}
+              alt={`${siteSettings?.site_name || 'Dharika'} Logo`}
               className="md:h-28 h-16 scale-95 transition-transform duration-300 hover:scale-90 relative z-10"
             />
           </Link>

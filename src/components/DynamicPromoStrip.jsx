@@ -1,61 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { supabaseService } from '../services/supabaseService';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 
 const DynamicPromoStrip = () => {
-  const [promos, setPromos] = useState([]);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
   const intervalRef = useRef(null);
-
-  useEffect(() => {
-    const fetchPromos = async () => {
-      try {
-        setLoading(true);
-        const settings = await supabaseService.getSettings();
-        
-        // Check if settings has promotional content
-        if (settings && settings.promotional_messages) {
-          const messages = Array.isArray(settings.promotional_messages) 
-            ? settings.promotional_messages 
-            : JSON.parse(settings.promotional_messages || '[]');
-          
-          if (messages.length > 0) {
-            setPromos(messages);
-          } else {
-            // Fallback to default promos if no custom ones
-            setPromos([
-              { id: 1, text: "🎁 Welcome to our store! Explore our latest collection" },
-              { id: 2, text: "🚚 Free shipping on all orders above ₹2999" },
-              { id: 3, text: "⚡ New arrivals every week - Stay updated!" },
-              { id: 4, text: "💫 Quality guaranteed - 100% authentic products" },
-            ]);
-          }
-        } else {
-          // Default promos if no settings found
-          setPromos([
-            { id: 1, text: "🎁 Welcome to our store! Explore our latest collection" },
-            { id: 2, text: "🚚 Free shipping on all orders above ₹2999" },
-            { id: 3, text: "⚡ New arrivals every week - Stay updated!" },
-            { id: 4, text: "💫 Quality guaranteed - 100% authentic products" },
-          ]);
-        }
-      } catch (error) {
-        console.error('Error fetching promotional messages:', error);
-        // Fallback to default promos on error
-        setPromos([
-          { id: 1, text: "🎁 Welcome to our store! Explore our latest collection" },
-          { id: 2, text: "🚚 Free shipping on all orders above ₹2999" },
-          { id: 3, text: "⚡ New arrivals every week - Stay updated!" },
-          { id: 4, text: "💫 Quality guaranteed - 100% authentic products" },
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPromos();
-  }, []);
+  const { loading, getPromotionalMessages } = useSiteSettings();
+  
+  const promos = getPromotionalMessages();
 
   const nextPromo = () => {
     setCurrentPromoIndex((prevIndex) => 
