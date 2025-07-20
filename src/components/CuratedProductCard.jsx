@@ -116,23 +116,23 @@ const CuratedProductCard = ({
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
-          {/* Top Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {/* Badges - Left side stack */}
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex flex-col gap-1 z-10">
             {isFeatured && (
-              <span className="bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium">
+              <span className="bg-[#6f0e06] text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
                 Featured
               </span>
             )}
           </div>
           
-          {/* Out of Stock Badge */}
-          {isOutOfStock && (
-            <div className="absolute top-3 right-3">
-              <span className="bg-gray-500 text-white text-xs px-2 py-1 rounded font-medium">
+          {/* Badges - Right side stack */}
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-1 z-10">
+            {isOutOfStock && (
+              <span className="bg-gray-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
                 Out of Stock
               </span>
-            </div>
-          )}
+            )}
+          </div>
           
           {/* Quick View Button */}
           <div className="absolute inset-x-0 bottom-4 flex justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">

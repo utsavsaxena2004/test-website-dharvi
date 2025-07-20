@@ -244,36 +244,41 @@ const ProductCard = ({
             </div>
           )}
           
-          {/* Badges */}
-          {product.featured && (
-            <div className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-10">
-              Featured
-            </div>
-          )}
-          
-          {product.badge && (
-            <div className="absolute top-3 left-3 bg-[#6f0e06] text-white text-xs px-2 py-1 rounded font-medium z-10">
-              {product.badge}
-            </div>
-          )}
-          
-          {product.discount && (
-            <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded font-medium z-10">
-              {product.discount}
-            </div>
-          )}
+          {/* Badges - Left side stack */}
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex flex-col gap-1 z-10">
+            {product.featured && (
+              <div className="bg-[#6f0e06] text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
+                Featured
+              </div>
+            )}
+            
+            {product.badge && (
+              <div className="bg-[#6f0e06] text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
+                {product.badge}
+              </div>
+            )}
+          </div>
 
-          {product.stock_quantity < 10 && product.stock_quantity > 0 && (
-            <div className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded font-medium z-10">
-              Low Stock
-            </div>
-          )}
+          {/* Badges - Right side stack */}
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-1 z-10">
+            {product.discount && (
+              <div className="bg-amber-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
+                {product.discount}
+              </div>
+            )}
 
-          {product.stock_quantity === 0 && (
-            <div className="absolute top-3 right-3 bg-gray-500 text-white text-xs px-2 py-1 rounded font-medium z-10">
-              Out of Stock
-            </div>
-          )}
+            {product.stock_quantity < 10 && product.stock_quantity > 0 && (
+              <div className="bg-red-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
+                Low Stock
+              </div>
+            )}
+
+            {product.stock_quantity === 0 && (
+              <div className="bg-gray-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium">
+                Out of Stock
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Product info */}
