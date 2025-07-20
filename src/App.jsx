@@ -5,7 +5,6 @@ import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { ToastProvider } from './hooks/use-toast.jsx';
 import { Toaster } from './components/ui/toaster';
-import { useRouteState } from './hooks/useRouteState';
 
 // Components
 import DynamicNavbar from './components/DynamicNavbar';
@@ -41,10 +40,8 @@ import CuratedCollection from './pages/CuratedCollection';
 
 // Component to handle route state within Router context
 const AppContent = () => {
-  const { restoreLastRoute } = useRouteState();
-
-  // You can use restoreLastRoute() here if needed for specific scenarios
-  // For example, after login redirects, etc.
+  // Route state functionality can be added here when needed
+  // const { restoreLastRoute } = useRouteState();
 
   return (
     <>
