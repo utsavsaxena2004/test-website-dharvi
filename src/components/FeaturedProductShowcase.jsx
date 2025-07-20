@@ -356,6 +356,7 @@ const FeaturedProductShowcase = () => {
   }
 
   const currentImage = currentProduct.image_urls?.[selectedColorIndex] || currentProduct.image_urls?.[0] || '';
+  const currentVideo = currentProduct.video_urls?.[selectedColorIndex] || currentProduct.video_urls?.[0] || '';
   const currentColor = currentProduct.colors?.[selectedColorIndex] || currentProduct.colors?.[0] || 'Default';
   
   return (
@@ -748,11 +749,23 @@ const FeaturedProductShowcase = () => {
                     className="absolute inset-0"
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
-                    <img 
-                      src={currentImage} 
-                      alt={`${currentProduct.name} in ${currentColor}`}
-                      className="w-full h-full object-cover"
-                    />
+                    {currentVideo ? (
+                      <video 
+                        src={currentVideo} 
+                        alt={`${currentProduct.name} in ${currentColor}`}
+                        className="w-full h-full object-cover"
+                        controls
+                        muted
+                        loop
+                        autoPlay
+                      />
+                    ) : (
+                      <img 
+                        src={currentImage} 
+                        alt={`${currentProduct.name} in ${currentColor}`}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                     
                     {/* Shimmering overlay effect */}
                     <motion.div 
