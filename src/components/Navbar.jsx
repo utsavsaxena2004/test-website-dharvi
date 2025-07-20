@@ -24,18 +24,18 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Left - Search Icon */}
           <div className="w-1/3 flex justify-start">
-            <MagnifyingGlassIcon className="h-5 w-5 cursor-pointer hover:text-pink transition-colors duration-300" />
+            <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6 cursor-pointer hover:text-pink transition-colors duration-300" />
           </div>
           
           {/* Center - Logo */}
           <div className="w-1/3 flex justify-center">
             <a href="/" className="flex items-center">
-              <img src={logo} alt="Dharika Logo" className="h-24 w-auto object-contain max-h-full scale-150" />
+              <img src={logo} alt="Dharika Logo" className="h-16 sm:h-20 md:h-24 w-auto object-contain max-h-full scale-110 sm:scale-125 md:scale-150" />
             </a>
           </div>
           
           {/* Right - User Icons */}
-          <div className="w-1/3 flex justify-end gap-6 items-center">
+          <div className="w-1/3 flex justify-end gap-3 sm:gap-4 md:gap-6 items-center">
             {user ? (
               <div className="flex items-center gap-4">
                 <span className="text-sm text-gray-600 hidden md:block">

@@ -153,7 +153,7 @@ const Categories = () => {
           <div className="animate-pulse">
             <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
             <div className="h-4 bg-gray-300 rounded w-96 mx-auto mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="h-80 bg-gray-300 rounded-lg"></div>
               ))}
@@ -242,7 +242,7 @@ const Categories = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
         >
           {categories.map((category, index) => {
             // Use design template colors if available, otherwise fall back to name-based colors

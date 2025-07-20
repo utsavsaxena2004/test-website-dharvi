@@ -352,7 +352,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
               damping: 25, 
               stiffness: 300 
             }}
-            className="relative bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-auto"
+            className="relative bg-white rounded-lg shadow-2xl max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl w-full max-h-[90vh] overflow-auto mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Decorative elements */}
@@ -372,7 +372,7 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
               </svg>
             </motion.button>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 p-4 sm:p-6">
               {/* Product Images Section */}
               <div className="space-y-4">
                 {/* Main image container */}

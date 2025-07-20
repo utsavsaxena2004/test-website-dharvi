@@ -378,7 +378,7 @@ const Checkout = () => {
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-rose-100">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button
@@ -401,8 +401,8 @@ const Checkout = () => {
       </div>
 
       {/* Progress Steps */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="flex items-center justify-center space-x-8 mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div className="flex items-center justify-center space-x-4 sm:space-x-8 mb-8">
           {[
             { number: 1, title: 'Shipping', icon: Truck },
             { number: 2, title: 'Payment', icon: CreditCard },
@@ -420,13 +420,13 @@ const Checkout = () => {
                   <stepItem.icon className="w-5 h-5" />
                 )}
               </div>
-              <span className={`ml-2 text-sm font-medium ${
+              <span className={`ml-2 text-xs sm:text-sm font-medium ${
                 step >= stepItem.number ? 'text-[#6f0e06]' : 'text-gray-400'
               }`}>
                 {stepItem.title}
               </span>
               {index < 2 && (
-                <div className={`w-16 h-px mx-4 ${
+                <div className={`w-8 sm:w-16 h-px mx-2 sm:mx-4 ${
                   step > stepItem.number ? 'bg-[#6f0e06]' : 'bg-gray-300'
                 }`} />
               )}
@@ -434,7 +434,7 @@ const Checkout = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {step === 1 && (

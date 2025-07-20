@@ -196,7 +196,7 @@ const CustomDesignShowcase = () => {
           </motion.div>
 
           {/* Main content area */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
             {/* Left side - Interactive Illustration */}
             <motion.div 
               className="relative h-[600px]"

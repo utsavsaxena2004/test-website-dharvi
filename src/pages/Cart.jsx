@@ -169,7 +169,7 @@ const CartPage = () => {
             </motion.p>
           </motion.header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
             {/* Left column - Cart items */}
             <div className="lg:col-span-2 space-y-8">
               {/* Cart items card */}
@@ -333,7 +333,7 @@ const CartPage = () => {
                   ) : (
                     // Cart items
                     <div className="space-y-6">
-                      <div className="grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
+                      <div className="hidden sm:grid grid-cols-12 text-sm font-medium text-gray-500 pb-4 border-b border-gray-100">
                         <div className="col-span-6">Product</div>
                         <div className="col-span-2 text-center">Price</div>
                         <div className="col-span-2 text-center">Quantity</div>
@@ -347,10 +347,10 @@ const CartPage = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            className="grid grid-cols-12 items-center py-4 border-b border-gray-100"
+                            className="flex flex-col sm:grid sm:grid-cols-12 sm:items-center py-4 border-b border-gray-100 space-y-4 sm:space-y-0"
                           >
                             {/* Product Info */}
-                            <div className="col-span-6 flex items-center space-x-4">
+                            <div className="sm:col-span-6 flex items-center space-x-4">
                               {(() => {
                                 const product = item.products || item.master_products;
                                 return (
@@ -374,42 +374,43 @@ const CartPage = () => {
                               })()}
                             </div>
                             
-                            {/* Price */}
-                            <div className="col-span-2 text-center">
-                              <span className="font-medium text-gray-900">
-                                {(() => {
-                                  const product = item.products || item.master_products;
-                                  return formatPrice(product?.price);
-                                })()}
-                              </span>
-                            </div>
-                            
-                            {/* Quantity */}
-                            <div className="col-span-2 text-center">
-                              <div className="flex items-center justify-center space-x-2">
-                                <button
-                                  onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
-                                  </svg>
-                                </button>
-                                <span className="w-8 text-center">{item.quantity}</span>
-                                <button
-                                  onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                                  </svg>
-                                </button>
+                            {/* Mobile layout for price, quantity, and actions */}
+                            <div className="sm:hidden flex flex-wrap items-center justify-between gap-4">
+                              <div className="flex items-center space-x-4">
+                                <span className="text-sm text-gray-500">Price:</span>
+                                <span className="font-medium text-gray-900">
+                                  {(() => {
+                                    const product = item.products || item.master_products;
+                                    return formatPrice(product?.price);
+                                  })()}
+                                </span>
                               </div>
-                            </div>
-                            
-                            {/* Total */}
-                            <div className="col-span-2 text-right">
-                              <div className="flex items-center justify-end space-x-2">
+                              
+                              <div className="flex items-center space-x-4">
+                                <span className="text-sm text-gray-500">Qty:</span>
+                                <div className="flex items-center space-x-2">
+                                  <button
+                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                                    </svg>
+                                  </button>
+                                  <span className="w-8 text-center">{item.quantity}</span>
+                                  <button
+                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center space-x-4">
+                                <span className="text-sm text-gray-500">Total:</span>
                                 <span className="font-medium text-gray-900">
                                   {(() => {
                                     const product = item.products || item.master_products;
@@ -424,6 +425,62 @@ const CartPage = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                 </button>
+                              </div>
+                            </div>
+
+                            {/* Desktop layout */}
+                            <div className="hidden sm:contents">
+                              {/* Price */}
+                              <div className="col-span-2 text-center">
+                                <span className="font-medium text-gray-900">
+                                  {(() => {
+                                    const product = item.products || item.master_products;
+                                    return formatPrice(product?.price);
+                                  })()}
+                                </span>
+                              </div>
+                              
+                              {/* Quantity */}
+                              <div className="col-span-2 text-center">
+                                <div className="flex items-center justify-center space-x-2">
+                                  <button
+                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                                    </svg>
+                                  </button>
+                                  <span className="w-8 text-center">{item.quantity}</span>
+                                  <button
+                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              {/* Total */}
+                              <div className="col-span-2 text-right">
+                                <div className="flex items-center justify-end space-x-2">
+                                  <span className="font-medium text-gray-900">
+                                    {(() => {
+                                      const product = item.products || item.master_products;
+                                      return formatPrice(product?.price * item.quantity);
+                                    })()}
+                                  </span>
+                                  <button
+                                    onClick={() => handleRemoveItem(item.id)}
+                                    className="text-red-500 hover:text-red-700 p-1"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </motion.div>

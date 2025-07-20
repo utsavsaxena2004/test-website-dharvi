@@ -124,7 +124,7 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-auto"
+          className="relative bg-white rounded-2xl shadow-2xl max-w-xs sm:max-w-sm md:max-w-md w-full max-h-[90vh] overflow-auto mx-4"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Floating background elements */}
@@ -161,17 +161,17 @@ const AuthPopup = ({ isOpen, onClose, onSuccess }) => {
             <XMarkIcon className="w-6 h-6" />
           </button>
 
-          <div className="p-8 relative z-10">
+          <div className="p-4 sm:p-6 md:p-8 relative z-10">
                   <motion.div 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
               className="text-center mb-8"
             >
-              <h2 className="text-3xl font-serif text-gray-900 mb-2">
+              <h2 className="text-2xl sm:text-3xl font-serif text-gray-900 mb-2">
                 {isLogin ? 'Welcome Back' : 'Join Us'}
               </h2>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 {isLogin ? 'Sign in to your account' : 'Create your account to continue'}
               </p>
                   </motion.div>

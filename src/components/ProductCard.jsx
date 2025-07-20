@@ -196,7 +196,7 @@ const ProductCard = ({
         onClick={handleCardClick}
       >
         {/* Product image and overlay */}
-        <div className="relative h-80 overflow-hidden">
+        <div className="relative h-60 sm:h-72 md:h-80 lg:h-80 overflow-hidden">
           <motion.div
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.6 }}
@@ -224,7 +224,7 @@ const ProductCard = ({
           
           {/* Quick action button */}
           {showQuickView && (
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 flex justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
               <motion.button 
                 onClick={(e) => {
                   e.stopPropagation();
@@ -232,7 +232,7 @@ const ProductCard = ({
                 }}
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }}
-                className="bg-white text-[#6f0e06] py-2 px-4 rounded-full text-sm font-medium shadow-lg hover:bg-[#6f0e06] hover:text-white transition-colors duration-300 flex items-center space-x-1"
+                className="bg-white text-[#6f0e06] py-1.5 px-3 sm:py-2 sm:px-4 rounded-full text-xs sm:text-sm font-medium shadow-lg hover:bg-[#6f0e06] hover:text-white transition-colors duration-300 flex items-center space-x-1"
               >
                 <span>Quick View</span>
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -276,9 +276,9 @@ const ProductCard = ({
         </div>
         
         {/* Product info */}
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <div className="flex justify-between items-center mb-1">
-            <h3 className="text-lg font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300 line-clamp-1">
+            <h3 className="text-sm sm:text-base md:text-lg font-serif text-gray-900 group-hover:text-[#6f0e06] transition-colors duration-300 line-clamp-1">
               {product.name}
             </h3>
             <motion.button
@@ -309,7 +309,7 @@ const ProductCard = ({
           
           {/* Price */}
           <div className="flex items-center space-x-2 mb-2">
-            <span className="text-xl font-bold text-[#6f0e06]">
+            <span className="text-lg sm:text-xl font-bold text-[#6f0e06]">
               ₹{product.price ? product.price.toLocaleString('en-IN') : '0'}
             </span>
             {product.original_price && product.original_price > product.price && (

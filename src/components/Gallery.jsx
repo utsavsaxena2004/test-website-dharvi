@@ -83,7 +83,7 @@ const Gallery = ({ showAll = false, limit = 8 }) => {
   return (
     <>
       <section className="py-16 bg-gradient-to-br from-rose-50 via-white to-pink-50">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -94,7 +94,7 @@ const Gallery = ({ showAll = false, limit = 8 }) => {
           >
             <div className="flex items-center justify-center mb-4">
               <Camera className="w-8 h-8 text-[#6f0e06] mr-3" />
-              <h2 className="text-4xl md:text-5xl font-serif text-gray-900">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-900">
                 Our Gallery
               </h2>
             </div>
@@ -111,7 +111,7 @@ const Gallery = ({ showAll = false, limit = 8 }) => {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
-              className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4"
+              className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-2 sm:gap-4 space-y-2 sm:space-y-4"
             >
               {images.map((image, index) => (
                 <motion.div

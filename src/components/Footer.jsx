@@ -242,7 +242,7 @@ const Footer = () => {
       {/* Main footer content */}
       <div className="container mx-auto px-4 py-16 relative z-10">
         <motion.div
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -336,7 +336,7 @@ const Footer = () => {
 
           {/* Links sections */}
           <motion.div
-            className="lg:col-span-6 grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="lg:col-span-6 grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8"
             variants={itemVariants}
           >
             {Object.entries(footerLinks).map(([category, links]) => (
