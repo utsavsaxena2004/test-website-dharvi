@@ -18,6 +18,7 @@ import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingShareButton from './components/FloatingShareButton';
+import Gallery from './components/Gallery';
 
 
 // Pages
@@ -38,6 +39,7 @@ import StatePersistenceDemo from './components/StatePersistenceDemo';
 import FeaturedProductShowcase from './components/FeaturedProductShowcase';
 import SignatureCollection from './pages/SignatureCollection';
 import CuratedCollection from './pages/CuratedCollection';
+import GalleryPage from './pages/GalleryPage';
 
 // Component to handle route state within Router context
 const AppContent = () => {
@@ -66,6 +68,9 @@ const AppContent = () => {
                   <FeaturedCollection />
 
                   <FeaturedProductShowcase />
+                  
+                  {/* Gallery Section */}
+                  <Gallery />
                   
                   <CustomDesignShowcase />
                   
@@ -192,6 +197,13 @@ const AppContent = () => {
             <Route path="/curated-collection" element={
               <PageTransition transitionType="fade">
                 <CuratedCollection />
+              </PageTransition>
+            } />
+            
+            {/* Gallery page */}
+            <Route path="/gallery" element={
+              <PageTransition transitionType="fade">
+                <GalleryPage />
               </PageTransition>
             } />
             

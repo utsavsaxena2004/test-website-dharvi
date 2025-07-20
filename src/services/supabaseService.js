@@ -933,6 +933,97 @@ class SupabaseService {
     console.log('Featured master product fetched:', data);
     return data;
   }
+
+  // Gallery management
+  async getGalleryImages(limit = null) {
+    console.log('Fetching gallery images...');
+    let query = supabase
+      .from('gallery_images')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+    
+    if (limit) {
+      query = query.limit(limit);
+    }
+    
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error('Error fetching gallery images:', error);
+      throw error;
+    }
+    
+    console.log('Gallery images fetched:', data);
+    return data || [];
+  }
+
+  async getAllGalleryImages() {
+    console.log('Fetching all gallery images...');
+    const { data, error } = await supabase
+      .from('gallery_images')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching all gallery images:', error);
+      throw error;
+    }
+    
+    console.log('All gallery images fetched:', data);
+    return data || [];
+  }
+
+  async createGalleryImage(imageData) {
+    console.log('Creating gallery image:', imageData);
+    const { data, error } = await supabase
+      .from('gallery_images')
+      .insert([imageData])
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error creating gallery image:', error);
+      throw error;
+    }
+    
+    console.log('Gallery image created:', data);
+    return data;
+  }
+
+  async updateGalleryImage(id, imageData) {
+    console.log('Updating gallery image:', id, imageData);
+    const { data, error } = await supabase
+      .from('gallery_images')
+      .update(imageData)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error updating gallery image:', error);
+      throw error;
+    }
+    
+    console.log('Gallery image updated:', data);
+    return data;
+  }
+
+  async deleteGalleryImage(id) {
+    console.log('Deleting gallery image:', id);
+    const { error } = await supabase
+      .from('gallery_images')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting gallery image:', error);
+      throw error;
+    }
+    
+    console.log('Gallery image deleted');
+  }
+
 }
 
 export const supabaseService = new SupabaseService();
