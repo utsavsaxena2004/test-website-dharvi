@@ -10,19 +10,17 @@ import { Toaster } from './components/ui/toaster';
 import DynamicNavbar from './components/DynamicNavbar';
 import DynamicPromoStrip from './components/DynamicPromoStrip';
 import Hero from './components/Hero';
+import Categories from './components/Categories';
+import CustomDesignShowcase from './components/CustomDesignShowcase';
+import FeaturedCollection from './components/FeaturedCollection';
+import Gallery from './components/Gallery';
+import AboutDharika from './components/AboutDharika';
+import FeaturedProductShowcase from './components/FeaturedProductShowcase';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
 
-// Lazy load non-critical components
-const Categories = lazy(() => import('./components/Categories'));
-const CustomDesignShowcase = lazy(() => import('./components/CustomDesignShowcase'));
-const FeaturedCollection = lazy(() => import('./components/FeaturedCollection'));
-const Gallery = lazy(() => import('./components/Gallery'));
-const AboutDharika = lazy(() => import('./components/AboutDharika'));
-const FeaturedProductShowcase = lazy(() => import('./components/FeaturedProductShowcase'));
-
-// Lazy load pages
+// Lazy load only pages (not homepage components)
 const Auth = lazy(() => import('./pages/Auth'));
 const Admin = lazy(() => import('./pages/Admin'));
 const CustomDesignPage = lazy(() => import('./components/CustomDesignPage'));
@@ -65,24 +63,12 @@ const AppContent = () => {
               <PageTransition transitionType="fade">
                 <>
                   <Hero />
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Categories />
-                  </Suspense>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <FeaturedCollection />
-                  </Suspense>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <AboutDharika />
-                  </Suspense>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Gallery />
-                  </Suspense>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <FeaturedProductShowcase />
-                  </Suspense>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <CustomDesignShowcase />
-                  </Suspense>
+                  <Categories />
+                  <FeaturedCollection />
+                  <AboutDharika />
+                  <Gallery />
+                  <FeaturedProductShowcase />
+                  <CustomDesignShowcase />
                 </>
               </PageTransition>
             } />
