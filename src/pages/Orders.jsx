@@ -249,6 +249,7 @@ const Orders = () => {
                         variant="outline"
                         size="sm"
                         className="border-rose-200 hover:bg-rose-50"
+                        onClick={() => navigate(`/orders/${order.id}`)}
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         View Details
