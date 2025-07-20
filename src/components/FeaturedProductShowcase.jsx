@@ -165,6 +165,7 @@ const FeaturedProductShowcase = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(true);
@@ -355,8 +356,8 @@ const FeaturedProductShowcase = () => {
     );
   }
 
-  const currentImage = currentProduct.image_urls?.[selectedColorIndex] || currentProduct.image_urls?.[0] || '';
-  const currentVideo = currentProduct.video_urls?.[selectedColorIndex] || currentProduct.video_urls?.[0] || '';
+  const currentImage = currentProduct.image_urls?.[selectedImageIndex] || currentProduct.image_urls?.[0] || '';
+  const currentVideo = currentProduct.video_urls?.[selectedImageIndex] || currentProduct.video_urls?.[0] || '';
   const currentColor = currentProduct.colors?.[selectedColorIndex] || currentProduct.colors?.[0] || 'Default';
   
   return (
