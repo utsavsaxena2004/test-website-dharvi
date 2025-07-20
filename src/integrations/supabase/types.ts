@@ -20,7 +20,7 @@ export type Database = {
           created_at: string
           id: string
           master_product_id: string | null
-          product_id: string | null
+          product_id: string
           product_type: string | null
           quantity: number
           size: string | null
@@ -32,7 +32,7 @@ export type Database = {
           created_at?: string
           id?: string
           master_product_id?: string | null
-          product_id?: string | null
+          product_id: string
           product_type?: string | null
           quantity?: number
           size?: string | null
@@ -44,7 +44,7 @@ export type Database = {
           created_at?: string
           id?: string
           master_product_id?: string | null
-          product_id?: string | null
+          product_id?: string
           product_type?: string | null
           quantity?: number
           size?: string | null
@@ -350,7 +350,7 @@ export type Database = {
           id: string
           order_id: string | null
           price: number
-          product_id: string | null
+          product_id: string
           quantity: number
           size: string | null
         }
@@ -360,7 +360,7 @@ export type Database = {
           id?: string
           order_id?: string | null
           price: number
-          product_id?: string | null
+          product_id: string
           quantity: number
           size?: string | null
         }
@@ -370,7 +370,7 @@ export type Database = {
           id?: string
           order_id?: string | null
           price?: number
-          product_id?: string | null
+          product_id?: string
           quantity?: number
           size?: string | null
         }
