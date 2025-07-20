@@ -378,23 +378,24 @@ const Checkout = () => {
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-rose-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+            <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
               <Button
                 variant="ghost"
                 onClick={() => navigate('/cart')}
-                className="text-gray-600 hover:text-[#6f0e06]"
+                className="text-gray-600 hover:text-[#6f0e06] p-2 sm:px-3"
+                size="sm"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Cart
+                <ArrowLeft className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Back to Cart</span>
               </Button>
-              <div className="h-6 w-px bg-gray-300" />
-              <h1 className="text-2xl font-serif text-gray-900">Checkout</h1>
+              <div className="h-6 w-px bg-gray-300 hidden sm:block" />
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-serif text-gray-900 truncate">Checkout</h1>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Shield className="w-4 h-4" />
-              <span>Secure Checkout</span>
+            <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 self-start sm:self-auto">
+              <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="whitespace-nowrap">Secure Checkout</span>
             </div>
           </div>
         </div>
