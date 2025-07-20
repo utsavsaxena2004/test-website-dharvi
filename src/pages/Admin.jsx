@@ -2218,8 +2218,11 @@ const Admin = () => {
                 <h2 className="text-2xl font-serif text-gray-900">Master Products</h2>
                 <p className="text-gray-600 mt-1">Manage featured showcase products</p>
               </div>
-              <Button 
-                onClick={() => setShowMasterProductForm(true)}
+               <Button 
+                onClick={() => {
+                  console.log('Add Master Product clicked');
+                  setShowMasterProductForm(true);
+                }}
                 className="bg-[#6f0e06] hover:bg-[#5a0b05] text-white font-medium px-6 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
