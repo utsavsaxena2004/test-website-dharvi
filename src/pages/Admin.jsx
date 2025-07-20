@@ -234,6 +234,44 @@ const Admin = () => {
     }
   };
 
+  const handleToggleProductVisibility = async (id, isActive) => {
+    try {
+      await supabaseService.updateProduct(id, { is_active: isActive });
+      setProducts(products.map(product => 
+        product.id === id ? { ...product, is_active: isActive } : product
+      ));
+      toast({
+        title: `Product ${isActive ? 'shown' : 'hidden'} successfully`,
+        description: `The product is now ${isActive ? 'visible' : 'hidden'} on the website.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error updating product visibility",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleToggleCategoryVisibility = async (id, isActive) => {
+    try {
+      await supabaseService.updateCategory(id, { is_active: isActive });
+      setCategories(categories.map(category => 
+        category.id === id ? { ...category, is_active: isActive } : category
+      ));
+      toast({
+        title: `Category ${isActive ? 'shown' : 'hidden'} successfully`,
+        description: `The category is now ${isActive ? 'visible' : 'hidden'} on the website.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error updating category visibility",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
 
   const handleDeleteCustomRequest = async (requestId) => {
     if (window.confirm('Are you sure you want to delete this custom request?')) {
@@ -2049,7 +2087,21 @@ const Admin = () => {
                           <CardTitle className="text-lg text-gray-900 font-serif">{product.name}</CardTitle>
                           <CardDescription className="text-[#6f0e06] font-medium">₹{product.price?.toLocaleString('en-IN')}</CardDescription>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
+                          <Badge 
+                            variant={product.is_active ? "default" : "secondary"}
+                            className={product.is_active ? "bg-green-500 text-white" : "bg-gray-500 text-white"}
+                          >
+                            {product.is_active ? "Active" : "Hidden"}
+                          </Badge>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleToggleProductVisibility(product.id, !product.is_active)}
+                            className={product.is_active ? "border-orange-200 text-orange-600 hover:bg-orange-50" : "border-green-200 text-green-600 hover:bg-green-50"}
+                          >
+                            {product.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </Button>
                           <Button
                             size="sm"
                             variant="outline"
@@ -2080,7 +2132,7 @@ const Admin = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                         </div>
                       )}
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+                      <p className="text-sm text-gray-600 mb-4 break-words leading-relaxed max-w-sm">{product.description}</p>
                       <div className="flex items-center justify-between">
                         <Badge 
                           variant={product.featured ? "default" : "secondary"}
@@ -2146,7 +2198,21 @@ const Admin = () => {
                           <CardTitle className="text-lg text-gray-900 font-serif">{category.name}</CardTitle>
                           <CardDescription className="text-gray-600">/{category.slug}</CardDescription>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
+                          <Badge 
+                            variant={category.is_active ? "default" : "secondary"}
+                            className={category.is_active ? "bg-green-500 text-white" : "bg-gray-500 text-white"}
+                          >
+                            {category.is_active ? "Active" : "Hidden"}
+                          </Badge>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleToggleCategoryVisibility(category.id, !category.is_active)}
+                            className={category.is_active ? "border-orange-200 text-orange-600 hover:bg-orange-50" : "border-green-200 text-green-600 hover:bg-green-50"}
+                          >
+                            {category.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </Button>
                           <Button
                             size="sm"
                             variant="outline"
@@ -2177,7 +2243,7 @@ const Admin = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                         </div>
                       )}
-                      <p className="text-sm text-gray-600 break-words overflow-wrap-anywhere">{category.description}</p>
+                      <p className="text-sm text-gray-600 break-words leading-relaxed max-w-sm">{category.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -2365,7 +2431,7 @@ const Admin = () => {
                                 )}
                               </div>
                               <p className="text-sm text-gray-600 mb-2">{product.title}</p>
-                              <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
+                              <p className="text-sm text-gray-500 break-words leading-relaxed max-w-md">{product.description}</p>
                               <div className="flex items-center gap-4 mt-2">
                                 <span className="text-lg font-bold text-[#6f0e06]">₹{product.price}</span>
                                 {product.colors && product.colors.length > 0 && (
