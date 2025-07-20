@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart } from 'lucide-react';
+import { Heart, ShoppingCart, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useWishlist } from '../contexts/WishlistContext';
+import { useCart } from '../contexts/CartContext';
 import { useToast } from '../hooks/use-toast';
 import { supabaseService } from '../services/supabaseService';
 
@@ -167,7 +169,16 @@ const FeaturedProductShowcase = () => {
   const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
   const { addToWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const { toast } = useToast();
+
+  // Helper function to truncate text
+  const truncateText = (text, maxWords) => {
+    if (!text) return '';
+    const words = text.split(' ');
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(' ') + '...';
+  };
 
   useEffect(() => {
     const loadFeaturedProduct = async () => {
@@ -229,6 +240,39 @@ const FeaturedProductShowcase = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    
+    try {
+      const success = await addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image_urls: product.image_urls,
+        colors: product.colors
+      }, 1, null, currentColor);
+      
+      if (success) {
+        toast({
+          title: "Added to Cart",
+          description: `${product.name} has been added to your cart.`
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleQuickBuy = async () => {
+    await handleAddToCart();
+    // Redirect to cart page after adding
+    window.location.href = '/cart';
   };
 
   if (loading) {
@@ -443,13 +487,13 @@ const FeaturedProductShowcase = () => {
                 <DecorativeDivider />
                 
                 <motion.p 
-                  className="text-gray-700 mb-6"
+                  className="text-gray-700 mb-6 leading-relaxed break-words"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
-                  {product.description}
+                  {truncateText(product.description, 30)}
                 </motion.p>
                 
                 {product.colors && product.colors.length > 0 && (
@@ -529,7 +573,7 @@ const FeaturedProductShowcase = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                           </svg>
                         </motion.div>
-                        <span className="text-gray-700">{feature}</span>
+                        <span className="text-gray-700 break-words">{truncateText(feature, 8)}</span>
                       </motion.li>
                     ))}
                   </motion.ul>
@@ -559,10 +603,10 @@ const FeaturedProductShowcase = () => {
                   transition={{ duration: 0.5, delay: 0.9 }}
                 >
                   <motion.button
-                    onClick={handleAddToWishlist}
+                    onClick={handleAddToCart}
                     whileHover={{ 
                       scale: 1.05, 
-                      boxShadow: "0 10px 15px -3px rgba(186, 26, 93, 0.2)" 
+                      boxShadow: "0 10px 15px -3px rgba(111, 14, 6, 0.3)" 
                     }}
                     whileTap={{ scale: 0.98 }}
                     className="relative px-8 py-3 bg-pink text-white rounded-md flex items-center justify-center overflow-hidden group"
@@ -573,8 +617,37 @@ const FeaturedProductShowcase = () => {
                       whileHover={{ x: "100%" }}
                       transition={{ duration: 1, repeat: Infinity, repeatType: "loop" }}
                     />
-                    <Heart className="w-5 h-5 mr-2 relative z-10" />
-                    <span className="relative z-10">Add to Wishlist</span>
+                    <ShoppingCart className="w-5 h-5 mr-2 relative z-10" />
+                    <span className="relative z-10">Add to Cart</span>
+                  </motion.button>
+
+                  <motion.button
+                    onClick={handleQuickBuy}
+                    whileHover={{ 
+                      scale: 1.05, 
+                      boxShadow: "0 10px 15px -3px rgba(111, 14, 6, 0.2)" 
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    className="relative px-8 py-3 bg-white text-pink border-2 border-pink rounded-md flex items-center justify-center overflow-hidden group hover:bg-pink hover:text-white transition-colors duration-300"
+                  >
+                    <Zap className="w-5 h-5 mr-2" />
+                    <span>Quick Buy</span>
+                  </motion.button>
+
+                  <motion.button
+                    onClick={handleAddToWishlist}
+                    whileHover={{ 
+                      scale: 1.1,
+                      rotate: 5
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`p-3 rounded-full border-2 transition-colors duration-300 ${
+                      isInWishlist(product.id) 
+                        ? 'bg-pink text-white border-pink' 
+                        : 'bg-white text-pink border-pink hover:bg-pink hover:text-white'
+                    }`}
+                  >
+                    <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
                   </motion.button>
                 </motion.div>
               </div>
@@ -719,12 +792,11 @@ const FeaturedProductShowcase = () => {
           className="mt-20 text-center"
         >
           <div className="inline-block relative">
-            <motion.a 
-              href="/signature-collection" 
-              className="inline-flex items-center px-8 py-3 border-2 border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group relative overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
+            <motion.div>
+              <Link 
+                to="/signature-collection"
+                className="inline-flex items-center px-8 py-3 border-2 border-[#6f0e06] text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white transition-all duration-300 rounded-md group relative overflow-hidden"
+              >
               <motion.div
                 className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#6f0e06]/0 via-[#6f0e06]/30 to-[#6f0e06]/0"
                 initial={{ x: "-100%" }}
@@ -741,7 +813,8 @@ const FeaturedProductShowcase = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
               </motion.svg>
-            </motion.a>
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
       </div>

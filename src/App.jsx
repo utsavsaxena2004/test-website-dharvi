@@ -35,6 +35,7 @@ import SearchResults from './pages/SearchResults';
 import BackendIntegrationExample from './components/BackendIntegrationExample';
 import StatePersistenceDemo from './components/StatePersistenceDemo';
 import FeaturedProductShowcase from './components/FeaturedProductShowcase';
+import SignatureCollection from './pages/SignatureCollection';
 
 // Component to handle route state within Router context
 const AppContent = () => {
@@ -163,6 +164,13 @@ const AppContent = () => {
             <Route path="/admin" element={
               <PageTransition transitionType="fade">
                 <Admin />
+              </PageTransition>
+            } />
+            
+            {/* Signature Collection page */}
+            <Route path="/signature-collection" element={
+              <PageTransition transitionType="fade">
+                <SignatureCollection />
               </PageTransition>
             } />
             

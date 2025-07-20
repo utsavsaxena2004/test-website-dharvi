@@ -1,15 +1,25 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Eye } from 'lucide-react';
+import { Heart, ShoppingCart, Zap } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
+import { useCart } from '../contexts/CartContext';
 import { useToast } from '../hooks/use-toast';
 import { supabaseService } from '../services/supabaseService';
 
 const SignatureCollection = () => {
   const [masterProducts, setMasterProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { addToWishlist } = useWishlist();
+  const { addToWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const { toast } = useToast();
+
+  // Helper function to truncate text
+  const truncateText = (text, maxWords) => {
+    if (!text) return '';
+    const words = text.split(' ');
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(' ') + '...';
+  };
 
   useEffect(() => {
     const loadMasterProducts = async () => {
@@ -43,6 +53,29 @@ const SignatureCollection = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const handleAddToCart = async (product) => {
+    try {
+      const success = await addToCart(product, 1);
+      if (success) {
+        toast({
+          title: "Added to Cart",
+          description: `${product.name} has been added to your cart.`
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleQuickBuy = async (product) => {
+    await handleAddToCart(product);
+    window.location.href = '/cart';
   };
 
   if (loading) {
@@ -99,21 +132,41 @@ const SignatureCollection = () => {
                       {product.tag}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center gap-2">
                     <motion.button
-                      onClick={() => handleAddToWishlist(product)}
+                      onClick={() => handleAddToCart(product)}
                       className="bg-white text-[#6f0e06] p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#6f0e06] hover:text-white"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
-                      <Heart className="w-5 h-5" />
+                      <ShoppingCart className="w-5 h-5" />
+                    </motion.button>
+                    <motion.button
+                      onClick={() => handleQuickBuy(product)}
+                      className="bg-white text-[#6f0e06] p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#6f0e06] hover:text-white"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Zap className="w-5 h-5" />
+                    </motion.button>
+                    <motion.button
+                      onClick={() => handleAddToWishlist(product)}
+                      className={`p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 ${
+                        isInWishlist(product.id) 
+                          ? 'bg-[#6f0e06] text-white' 
+                          : 'bg-white text-[#6f0e06] hover:bg-[#6f0e06] hover:text-white'
+                      }`}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
                     </motion.button>
                   </div>
                 </div>
                 
                 <div className="p-6">
                   <h3 className="text-xl font-serif text-gray-900 mb-2">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2 break-words leading-relaxed">{truncateText(product.description, 15)}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold text-[#6f0e06]">₹{product.price}</span>
                     {product.colors?.length > 0 && (

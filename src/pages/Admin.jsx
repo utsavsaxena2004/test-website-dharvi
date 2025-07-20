@@ -61,7 +61,7 @@ const Admin = () => {
         supabaseService.getCategories(true),
         supabaseService.getSettings(),
         supabaseService.getCustomRequests(),
-        supabaseService.getMasterProducts()
+        supabaseService.getMasterProducts(true)
       ]);
       
       console.log('Loaded products:', productsData);
@@ -212,6 +212,44 @@ const Admin = () => {
           variant: "destructive"
         });
       }
+    }
+  };
+
+  const handleToggleMasterProductVisibility = async (id, isActive) => {
+    try {
+      await supabaseService.updateMasterProduct(id, { is_active: isActive });
+      setMasterProducts(masterProducts.map(product => 
+        product.id === id ? { ...product, is_active: isActive } : product
+      ));
+      toast({
+        title: `Master product ${isActive ? 'shown' : 'hidden'} successfully`,
+        description: `The master product is now ${isActive ? 'visible' : 'hidden'} on the website.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error updating master product visibility",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleToggleMasterProductVisibility = async (id, isActive) => {
+    try {
+      await supabaseService.updateMasterProduct(id, { is_active: isActive });
+      setMasterProducts(masterProducts.map(product => 
+        product.id === id ? { ...product, is_active: isActive } : product
+      ));
+      toast({
+        title: `Master product ${isActive ? 'shown' : 'hidden'} successfully`,
+        description: `The master product is now ${isActive ? 'visible' : 'hidden'} on the website.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error updating master product visibility",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -2354,7 +2392,21 @@ const Admin = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 items-center">
+                            <Badge 
+                              variant={product.is_active ? "default" : "secondary"}
+                              className={product.is_active ? "bg-green-500 text-white" : "bg-gray-500 text-white"}
+                            >
+                              {product.is_active ? "Active" : "Hidden"}
+                            </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleToggleMasterProductVisibility(product.id, !product.is_active)}
+                              className={product.is_active ? "border-orange-200 text-orange-600 hover:bg-orange-50" : "border-green-200 text-green-600 hover:bg-green-50"}
+                            >
+                              {product.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </Button>
                             <Button
                               variant="outline"
                               size="sm"

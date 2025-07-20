@@ -735,13 +735,17 @@ class SupabaseService {
   }
 
   // Master Products
-  async getMasterProducts() {
+  async getMasterProducts(includeInactive = false) {
     console.log('Fetching master products...');
-    const { data, error } = await supabase
+    let query = supabase
       .from('master_products')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
+      .select('*');
+    
+    if (!includeInactive) {
+      query = query.eq('is_active', true);
+    }
+    
+    const { data, error } = await query.order('created_at', { ascending: false });
     
     if (error) {
       console.error('Error fetching master products:', error);
