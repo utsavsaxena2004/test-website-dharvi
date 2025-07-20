@@ -1113,16 +1113,26 @@ const Admin = () => {
   };
 
   const SettingsForm = () => {
-    const [formData, setFormData] = useState({
-      promotional_messages: '',
-      hero_content: '',
-      footer_content: '',
-      site_name: '',
-      site_description: '',
-      contact_email: '',
-      contact_phone: '',
-      social_media: ''
-    });
+    const { formData, setFormData, clearFormData } = useFormPersistence(
+      'site_settings',
+      {
+        promotional_messages: '',
+        hero_content: '',
+        footer_content: '',
+        site_name: '',
+        site_description: '',
+        contact_email: '',
+        contact_phone: '',
+        address: '',
+        social_facebook: '',
+        social_instagram: '',
+        social_whatsapp: '',
+        shipping_cost: '',
+        free_shipping_threshold: '',
+        tax_rate: '',
+        currency: 'INR'
+      }
+    );
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
@@ -1168,15 +1178,15 @@ const Admin = () => {
           site_description: settings.site_description || 'Premium ethnic wear collection',
           contact_email: settings.contact_email || '',
           contact_phone: settings.contact_phone || '',
-          social_media: settings.social_media ? 
-            (typeof settings.social_media === 'string' ? 
-              settings.social_media : 
-              JSON.stringify(settings.social_media, null, 2)) : 
-            JSON.stringify({
-              facebook: "https://facebook.com/dharikafashion",
-              instagram: "https://instagram.com/dharikafashion",
-              whatsapp: "https://wa.me/919876543210"
-            }, null, 2)
+          address: settings.address || '',
+          social_facebook: settings.social_facebook || '',
+          social_instagram: settings.social_instagram || '',
+          social_whatsapp: settings.social_whatsapp || '',
+          shipping_cost: settings.shipping_cost || '99',
+          free_shipping_threshold: settings.free_shipping_threshold || '1999',
+          tax_rate: settings.tax_rate || '18',
+          currency: settings.currency || 'INR'
+        });
         });
       }
     }, [settings]);
@@ -1186,13 +1196,20 @@ const Admin = () => {
       try {
         setSaving(true);
         
-        // Prepare settings data - now all fields are supported
+        // Prepare settings data with correct column names
         const settingsData = {
           site_name: formData.site_name,
           site_description: formData.site_description,
           contact_email: formData.contact_email,
           contact_phone: formData.contact_phone,
-          social_media: formData.social_media,
+          address: formData.address,
+          social_facebook: formData.social_facebook,
+          social_instagram: formData.social_instagram,
+          social_whatsapp: formData.social_whatsapp,
+          shipping_cost: parseFloat(formData.shipping_cost) || 99,
+          free_shipping_threshold: parseFloat(formData.free_shipping_threshold) || 1999,
+          tax_rate: parseFloat(formData.tax_rate) || 18,
+          currency: formData.currency || 'INR',
           promotional_messages: formData.promotional_messages,
           hero_content: formData.hero_content,
           footer_content: formData.footer_content
@@ -1301,19 +1318,104 @@ const Admin = () => {
               </div>
 
               {/* Social Media Links */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Facebook URL ✅
+                  </label>
+                  <Input
+                    value={formData.social_facebook}
+                    onChange={(e) => setFormData({...formData, social_facebook: e.target.value})}
+                    placeholder="https://facebook.com/yourpage"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Instagram URL ✅
+                  </label>
+                  <Input
+                    value={formData.social_instagram}
+                    onChange={(e) => setFormData({...formData, social_instagram: e.target.value})}
+                    placeholder="https://instagram.com/yourpage"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    WhatsApp Number ✅
+                  </label>
+                  <Input
+                    value={formData.social_whatsapp}
+                    onChange={(e) => setFormData({...formData, social_whatsapp: e.target.value})}
+                    placeholder="https://wa.me/919876543210"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+              </div>
+
+              {/* Shipping & Tax Settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Shipping Cost ✅
+                  </label>
+                  <Input
+                    type="number"
+                    value={formData.shipping_cost}
+                    onChange={(e) => setFormData({...formData, shipping_cost: e.target.value})}
+                    placeholder="99"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Free Shipping Threshold ✅
+                  </label>
+                  <Input
+                    type="number"
+                    value={formData.free_shipping_threshold}
+                    onChange={(e) => setFormData({...formData, free_shipping_threshold: e.target.value})}
+                    placeholder="1999"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tax Rate (%) ✅
+                  </label>
+                  <Input
+                    type="number"
+                    value={formData.tax_rate}
+                    onChange={(e) => setFormData({...formData, tax_rate: e.target.value})}
+                    placeholder="18"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Currency ✅
+                  </label>
+                  <Input
+                    value={formData.currency}
+                    onChange={(e) => setFormData({...formData, currency: e.target.value})}
+                    placeholder="INR"
+                    className="border-rose-200 focus:border-[#6f0e06]"
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Social Media Links (JSON format) ✅
+                  Business Address ✅
                 </label>
                 <Textarea
-                  value={formData.social_media}
-                  onChange={(e) => setFormData({...formData, social_media: e.target.value})}
-                  placeholder='{"facebook": "url", "instagram": "url", "whatsapp": "url"}'
-                  className="border-rose-200 focus:border-[#6f0e06] h-24 font-mono text-sm"
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  placeholder="Enter your business address"
+                  className="border-rose-200 focus:border-[#6f0e06] h-20"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Format: Object with social media URLs (facebook, instagram, whatsapp)
-                </p>
               </div>
 
               {/* Promotional Messages - Now fully functional */}
