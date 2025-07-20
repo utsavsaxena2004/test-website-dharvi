@@ -234,24 +234,6 @@ const Admin = () => {
     }
   };
 
-  const handleToggleMasterProductVisibility = async (id, isActive) => {
-    try {
-      await supabaseService.updateMasterProduct(id, { is_active: isActive });
-      setMasterProducts(masterProducts.map(product => 
-        product.id === id ? { ...product, is_active: isActive } : product
-      ));
-      toast({
-        title: `Master product ${isActive ? 'shown' : 'hidden'} successfully`,
-        description: `The master product is now ${isActive ? 'visible' : 'hidden'} on the website.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error updating master product visibility",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
 
   const handleDeleteCustomRequest = async (requestId) => {
     if (window.confirm('Are you sure you want to delete this custom request?')) {
