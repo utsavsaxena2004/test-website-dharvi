@@ -318,7 +318,7 @@ const Categories = () => {
                       <div className="absolute bottom-[-6px] left-0 w-0 h-[1px] bg-white group-hover:w-1/3 transition-all duration-300 delay-100"></div>
                     </h3>
                     
-                    <p className="text-white/80 text-sm font-bold mb-6 none md:flex">{category.description || `Explore our ${category.name} collection`}</p>
+                    <p className="text-white/80 text-sm font-bold mb-6 hidden md:flex">{category.description || `Explore our ${category.name} collection`}</p>
                     
                     <motion.div
                       whileHover={{ scale: 1.05 }}
