@@ -124,7 +124,7 @@ const DynamicNavbar = () => {
   return (
     <header className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-gray-800 shadow-lg top-0 z-50">
       {/* Top Bar */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-2 lg:px-8 py-4 flex justify-between items-center">
         {/* Left - Search */}
         <div className="w-1/3 md:flex items-center hidden">
           <div className="relative search-container">
@@ -178,7 +178,7 @@ const DynamicNavbar = () => {
             <img
               src={siteSettings?.site_logo || mainLogo}
               alt={`${siteSettings?.site_name || 'Dharika'} Logo`}
-              className="md:h-28 h-16 scale-95 transition-transform duration-300 hover:scale-90 relative z-10"
+              className="md:h-28 h-14 scale-95 transition-transform duration-300 hover:scale-90 relative z-10"
             />
           </Link>
         </div>
