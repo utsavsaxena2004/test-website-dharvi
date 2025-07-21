@@ -213,32 +213,20 @@ const FeaturedProductShowcase = () => {
     loadMasterProducts();
   }, [searchParams]);
 
-  // Auto-cycle through images/videos every 7 seconds, then products
+  // Auto-cycle through images/videos every 7 seconds within same product
   useEffect(() => {
-    if (allProducts.length > 0 && currentProduct) {
+    if (!isHovered && allProducts.length > 0 && currentProduct) {
       const combinedMedia = [
         ...(currentProduct.video_urls || []).map(url => ({ type: 'video', url })),
         ...(currentProduct.image_urls || []).map(url => ({ type: 'image', url }))
       ];
 
-      if (combinedMedia.length > 0) {
+      if (combinedMedia.length > 1) {
         intervalRef.current = setInterval(() => {
           setSelectedImageIndex((prevImageIndex) => {
             const nextImageIndex = prevImageIndex + 1;
-            
-            // If we've shown all images/videos of current product
-            if (nextImageIndex >= combinedMedia.length) {
-              // Move to next product if there are multiple products
-              if (allProducts.length > 1) {
-                setCurrentProductIndex((prevProductIndex) => 
-                  prevProductIndex === allProducts.length - 1 ? 0 : prevProductIndex + 1
-                );
-                setSelectedColorIndex(0); // Reset color selection when changing products
-              }
-              return 0; // Reset to first image/video
-            }
-            
-            return nextImageIndex;
+            // Cycle through images of the same product only
+            return nextImageIndex >= combinedMedia.length ? 0 : nextImageIndex;
           });
         }, 7000); // 7 seconds
 
@@ -248,48 +236,40 @@ const FeaturedProductShowcase = () => {
           }
         };
       }
-    }
-  }, [allProducts.length, currentProductIndex, currentProduct]);
-
-  // Clear interval when user hovers (pause auto-cycle)
-  useEffect(() => {
-    if (isHovered && intervalRef.current) {
+    } else if (isHovered && intervalRef.current) {
       clearInterval(intervalRef.current);
-    } else if (!isHovered && allProducts.length > 0 && currentProduct) {
+    }
+  }, [allProducts.length, currentProductIndex, currentProduct, isHovered]);
+
+  // Auto-cycle through products after all images have been shown
+  useEffect(() => {
+    if (!isHovered && allProducts.length > 1 && currentProduct) {
       const combinedMedia = [
         ...(currentProduct.video_urls || []).map(url => ({ type: 'video', url })),
         ...(currentProduct.image_urls || []).map(url => ({ type: 'image', url }))
       ];
 
-      if (combinedMedia.length > 0) {
-        intervalRef.current = setInterval(() => {
-          setSelectedImageIndex((prevImageIndex) => {
-            const nextImageIndex = prevImageIndex + 1;
-            
-            // If we've shown all images/videos of current product
-            if (nextImageIndex >= combinedMedia.length) {
-              // Move to next product if there are multiple products
-              if (allProducts.length > 1) {
-                setCurrentProductIndex((prevProductIndex) => 
-                  prevProductIndex === allProducts.length - 1 ? 0 : prevProductIndex + 1
-                );
-                setSelectedColorIndex(0); // Reset color selection when changing products
-              }
-              return 0; // Reset to first image/video
-            }
-            
-            return nextImageIndex;
-          });
-        }, 7000); // 7 seconds
-      }
-    }
+      const totalMediaTime = combinedMedia.length * 7000; // 7 seconds per media item
+      
+      const productTimer = setTimeout(() => {
+        setCurrentProductIndex((prevIndex) => 
+          prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
+        );
+        setSelectedColorIndex(0);
+        setSelectedImageIndex(0);
+      }, totalMediaTime);
 
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isHovered, allProducts.length, currentProductIndex, currentProduct]);
+      return () => {
+        clearTimeout(productTimer);
+      };
+    }
+  }, [allProducts.length, currentProductIndex, currentProduct, isHovered]);
+
+  // Clear intervals when user hovers (pause auto-cycle)
+  useEffect(() => {
+    // Note: The hover pause functionality will be handled by the individual useEffect hooks above
+    // by checking the isHovered state in their dependencies
+  }, [isHovered]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -361,39 +341,7 @@ const FeaturedProductShowcase = () => {
     setCurrentProductIndex(index);
     setSelectedColorIndex(0);
     setSelectedImageIndex(0);
-    // Reset the auto-cycle timer
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      const selectedProduct = allProducts[index];
-      if (selectedProduct) {
-        const combinedMedia = [
-          ...(selectedProduct.video_urls || []).map(url => ({ type: 'video', url })),
-          ...(selectedProduct.image_urls || []).map(url => ({ type: 'image', url }))
-        ];
-
-        if (combinedMedia.length > 0) {
-          intervalRef.current = setInterval(() => {
-            setSelectedImageIndex((prevImageIndex) => {
-              const nextImageIndex = prevImageIndex + 1;
-              
-              // If we've shown all images/videos of current product
-              if (nextImageIndex >= combinedMedia.length) {
-                // Move to next product if there are multiple products
-                if (allProducts.length > 1) {
-                  setCurrentProductIndex((prevProductIndex) => 
-                    prevProductIndex === allProducts.length - 1 ? 0 : prevProductIndex + 1
-                  );
-                  setSelectedColorIndex(0);
-                }
-                return 0; // Reset to first image/video
-              }
-              
-              return nextImageIndex;
-            });
-          }, 7000); // 7 seconds
-        }
-      }
-    }
+    // The timers will be reset automatically by the useEffect dependencies
   };
 
   if (loading) {
