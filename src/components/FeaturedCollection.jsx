@@ -69,7 +69,7 @@ const FeaturedCollection = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-light text-gray-900 mb-4">Our Curated Collection</h2>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-light text-[#6f0e06] mb-4">Our Curated Collection</h2>
           <div className="w-24 h-[1px] bg-pink mx-auto mb-6"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">Discover our handpicked selection of traditional wear, where timeless heritage meets contemporary elegance</p>
         </motion.div>
