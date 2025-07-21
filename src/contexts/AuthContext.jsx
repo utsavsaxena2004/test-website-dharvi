@@ -20,25 +20,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Fetch user profile if authenticated
+        // Reset profile when user changes
         if (session?.user) {
-          const fetchProfile = async () => {
-            try {
-              const { data: profileData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('user_id', session.user.id)
-                .single();
-              setProfile(profileData);
-            } catch (error) {
-              console.error('Error fetching profile:', error);
-            }
-          };
-          setTimeout(fetchProfile, 0);
+          setProfile(null); // Reset first, then fetch
         } else {
           setProfile(null);
         }
@@ -56,6 +44,26 @@ export const AuthProvider = ({ children }) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Separate effect for fetching profile when user changes
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user) {
+        try {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+          setProfile(profileData);
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
 
   const logout = async () => {
     await supabase.auth.signOut();
