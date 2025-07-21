@@ -310,15 +310,15 @@ const Categories = () => {
                     <div className="mb-2 flex items-center">
                       {/* Small decorative line */}
                       <div className="w-10 h-[1px] bg-white/70 mr-3"></div>
-                      <span className="text-sm uppercase tracking-wider font-light text-white/90">Collection</span>
+                      <span className="text-sm uppercase tracking-wider font-bold text-white/90">Collection</span>
                     </div>
                     
-                    <h3 className="text-2xl font-serif text-white mb-2 relative">
+                    <h3 className="text-2xl font-bold text-white mb-2 relative" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.25), 0 1px 0 #fff2' }}>
                       {category.name}
                       <div className="absolute bottom-[-6px] left-0 w-0 h-[1px] bg-white group-hover:w-1/3 transition-all duration-300 delay-100"></div>
                     </h3>
                     
-                    <p className="text-white/80 text-sm mb-6">{category.description || `Explore our ${category.name} collection`}</p>
+                    <p className="text-white/80 text-sm font-bold mb-6">{category.description || `Explore our ${category.name} collection`}</p>
                     
                     <motion.div
                       whileHover={{ scale: 1.05 }}
@@ -326,7 +326,7 @@ const Categories = () => {
                     >
                       <Link 
                         to={`/category/${category.slug || category.name.toLowerCase()}`} 
-                        className="inline-flex items-center space-x-2 text-white border-b border-white/40 pb-1 group-hover:border-white transition-colors duration-300 text-sm"
+                        className="inline-flex font-bold items-center space-x-2 text-white border-b border-white/40 pb-1 group-hover:border-white transition-colors duration-300 text-sm"
                       >
                         <span>Explore Collection</span>
                         <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
