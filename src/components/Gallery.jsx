@@ -93,14 +93,21 @@ const Gallery = ({ showAll = false, limit = 8 }) => {
             className="text-center mb-12"
           >
             <div className="flex items-center justify-center mb-4">
-              <Camera className="w-8 h-8 text-[#6f0e06] mr-3" />
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-900">
-                Our Gallery
-              </h2>
+              <Camera className="w-8 h-8 text-[#6f0e06] mr-3 -mt-10" />
+              <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 mb-4 relative">
+              From Our, <span className="relative inline-block">
+                <span className="text-pink">Camera Roll</span>
+                <motion.span 
+                  className="absolute bottom-0 left-0 h-1 bg-pink/30 rounded-full w-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 1, delay: 1 }}
+                />
+              </span>
+            </h2>
             </div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Discover the beauty and elegance of our traditional wear collection through 
-              our curated gallery of stunning photographs
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Tap to spill the tea - every picture has a story
             </p>
           </motion.div>
 

@@ -65,9 +65,9 @@ const AppContent = () => {
                   <Hero />
                   <Categories />
                   <FeaturedCollection />
+                  <FeaturedProductShowcase />
                   <AboutDharika />
                   <Gallery />
-                  <FeaturedProductShowcase />
                   <CustomDesignShowcase />
                 </>
               </PageTransition>

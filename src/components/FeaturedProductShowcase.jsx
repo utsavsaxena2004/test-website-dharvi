@@ -154,8 +154,6 @@ const PremiumBadge = () => (
             </text>
           </svg>
         </motion.div>
-        <span className="text-pink text-xs font-semibold uppercase tracking-wide">Premium</span>
-        <span className="text-pink text-[0.65rem] mt-0.5">Collection</span>
       </div>
     </div>
   </motion.div>
@@ -471,8 +469,8 @@ const FeaturedProductShowcase = () => {
             }}
             className="text-4xl md:text-5xl font-serif text-gray-900 mb-2 relative"
           >
-            <span className="relative inline-block">
-              The 
+            <span className="relative inline-block text-[#6f0e06]">
+              Our 
               <motion.span 
                 className="absolute -top-6 -right-4 text-sm text-pink"
                 initial={{ opacity: 0, y: 10 }}
@@ -483,8 +481,8 @@ const FeaturedProductShowcase = () => {
                 ✦
               </motion.span>
             </span>{" "}
-            <span className="relative z-10 inline-block">
-              Masterpiece 
+            <span className="relative z-10 inline-block text-[#6f0e06]">
+              Favourites 
               <motion.span
                 className="absolute -z-10 bottom-0 left-0 h-3 bg-pink/10 w-full"
                 initial={{ width: 0 }}
@@ -492,8 +490,7 @@ const FeaturedProductShowcase = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 1, duration: 0.6 }}
               />
-            </span>{" "}
-            Collection
+            </span>
           </motion.h2>
           
           <motion.div 
@@ -812,25 +809,6 @@ const FeaturedProductShowcase = () => {
                       <p className="text-white/80 text-sm">{currentColor}</p>
                     </motion.div>
                   </div>
-                </motion.div>
-                
-                {/* Product Highlights with enhanced animations */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: -20 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-2 rounded-lg shadow-lg z-30"
-                >
-                  <motion.div
-                    animate={{ rotate: [0, 10, 0, -10, 0] }}
-                    transition={{ duration: 5, repeat: Infinity, repeatDelay: 2 }}
-                  >
-                    <svg className="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  </motion.div>
-                  <span className="text-xs font-medium block mt-1 text-center">Premium</span>
                 </motion.div>
                 
                 {/* Decorative Corner Elements */}

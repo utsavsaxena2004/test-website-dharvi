@@ -123,7 +123,7 @@ const AboutDharika = () => {
               className="relative group"
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-              <div className="relative bg-card/80 backdrop-blur-xl rounded-3xl p-8 border border-primary/20 shadow-xl">
+              <div className="relative  rounded-3xl p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
                     <Heart className="w-6 h-6 text-white" />
@@ -158,7 +158,7 @@ const AboutDharika = () => {
               className="relative group"
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-accent/10 to-primary/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-              <div className="relative bg-gradient-to-br from-primary/5 to-accent/5 backdrop-blur-xl rounded-3xl p-8 border border-accent/20 shadow-xl">
+              <div className="relative rounded-3xl p-8 ">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-accent to-primary rounded-full flex items-center justify-center">
                     <Users className="w-6 h-6 text-white" />
@@ -175,7 +175,7 @@ const AboutDharika = () => {
                     It's where fashion meets art, meets storytelling, meets everyone who's ever wanted to do their own thing and be seen for it — whether you're a dancer, designer, chef, stylist, or someone still deciding.
                   </p>
                   
-                  <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-6 border border-primary/20">
+                  <div className="rounded-2xl p-6">
                     <p className="text-foreground/90 mb-3">
                       Our very first bio read:
                     </p>
@@ -205,7 +205,7 @@ const AboutDharika = () => {
         >
           <div className="relative inline-block">
             <div className="absolute -inset-8 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full blur-2xl" />
-            <div className="relative bg-gradient-to-r from-primary to-accent rounded-3xl p-12 text-white shadow-2xl">
+            <div className="relative rounded-3xl p-12 text-black ">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}

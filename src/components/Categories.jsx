@@ -165,7 +165,7 @@ const Categories = () => {
   }
 
   return (
-    <section className="py-20 overflow-hidden relative">
+    <section className="py-20 -mb-20 overflow-hidden relative">
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 rotate-180">
         {decorativeElements.corner}
