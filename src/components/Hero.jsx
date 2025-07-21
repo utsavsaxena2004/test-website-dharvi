@@ -1,11 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
-// Enhanced high-quality images
-const slideImages = [
-  'https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?q=80&w=1800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1800&q=80',
-  'https://images.unsplash.com/photo-1517472292914-9570a594783b?w=1800&auto=format&fit=crop&q=80&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fHNhcmVlfGVufDB8MHwwfHx8MA%3D%3D',
+// Enhanced videos from public folder
+const slideVideos = [
+  '/Document from ~.mp4',
+  '/Document from ~-2.mp4',
+  '/Document from ~-3.mp4',
+  '/Document from ~-4.mp4',
+  '/Document from ~-5.mp4',
 ];
 
 const EnhancedHero = () => {
@@ -20,16 +22,20 @@ const EnhancedHero = () => {
     }
   };
 
-  useEffect(() => {
-    resetTimeout();
-    timeoutRef.current = setTimeout(() => {
+  // Handle video end event to auto-advance
+  const handleVideoEnd = () => {
+    if (!isTransitioning) {
       setIsTransitioning(true);
       setTimeout(() => {
-        setCurrentSlide((prevSlide) => (prevSlide === slideImages.length - 1 ? 0 : prevSlide + 1));
+        setCurrentSlide((prevSlide) => (prevSlide === slideVideos.length - 1 ? 0 : prevSlide + 1));
         setIsTransitioning(false);
       }, 300);
-    }, 5000);
+    }
+  };
 
+  useEffect(() => {
+    // Reset timeout when slide changes
+    resetTimeout();
     return () => {
       resetTimeout();
     };
@@ -40,7 +46,7 @@ const EnhancedHero = () => {
     
     resetTimeout();
     setIsTransitioning(true);
-    setCurrentSlide((prevSlide) => (prevSlide === slideImages.length - 1 ? 0 : prevSlide + 1));
+    setCurrentSlide((prevSlide) => (prevSlide === slideVideos.length - 1 ? 0 : prevSlide + 1));
     setTimeout(() => {
       setIsTransitioning(false);
     }, 800);
@@ -51,7 +57,7 @@ const EnhancedHero = () => {
     
     resetTimeout();
     setIsTransitioning(true);
-    setCurrentSlide((prevSlide) => (prevSlide === 0 ? slideImages.length - 1 : prevSlide - 1));
+    setCurrentSlide((prevSlide) => (prevSlide === 0 ? slideVideos.length - 1 : prevSlide - 1));
     setTimeout(() => {
       setIsTransitioning(false);
     }, 800);
@@ -73,12 +79,12 @@ const EnhancedHero = () => {
       ref={heroRef}
       className="relative overflow-hidden h-[50vh] md:h-[80vh]"
     >
-      {/* Background Images with smooth transitions */}
+      {/* Background Videos with smooth transitions */}
       <div className="absolute inset-0 bg-black">
-        {/* Preload all images */}
+        {/* Preload all videos */}
         <div className="hidden">
-          {slideImages.map((image, index) => (
-            <img key={`preload-${index}`} src={image} alt="Preload" />
+          {slideVideos.map((video, index) => (
+            <video key={`preload-${index}`} src={video} preload="metadata" />
           ))}
         </div>
         
@@ -97,10 +103,12 @@ const EnhancedHero = () => {
             {/* Subtle gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20 z-10" />
             
-            <motion.img
-              src={slideImages[currentSlide]}
-              alt={`Slide ${currentSlide + 1}`}
-              loading={currentSlide === 0 ? "eager" : "lazy"}
+            <motion.video
+              src={slideVideos[currentSlide]}
+              autoPlay
+              muted
+              playsInline
+              onEnded={handleVideoEnd}
               className="h-full w-full object-cover"
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
@@ -144,7 +152,7 @@ const EnhancedHero = () => {
 
       {/* Carousel Indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
-        {slideImages.map((_, index) => (
+        {slideVideos.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
