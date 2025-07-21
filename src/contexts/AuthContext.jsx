@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         
         // Fetch user profile if authenticated
         if (session?.user) {
-          setTimeout(async () => {
+          const fetchProfile = async () => {
             try {
               const { data: profileData } = await supabase
                 .from('profiles')
@@ -37,7 +37,8 @@ export const AuthProvider = ({ children }) => {
             } catch (error) {
               console.error('Error fetching profile:', error);
             }
-          }, 0);
+          };
+          setTimeout(fetchProfile, 0);
         } else {
           setProfile(null);
         }
