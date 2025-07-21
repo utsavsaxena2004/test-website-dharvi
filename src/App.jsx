@@ -243,17 +243,17 @@ const AppContent = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <ToastProvider>
-            <Router>
+    <Router>
+      <AuthProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <ToastProvider>
               <AppContent />
-            </Router>
-          </ToastProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </AuthProvider>
+            </ToastProvider>
+          </WishlistProvider>
+        </CartProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
