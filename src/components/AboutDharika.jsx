@@ -122,7 +122,7 @@ const AboutDharika = () => {
               viewport={{ once: true }}
               className="relative group"
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+              <div className="absolute -inset-4  rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
               <div className="relative  rounded-3xl p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
@@ -157,7 +157,7 @@ const AboutDharika = () => {
               viewport={{ once: true }}
               className="relative group"
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-accent/10 to-primary/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
+              <div className="absolute -inset-4  rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300" />
               <div className="relative rounded-3xl p-8 ">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-accent to-primary rounded-full flex items-center justify-center">
@@ -204,7 +204,7 @@ const AboutDharika = () => {
           className="mt-20 text-center"
         >
           <div className="relative inline-block">
-            <div className="absolute -inset-8 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full blur-2xl" />
+            <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full blur-2xl" />
             <div className="relative rounded-3xl p-12 text-black ">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}

@@ -213,7 +213,7 @@ const SupportModal = ({ isOpen, onClose, modalType }) => {
                   </ul>
                   <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                     <p className="text-blue-800 font-medium">
-                      For any requests or grievances, contact us at: <strong>Support@dharika.co.in</strong>
+                      For any requests or grievances, contact us at: <strong>saiyam@dharika.co.in</strong>
                     </p>
                     <p className="text-blue-700 text-xs mt-1">We shall respond within seven (7) business days of receipt.</p>
                   </div>
@@ -237,8 +237,8 @@ const SupportModal = ({ isOpen, onClose, modalType }) => {
                   <h4 className="font-semibold text-foreground mb-2">10. Contact Information</h4>
                   <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
                     <p className="text-foreground font-medium mb-2">Grievance Officer – Dharika</p>
-                    <p className="text-foreground/80">📧 Email: privacy@dharika.co.in</p>
-                    <p className="text-foreground/80">📍 Address: [Insert Legal Address]</p>
+                    <p className="text-foreground/80">📧 Email: saiyam@dharika.co.in</p>
+                    <p className="text-foreground/80">📍 Address: Ambala, Haryana, 134003</p>
                   </div>
                 </section>
               </div>
