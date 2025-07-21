@@ -418,9 +418,9 @@ const SupportModal = ({ isOpen, onClose, modalType }) => {
                   <h4 className="font-semibold text-foreground mb-3">14. Contact Information</h4>
                   <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
                     <p className="text-foreground font-medium mb-2">Dharika Customer Support</p>
-                    <p className="text-foreground/80">📩 Email: support@dharika.co.in</p>
-                    <p className="text-foreground/80">📞 Phone: +91-[Insert Number]</p>
-                    <p className="text-foreground/80">🏢 Address: [Insert Registered Business Address]</p>
+                    <p className="text-foreground/80">📩 Email: saiyam@dharika.co.in</p>
+                    <p className="text-foreground/80">📞 Phone: +91-8396867789</p>
+                    <p className="text-foreground/80">🏢 Address: Ambala, Haryana, 134003</p>
                   </div>
                 </section>
               </div>
