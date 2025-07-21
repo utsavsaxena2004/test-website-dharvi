@@ -77,7 +77,7 @@ const EnhancedHero = () => {
   return (
     <motion.div 
       ref={heroRef}
-      className="relative overflow-hidden h-[50vh] md:h-[80vh]"
+      className="relative overflow-hidden h-[60vh] md:h-[80vh]"
     >
       {/* Background Videos with smooth transitions */}
       <div className="absolute inset-0 bg-black">
