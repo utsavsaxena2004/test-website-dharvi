@@ -213,35 +213,75 @@ const FeaturedProductShowcase = () => {
     loadMasterProducts();
   }, [searchParams]);
 
-  // Auto-cycle through products every 30 seconds if more than 1 product
+  // Auto-cycle through images/videos every 7 seconds, then products
   useEffect(() => {
-    if (allProducts.length > 1) {
-      intervalRef.current = setInterval(() => {
-        setCurrentProductIndex((prevIndex) => 
-          prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
-        );
-        setSelectedColorIndex(0); // Reset color selection when changing products
-      }, 30000); // 30 seconds
+    if (allProducts.length > 0 && currentProduct) {
+      const combinedMedia = [
+        ...(currentProduct.video_urls || []).map(url => ({ type: 'video', url })),
+        ...(currentProduct.image_urls || []).map(url => ({ type: 'image', url }))
+      ];
 
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      };
+      if (combinedMedia.length > 0) {
+        intervalRef.current = setInterval(() => {
+          setSelectedImageIndex((prevImageIndex) => {
+            const nextImageIndex = prevImageIndex + 1;
+            
+            // If we've shown all images/videos of current product
+            if (nextImageIndex >= combinedMedia.length) {
+              // Move to next product if there are multiple products
+              if (allProducts.length > 1) {
+                setCurrentProductIndex((prevProductIndex) => 
+                  prevProductIndex === allProducts.length - 1 ? 0 : prevProductIndex + 1
+                );
+                setSelectedColorIndex(0); // Reset color selection when changing products
+              }
+              return 0; // Reset to first image/video
+            }
+            
+            return nextImageIndex;
+          });
+        }, 7000); // 7 seconds
+
+        return () => {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
+        };
+      }
     }
-  }, [allProducts.length]);
+  }, [allProducts.length, currentProductIndex, currentProduct]);
 
   // Clear interval when user hovers (pause auto-cycle)
   useEffect(() => {
     if (isHovered && intervalRef.current) {
       clearInterval(intervalRef.current);
-    } else if (!isHovered && allProducts.length > 1) {
-      intervalRef.current = setInterval(() => {
-        setCurrentProductIndex((prevIndex) => 
-          prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
-        );
-        setSelectedColorIndex(0);
-      }, 30000);
+    } else if (!isHovered && allProducts.length > 0 && currentProduct) {
+      const combinedMedia = [
+        ...(currentProduct.video_urls || []).map(url => ({ type: 'video', url })),
+        ...(currentProduct.image_urls || []).map(url => ({ type: 'image', url }))
+      ];
+
+      if (combinedMedia.length > 0) {
+        intervalRef.current = setInterval(() => {
+          setSelectedImageIndex((prevImageIndex) => {
+            const nextImageIndex = prevImageIndex + 1;
+            
+            // If we've shown all images/videos of current product
+            if (nextImageIndex >= combinedMedia.length) {
+              // Move to next product if there are multiple products
+              if (allProducts.length > 1) {
+                setCurrentProductIndex((prevProductIndex) => 
+                  prevProductIndex === allProducts.length - 1 ? 0 : prevProductIndex + 1
+                );
+                setSelectedColorIndex(0); // Reset color selection when changing products
+              }
+              return 0; // Reset to first image/video
+            }
+            
+            return nextImageIndex;
+          });
+        }, 7000); // 7 seconds
+      }
     }
 
     return () => {
@@ -249,7 +289,7 @@ const FeaturedProductShowcase = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isHovered, allProducts.length]);
+  }, [isHovered, allProducts.length, currentProductIndex, currentProduct]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -324,14 +364,34 @@ const FeaturedProductShowcase = () => {
     // Reset the auto-cycle timer
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
-      if (allProducts.length > 1) {
-        intervalRef.current = setInterval(() => {
-          setCurrentProductIndex((prevIndex) => 
-            prevIndex === allProducts.length - 1 ? 0 : prevIndex + 1
-          );
-          setSelectedColorIndex(0);
-          setSelectedImageIndex(0);
-        }, 30000);
+      const selectedProduct = allProducts[index];
+      if (selectedProduct) {
+        const combinedMedia = [
+          ...(selectedProduct.video_urls || []).map(url => ({ type: 'video', url })),
+          ...(selectedProduct.image_urls || []).map(url => ({ type: 'image', url }))
+        ];
+
+        if (combinedMedia.length > 0) {
+          intervalRef.current = setInterval(() => {
+            setSelectedImageIndex((prevImageIndex) => {
+              const nextImageIndex = prevImageIndex + 1;
+              
+              // If we've shown all images/videos of current product
+              if (nextImageIndex >= combinedMedia.length) {
+                // Move to next product if there are multiple products
+                if (allProducts.length > 1) {
+                  setCurrentProductIndex((prevProductIndex) => 
+                    prevProductIndex === allProducts.length - 1 ? 0 : prevProductIndex + 1
+                  );
+                  setSelectedColorIndex(0);
+                }
+                return 0; // Reset to first image/video
+              }
+              
+              return nextImageIndex;
+            });
+          }, 7000); // 7 seconds
+        }
       }
     }
   };
