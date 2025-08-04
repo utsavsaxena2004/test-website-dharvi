@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from "path"
-import { componentTagger } from "lovable-tagger"
+import path from 'path'
+import { componentTagger } from 'lovable-tagger'
 
-// https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/', // or '/subfolder/' if needed for hosting
   server: {
     host: "::",
     port: 8080,
@@ -19,11 +19,10 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Production optimizations
     target: 'es2015',
     cssCodeSplit: true,
     sourcemap: false,
-    minify: 'esbuild', // Use esbuild instead of terser (faster and built-in)
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
