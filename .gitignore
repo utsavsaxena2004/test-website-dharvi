@@ -26,3 +26,4 @@ dist-ssr
 # Exclude specific folders
 <404 ERROR FOUND>/
 Dharika_backend_repo/
+.env
